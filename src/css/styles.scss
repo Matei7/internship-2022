@@ -1,5 +1,5 @@
-$primary-color: white;
-$bg: black;
+@import "variables";
+@import "chess";
 
 body {
   margin: 0;
@@ -20,6 +20,6 @@ body {
     transform: translate(-50%, -5%);
     opacity: 50%;
     font-size: 100px;
-    font-family: Calibri;
+    font-family: Calibri, sans-serif;
   }
 }
