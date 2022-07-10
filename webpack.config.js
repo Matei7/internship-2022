@@ -2,10 +2,12 @@ const path = require( 'path' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 const config = {
-	entry: './src/js/app.js',
+	entry: {
+		app: './src/js/app.js',
+		dom: './src/js/dom.js'
+	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
-		filename: 'app.js'
 	},
 	module: {
 		rules: [
