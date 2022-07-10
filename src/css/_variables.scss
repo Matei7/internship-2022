@@ -2,3 +2,8 @@ $primary-color: white;
 $bg: black;
 $chess-pieces: 'king', 'queen', 'rook', 'bishop', 'knight', 'pawn';
 $chess-pieces-color: 'white', 'black';
+
+:root{
+  --chess-dark: #5d5d5d;
+  --chess-light: #eaeaea;
+}

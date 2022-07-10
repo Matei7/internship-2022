@@ -1,6 +1,10 @@
 @import "variables";
 @import "chess";
 
+html {
+  overflow-y: hidden;
+}
+
 body {
   margin: 0;
 }
@@ -8,18 +12,25 @@ body {
 #app {
   min-width: 100vw;
   min-height: 100vh;
-  background-image: url("../../public/images/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
 
-  > h1 {
-    color: $primary-color;
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translate(-50%, -5%);
-    opacity: 50%;
-    font-size: 100px;
-    font-family: Calibri, sans-serif;
+  .with-bg {
+    background-image: url("../../public/images/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    & > h1 {
+      color: $primary-color;
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translate(-50%, -5%);
+      opacity: 50%;
+      font-size: 100px;
+      font-family: Calibri, sans-serif;
+    }
   }
+}
+
+.countdown {
+  font-size: 25px;
 }

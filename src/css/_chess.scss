@@ -1,22 +1,44 @@
 @import "variables";
 
-.chess-piece {
-  width: 50px;
-  height: 50px;
-  position: relative;
+.chess-table {
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  border: 2px solid #000;
+  max-width: 400px;
+  margin-left: 50px;
 
-  &:after {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 100%;
+  .chess-cell {
+    width: 50px;
+    height: 50px;
+    background-color: var(--chess-light);
+
+    @each $offset in 2 4 6 8 9 11 13 15 {
+      &:nth-child(16n + #{$offset}) {
+        background-color: var(--chess-dark);
+      }
+    }
   }
 
-  @each $piece in $chess-pieces {
-    @each $color in $chess-pieces-color {
-      &.#{$color}-#{$piece} {
-        &:after {
-          background-image: url("../svgs/#{$color}_#{$piece}.svg");
+  .chess-piece {
+    width: 50px;
+    height: 50px;
+    position: relative;
+
+    &:after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    @each $piece in $chess-pieces {
+      @each $color in $chess-pieces-color {
+        &.#{$color}-#{$piece} {
+          &:after {
+            background-image: url("../svgs/#{$color}_#{$piece}.svg");
+          }
         }
       }
     }
