@@ -45,7 +45,7 @@ function main(){
     // console.log(makeArray())
     // console.log(removeLastElement(makeArray()))
 /*
-    // Exercise 4a
+    // Exercise 5a
     let user = {
         name: undefined,
         age: undefined
