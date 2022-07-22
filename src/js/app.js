@@ -30,11 +30,13 @@ function makeArray(){
     arr = arr.concat([89, 99, 120, 412, 124]);
     return arr;
 }
-// Exercise 3a
+// Exercise 3b
 function removeLastElement(array){
     array.pop();
     return array;
 }
+// Exercise 4a
+
 
 function main(){
     // alert(productMark(1, 2, -4))
@@ -42,7 +44,15 @@ function main(){
     // lessThan10000(2)
     // console.log(makeArray())
     // console.log(removeLastElement(makeArray()))
-    
+/*
+    // Exercise 4a
+    let user = {
+        name: undefined,
+        age: undefined
+    };
+    console.log(user);
+*/
+
 }
 main()
 
