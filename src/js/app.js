@@ -35,3 +35,11 @@ if (found == "false")
 {
     console.log("A truckload of bunnies");
 }
+
+const n = prompt("What's the weight?");
+let sum = 0;
+for(let i = 1; i <= n; i++)
+{
+    sum += i;
+}
+console.log(sum);
