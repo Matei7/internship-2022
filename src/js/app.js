@@ -44,11 +44,23 @@ for(let i = 1; i <= n; i++)
 }
 console.log(sum);
 
-//a.	You’re given a number. While the number is less than 10,000 print the results of multiplying it with Math.random()*10
-
 let number = prompt("Give number");
 while(number < 10000)
 {
     number *= Math.random()*10;
     console.log(number);
 }
+
+let array = [];
+for(let i = 1; i <= 50; i++)
+{
+    array.push(i);
+}
+let arrayToBeAdded = [89, 99, 120, 412, 124];
+array = array.concat(arrayToBeAdded);
+for(let i = 0; i < array.length; i++)
+{
+    console.log(array[i]);
+}
+let poppedElement = array.pop();
+console.log("Popped element:" + poppedElement);
