@@ -1,5 +1,6 @@
 import "../css/styles.scss";
 
+
 let productSign = (n1, n2, n3) => {
     let sign = 1;
     sign *= Math.sign(n1);
@@ -55,6 +56,16 @@ const obj = {
     LastName: "Dum"
 };
 
+class Human{
+  #fullName;
+  constructor() {
+      this.#fullName = "dummy";
+  }
+  hello(){
+      return "Hi I'M " +  this.#fullName;
+  }
+}
+
 let testSum = () =>{
     let test = [1,5,10,25,1000]
     let res = '';
@@ -95,4 +106,5 @@ console.log(randList(10000));
 console.log(arrayMerge());
 console.log(obj);
 console.log(filterDivThree(arrayMerge()));
+console.log(new Human().hello())
 
