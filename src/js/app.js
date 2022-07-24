@@ -60,13 +60,11 @@ function loop(){
 function array(){
     let a1 =[89, 99, 120, 412, 124];
     let array = [];
-    for(let i = 1; i<=50;i++){
+    for(let i = 1; i<=50;i++) {
         array.push(i);
     }
-    if (array.length == 50) {
-        for (let i = 0; i<a1.length;i++){
-            array.push(a1[i]);
-        }
+    for (let i = 0; i<a1.length;i++){
+        array.push(a1[i]);
     }
     array.pop()
     alert(array);
@@ -76,7 +74,7 @@ function object(){
     const human={age: 30, firstName:"John", lastName:"Doe"};
 }
 
-//5
+//5.a
 function nrPozNeg3Num(a,b,c){
     let prod = a*b*c;
     if (prod > 0){
@@ -86,6 +84,33 @@ function nrPozNeg3Num(a,b,c){
         alert("MINUS");
     }
 }
+//5.b
+function iterateArray(){
+    let a1 =[89, 99, 120, 412];
+    let array = [];
+    for(let i = 1; i<=50;i++) {
+        array.push(i);
+    }
+    for (let i = 0; i<a1.length;i++){
+        array.push(a1[i]);
+    }
+    for(let i = 0; i < array.length; i++){
+        if(array[i] % 3 != 0){
+            console.log(array[i]);
+        }
+    }
+}
+
+class Human{
+    #fullName;
+    constructor() {
+        this.#fullName = "John Doe";
+    }
+    hi(){
+        return "HI I’M " + this.#fullName;
+    }
+}
+
 
 //nrPozNeg();
 //box();
@@ -93,3 +118,5 @@ function nrPozNeg3Num(a,b,c){
 //loop();
 //array();
 //nrPozNeg3Num(1,2,-10);
+//iterateArray();
+//alert(new Human().hi());
