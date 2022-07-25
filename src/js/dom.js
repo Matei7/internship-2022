@@ -43,7 +43,7 @@ myClock.style.setProperty("font-size","35px");
 myClock.style.setProperty('color', '#0000ff');
 doc.getElementById('main').appendChild(myClock);
 
-let writeTime = setInterval( () => {
+let writeTime = (interval) => setInterval( () => {
         const today = new Date();
         let h = today.getHours();
         let m = today.getMinutes();
@@ -53,10 +53,11 @@ let writeTime = setInterval( () => {
         s = checkTime(s);
         doc.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
 }
-, 1000);
+, interval);
 
 function checkTime(i) {
     if (i < 10) {i = "0" + i;}  // add zero in front of numbers < 10
     return i;
 }
+writeTime(2000);
 
