@@ -1,5 +1,7 @@
 import "../css/styles.scss";
+require("./chess.js");
 
+/*
 let a, b, c, product;
 a = 5;
 b = 6;
@@ -109,3 +111,4 @@ class Human
 }
 let human = new Human("Andreea");
 human.sayHi();
+ */
