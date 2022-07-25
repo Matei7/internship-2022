@@ -11,11 +11,19 @@
     width: 50px;
     height: 50px;
     background-color: var(--chess-light);
+    border: 1px solid var(--chess-light);
+    box-sizing: border-box;
 
     @each $offset in 2 4 6 8 9 11 13 15 {
       &:nth-child(16n + #{$offset}) {
         background-color: var(--chess-dark);
+        border-color: var(--chess-dark);
       }
+    }
+
+    &.highlighted {
+      background-image: linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.65));
+     background-color: var(--primary-color);
     }
   }
 

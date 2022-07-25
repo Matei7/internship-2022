@@ -4,6 +4,7 @@ $chess-pieces: 'king', 'queen', 'rook', 'bishop', 'knight', 'pawn';
 $chess-pieces-color: 'white', 'black';
 
 :root{
+  --primary-color: #345e26;
   --chess-dark: #5d5d5d;
   --chess-light: #eaeaea;
 }

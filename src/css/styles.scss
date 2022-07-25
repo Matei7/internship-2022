@@ -12,6 +12,20 @@ body {
 #app {
   min-width: 100vw;
   min-height: 100vh;
+  padding: 50px;
+  box-sizing: border-box;
+
+  .start-game {
+    cursor: pointer;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 18px;
+    max-width: fit-content;
+    padding:10px;
+    margin: 30px 15px;
+  }
 
   .with-bg {
     background-image: url("../../public/images/bg.jpg");
