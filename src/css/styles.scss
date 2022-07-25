@@ -1,25 +1,40 @@
-@import "variables";
-@import "chess";
-
 body {
   margin: 0;
+  background-color: black;
 }
 
-#app {
-  min-width: 100vw;
-  min-height: 100vh;
-  background-image: url("../../public/images/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+.dio {
+  background-color: black;
+  z-index: inherit;
+  width: 100%;
+}
 
-  > h1 {
-    color: $primary-color;
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translate(-50%, -5%);
-    opacity: 50%;
-    font-size: 100px;
-    font-family: Calibri, sans-serif;
+h1{
+position: absolute;
+z-index: 0;
+margin-left: 50%;
+color: white;
+}
+
+.countdown{
+  position: absolute;
+  z-index: 0;
+  margin-left: 50%;
+  color: white;
   }
+
+.buttonGrid {
+  display: grid;
+  position: absolute;
+  z-index: 0;
+  top: 0%;
+  width: 5%;
+  height: 10%;
+  grid-template-columns: repeat(20, 100%);
+  grid-template-rows: repeat(20, 100%);
+  justify-content: space-between;
+}
+
+.button{
+  border-radius: 10%;
 }
