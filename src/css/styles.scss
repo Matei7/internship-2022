@@ -1,25 +1,35 @@
-$primary-color: white;
-$bg: black;
-
-body {
+*,
+*::before,
+*::after{
+  padding: 0;
   margin: 0;
+  border: 0;
+  box-sizing: border-box;
+
 }
 
-#app {
-  min-width: 100vw;
-  min-height: 100vh;
-  background-image: url("../../public/images/bg.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+a{
+  text-decoration: none;
+}
 
-  > h1 {
-    color: $primary-color;
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translate(-50%, -5%);
-    opacity: 50%;
-    font-size: 100px;
-    font-family: Calibri;
-  }
+ul, ol, li{
+  list-style: none;
+}
+
+img{
+  vertical-align: top;
+}
+
+body{
+
+}
+.piece-box{
+
+}
+
+.black-box{
+
+}
+.white-box{
+
 }
