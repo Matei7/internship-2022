@@ -1,4 +1,5 @@
 import { Piece } from "./piece";
+import { resetHighlightedCells } from "./fn";
 
 export class Board {
 
@@ -13,13 +14,8 @@ export class Board {
 
 	clearBoard() {
 		[ ...document.getElementsByClassName( 'chess-piece' ) ].forEach( piece => piece.remove() );
-		Board.resetHighlightedCells();
+		resetHighlightedCells()
 		this.renderPieces();
-	}
-
-
-	static resetHighlightedCells() {
-		[ ...document.getElementsByClassName( 'highlighted' ) ].forEach( piece => piece.classList.remove( 'highlighted' ) );
 	}
 
 	initBoard() {

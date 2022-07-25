@@ -1,4 +1,4 @@
-import { Board } from "./board";
+import { resetHighlightedCells, isCellOccupied } from "./fn";
 
 export class Piece {
 	constructor( element, type, color ) {
@@ -13,7 +13,7 @@ export class Piece {
 
 	bindEvents() {
 		this.element.addEventListener( 'click', () => {
-			Board.resetHighlightedCells()
+			resetHighlightedCells()
 			this.highlightMoves();
 		} );
 	}
@@ -27,10 +27,6 @@ export class Piece {
 				cell.classList.add( 'highlighted' );
 			}
 		} );
-	}
-
-	isCellOccupied( rowIndex, columnIndex ) {
-		return rowIndex && columnIndex && rowIndex <= 8 && columnIndex <= 8 && document.querySelector( `.chess-row-${rowIndex}.chess-column-${columnIndex}` ).childNodes.length > 0;
 	}
 
 	getMoves() {
@@ -61,9 +57,9 @@ export class Piece {
 		while ( rowIndex > 1 && columnIndex > 1 ) {
 			rowIndex --;
 			columnIndex --;
-			if ( ! this.isCellOccupied( rowIndex, columnIndex ) ) {
+			if ( ! isCellOccupied( rowIndex, columnIndex ) ) {
 				moves.push( {rowIndex, columnIndex} );
-			}else{
+			} else {
 				break;
 			}
 		}
@@ -72,9 +68,9 @@ export class Piece {
 		while ( rowIndex < 8 && columnIndex < 8 ) {
 			rowIndex ++;
 			columnIndex ++;
-			if ( ! this.isCellOccupied( rowIndex, columnIndex ) ) {
+			if ( ! isCellOccupied( rowIndex, columnIndex ) ) {
 				moves.push( {rowIndex, columnIndex} );
-			}else{
+			} else {
 				break;
 			}
 		}
@@ -83,9 +79,9 @@ export class Piece {
 		while ( rowIndex > 1 && columnIndex < 8 ) {
 			rowIndex --;
 			columnIndex ++;
-			if ( ! this.isCellOccupied( rowIndex, columnIndex ) ) {
+			if ( ! isCellOccupied( rowIndex, columnIndex ) ) {
 				moves.push( {rowIndex, columnIndex} );
-			}else{
+			} else {
 				break;
 			}
 		}
@@ -94,9 +90,9 @@ export class Piece {
 		while ( rowIndex < 8 && columnIndex > 1 ) {
 			rowIndex ++;
 			columnIndex --;
-			if ( ! this.isCellOccupied( rowIndex, columnIndex ) ) {
+			if ( ! isCellOccupied( rowIndex, columnIndex ) ) {
 				moves.push( {rowIndex, columnIndex} );
-			}else{
+			} else {
 				break;
 			}
 		}
@@ -106,31 +102,31 @@ export class Piece {
 	getKingMoves() {
 		const moves = [];
 		if ( this.rowIndex > 1 ) {
-			if ( ! this.isCellOccupied( this.rowIndex - 1, this.columnIndex ) ) {
+			if ( ! isCellOccupied( this.rowIndex - 1, this.columnIndex ) ) {
 				moves.push( {rowIndex: this.rowIndex - 1, columnIndex: this.columnIndex} );
 			}
-			if ( this.columnIndex > 1 && ! this.isCellOccupied( this.rowIndex - 1, this.columnIndex - 1 ) ) {
+			if ( this.columnIndex > 1 && ! isCellOccupied( this.rowIndex - 1, this.columnIndex - 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 1, columnIndex: this.columnIndex - 1} );
 			}
-			if ( this.columnIndex < 8 && ! this.isCellOccupied( this.rowIndex - 1, this.columnIndex + 1 ) ) {
+			if ( this.columnIndex < 8 && ! isCellOccupied( this.rowIndex - 1, this.columnIndex + 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 1, columnIndex: this.columnIndex + 1} );
 			}
 		}
 		if ( this.rowIndex < 8 ) {
-			if ( ! this.isCellOccupied( this.rowIndex + 1, this.columnIndex ) ) {
+			if ( ! isCellOccupied( this.rowIndex + 1, this.columnIndex ) ) {
 				moves.push( {rowIndex: this.rowIndex + 1, columnIndex: this.columnIndex} );
 			}
-			if ( this.columnIndex > 1 && ! this.isCellOccupied( this.rowIndex + 1, this.columnIndex - 1 ) ) {
+			if ( this.columnIndex > 1 && ! isCellOccupied( this.rowIndex + 1, this.columnIndex - 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 1, columnIndex: this.columnIndex - 1} );
 			}
-			if ( this.columnIndex < 8 && ! this.isCellOccupied( this.rowIndex + 1, this.columnIndex + 1 ) ) {
+			if ( this.columnIndex < 8 && ! isCellOccupied( this.rowIndex + 1, this.columnIndex + 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 1, columnIndex: this.columnIndex + 1} );
 			}
 		}
-		if ( this.columnIndex > 1 && ! this.isCellOccupied( this.rowIndex, this.columnIndex - 1 ) ) {
+		if ( this.columnIndex > 1 && ! isCellOccupied( this.rowIndex, this.columnIndex - 1 ) ) {
 			moves.push( {rowIndex: this.rowIndex, columnIndex: this.columnIndex - 1} );
 		}
-		if ( this.columnIndex < 8 && ! this.isCellOccupied( this.rowIndex, this.columnIndex + 1 ) ) {
+		if ( this.columnIndex < 8 && ! isCellOccupied( this.rowIndex, this.columnIndex + 1 ) ) {
 			moves.push( {rowIndex: this.rowIndex, columnIndex: this.columnIndex + 1} );
 		}
 		return moves;
@@ -140,37 +136,37 @@ export class Piece {
 	getKnightMoves() {
 		const moves = [];
 		if ( this.rowIndex > 1 && this.columnIndex > 1 ) {
-			if ( ! this.isCellOccupied( this.rowIndex - 2, this.columnIndex - 1 ) ) {
+			if ( ! isCellOccupied( this.rowIndex - 2, this.columnIndex - 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 2, columnIndex: this.columnIndex - 1} );
 			}
-			if ( ! this.isCellOccupied( this.rowIndex - 1, this.columnIndex - 2 ) ) {
+			if ( ! isCellOccupied( this.rowIndex - 1, this.columnIndex - 2 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 1, columnIndex: this.columnIndex - 2} );
 			}
 		}
 
 		if ( this.rowIndex < 8 && this.columnIndex > 1 ) {
-			if ( ! this.isCellOccupied( this.rowIndex + 2, this.columnIndex - 1 ) ) {
+			if ( ! isCellOccupied( this.rowIndex + 2, this.columnIndex - 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 1, columnIndex: this.columnIndex - 2} );
 			}
-			if ( ! this.isCellOccupied( this.rowIndex + 1, this.columnIndex - 2 ) ) {
+			if ( ! isCellOccupied( this.rowIndex + 1, this.columnIndex - 2 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 2, columnIndex: this.columnIndex - 1} );
 			}
 		}
 
 		if ( this.rowIndex > 1 && this.columnIndex < 8 ) {
-			if ( ! this.isCellOccupied( this.rowIndex - 2, this.columnIndex + 1 ) ) {
+			if ( ! isCellOccupied( this.rowIndex - 2, this.columnIndex + 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 2, columnIndex: this.columnIndex + 1} );
 			}
-			if ( ! this.isCellOccupied( this.rowIndex - 1, this.columnIndex + 2 ) ) {
+			if ( ! isCellOccupied( this.rowIndex - 1, this.columnIndex + 2 ) ) {
 				moves.push( {rowIndex: this.rowIndex - 1, columnIndex: this.columnIndex + 2} );
 			}
 		}
 
 		if ( this.rowIndex < 8 && this.columnIndex < 8 ) {
-			if ( ! this.isCellOccupied( this.rowIndex + 2, this.columnIndex + 1 ) ) {
+			if ( ! isCellOccupied( this.rowIndex + 2, this.columnIndex + 1 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 1, columnIndex: this.columnIndex + 2} );
 			}
-			if ( ! this.isCellOccupied( this.rowIndex + 1, this.columnIndex + 2 ) ) {
+			if ( ! isCellOccupied( this.rowIndex + 1, this.columnIndex + 2 ) ) {
 				moves.push( {rowIndex: this.rowIndex + 2, columnIndex: this.columnIndex + 1} );
 			}
 		}
@@ -181,26 +177,26 @@ export class Piece {
 		const moves = [];
 
 		for ( let i = this.rowIndex + 1; i < 8; i ++ ) {
-			if ( this.isCellOccupied( i, this.columnIndex ) ) {
+			if ( isCellOccupied( i, this.columnIndex ) ) {
 				break;
 			}
 			moves.push( {rowIndex: i, columnIndex: this.columnIndex} );
 		}
 		for ( let i = this.rowIndex - 1; i > 0; i -- ) {
-			if ( this.isCellOccupied( i, this.columnIndex ) ) {
+			if ( isCellOccupied( i, this.columnIndex ) ) {
 				break;
 			}
 			moves.push( {rowIndex: i, columnIndex: this.columnIndex} );
 		}
 		for ( let i = this.columnIndex + 1; i < 8; i ++ ) {
 
-			if ( this.isCellOccupied( this.rowIndex, i ) ) {
+			if ( isCellOccupied( this.rowIndex, i ) ) {
 				break;
 			}
 			moves.push( {rowIndex: this.rowIndex, columnIndex: i} );
 		}
 		for ( let i = this.columnIndex - 1; i > 0; i -- ) {
-			if ( this.isCellOccupied( this.rowIndex, i ) ) {
+			if ( isCellOccupied( this.rowIndex, i ) ) {
 				break;
 			}
 			moves.push( {rowIndex: this.rowIndex, columnIndex: i} );
