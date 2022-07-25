@@ -63,8 +63,34 @@ function exPartI(){
     }
 }
 
+function exPartII(){
+
+    //  1.  Select the parent element for the first post title
+    const parentElement = document.getElementsByClassName("entry-title")[0].parentElement.nodeName;
+    console.log("The parent element for the first post title");
+    console.log(parentElement);
+
+    //  2.  Select the first post and log the siblings
+    const firstPost = document.querySelector(".post");
+    console.log("The first post");
+    console.log(firstPost);
+    console.log("The siblings of the first post");
+    let nextSibling = firstPost.nextElementSibling;
+    while(nextSibling) {
+        console.log(nextSibling);
+        nextSibling = nextSibling.nextElementSibling;
+    }
+
+    //  3.  Select the #main container and log the children
+    const main = document.getElementById("main");
+    console.log("The children of the main container");
+    let children = [...main.children];
+    for(let k = 0; k < children.length; k++)
+         console.log(children[k]);
+}
 function main(){
     exPartI();
+    exPartII();
 }
 
 main()
