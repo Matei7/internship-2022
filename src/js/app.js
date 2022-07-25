@@ -1,6 +1,13 @@
 import "../css/styles.scss";
 
-console.log("hello world!");
+/**
+ * Import extra javascript files
+ */
+import "./additional";
+//SAU require( './additional' );
+
+
+console.log( "hello world!" );
 
 
 
