@@ -26,8 +26,6 @@ for (let element of document.querySelectorAll("article")){
 }
 
 
-
-
 //  Part II
 //  1.  Select the parent element for the first post title
 let parentElement = document.querySelector(".post .entry-title").parentElement;
