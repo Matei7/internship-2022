@@ -1,4 +1,4 @@
-//import "../css/styles.scss";
+import "../css/styles.scss";
 
 // 1.a
 function nrPozNeg(){
