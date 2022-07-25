@@ -64,3 +64,48 @@ for(let i = 0; i < array.length; i++)
 }
 let poppedElement = array.pop();
 console.log("Popped element:" + poppedElement);
+
+const person = {age:22, firstName:"Andreea", lastName:"Maior"};
+console.log("The person object is " + person.firstName + ' ' + person.lastName + " and has age " + person.age);
+
+function computeProductSign(a, b, c)
+{
+    let product = a * b * c;
+    if (product >= 0)
+    {
+        console.log("PLUS");
+    }
+    else
+    {
+        console.log("MINUS");
+    }
+}
+computeProductSign(10, 9, -8);
+
+function logNotDivisible3(array)
+{
+    for(let i = 0; i < array.length; i++)
+    {
+        if(array[i] % 3 != 0)
+        {
+            console.log(array[i]);
+        }
+    }
+}
+console.log("Numbers not divisible with 3:");
+logNotDivisible3(array);
+
+class Human
+{
+    #fullName;
+    constructor(fullname)
+    {
+        this.#fullName = fullname;
+    }
+    sayHi()
+    {
+        console.log("HI I'M " + this.#fullName);
+    }
+}
+let human = new Human("Andreea");
+human.sayHi();
