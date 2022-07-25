@@ -8,13 +8,9 @@
 //  7. Change the background color for the body
 //  8. Add a new class to the articles then add styles
 
-//  Part II
-//  1.  Select the parent element for the first post title
-//  2.  Select the first post and log the siblings
-//  3.  Select the #main container and log the children
-
 // Bonus Set the entry content with the current date and time and update it every x (as parameter) seconds
 
+// Part I
 function getMainContent() {
     let mainContainer = document.getElementById("main");
     console.log(mainContainer);
@@ -32,9 +28,12 @@ function getFirstPost() {
 
 function getAllPostTitles() {
     let allPostTitles = document.getElementsByClassName("post");
-    console.log(allPostTitles.item(0).firstElementChild.textContent);
-    console.log(allPostTitles.item(1).firstElementChild.textContent);
-    console.log(allPostTitles.item(2).firstElementChild.textContent);
+    for (const element in allPostTitles) {
+        console.log(allPostTitles.item(element).firstElementChild.textContent);
+    }
+    // console.log(allPostTitles.item(0).firstElementChild.textContent);
+    // console.log(allPostTitles.item(1).firstElementChild.textContent);
+    // console.log(allPostTitles.item(2).firstElementChild.textContent);
 }
 
 function changeValueOfFirstTitle() {
@@ -54,12 +53,48 @@ function changeColorOfBody() {
 }
 
 function addedNewClass() {
-    // let articleElement = document.querySelector('.post');
-    // articleElement.classList.add('styledClass');
-    // console.log(articleElement);
     const newClassArray = [...document.querySelectorAll('.post')];
-    for(const element of newClassArray) {
+    for (const element of newClassArray) {
         element.classList.add('styledClass');
+    }
+}
+
+//  Part II
+//  1.  Select the parent element for the first post title
+//  2.  Select the first post and log the siblings
+//  3.  Select the #main container and log the children
+
+function parentElement() {
+    let firstChild = document.getElementById("main").firstElementChild;
+    let firstContent = firstChild.nextElementSibling;
+    console.log(firstContent.firstElementChild.parentElement.nodeName);
+}
+
+function firstPostSiblings() {
+    const newClassArray = [...document.querySelectorAll('.post')];
+    for (const element of newClassArray) {
+        console.log("Siblings: " + element);
+    }
+}
+
+function getAllMainChildren() {
+    let parent = document.getElementById('main');
+    let children = parent.children;
+    for (const element of children) {
+        console.log(element);
+    }
+}
+
+function dateAndTime(x) {
+    let entryContentParent = document.getElementsByClassName("entry-content");
+    for (let i = 0; i < entryContentParent.length; i++) {
+        setInterval(function () {
+            let today = new Date();
+            let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            let dateTime = date + ' ' + time;
+            entryContentParent.item(i).firstElementChild.innerHTML = dateTime;
+        }, x);
     }
 }
 
@@ -72,5 +107,13 @@ function main() {
     changeFirstUrlLink();
     changeColorOfBody();
     addedNewClass();
+
+    parentElement();
+    firstPostSiblings();
+    getAllMainChildren();
+
+    // bonus
+    dateAndTime(1000);
 }
+
 main();
