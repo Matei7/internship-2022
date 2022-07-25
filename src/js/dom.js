@@ -14,3 +14,63 @@
 //  3.  Select the #main container and log the children
 
 // Bonus Set the entry content with the current date and time and update it every x (as parameter) seconds
+
+function getMainContent() {
+    let mainContainer = document.getElementById("main");
+    console.log(mainContainer);
+}
+
+function getFirstPostTitle() {
+    let firstPostTitle = document.getElementById("gg").textContent;
+    console.log(firstPostTitle);
+}
+
+function getFirstPost() {
+    let firstPostContent = document.getElementById("main").firstElementChild;
+    console.log(firstPostContent.nextElementSibling.textContent);
+}
+
+function getAllPostTitles() {
+    let allPostTitles = document.getElementsByClassName("post");
+    console.log(allPostTitles.item(0).firstElementChild.textContent);
+    console.log(allPostTitles.item(1).firstElementChild.textContent);
+    console.log(allPostTitles.item(2).firstElementChild.textContent);
+}
+
+function changeValueOfFirstTitle() {
+    let firstPostTitle = document.getElementById("gg");
+    firstPostTitle.innerHTML = "Article Title 1 changed...";
+    console.log(firstPostTitle.textContent);
+}
+
+function changeFirstUrlLink() {
+    document.getElementById("gg").href = "https://www.w3schools.com/jsref/prop_anchor_href.asp";
+    console.log("Changed link for the first title.")
+}
+
+function changeColorOfBody() {
+    document.body.style.backgroundColor = "#B1D4E0";
+    console.log("Changed color of body");
+}
+
+function addedNewClass() {
+    // let articleElement = document.querySelector('.post');
+    // articleElement.classList.add('styledClass');
+    // console.log(articleElement);
+    const newClassArray = [...document.querySelectorAll('.post')];
+    for(const element of newClassArray) {
+        element.classList.add('styledClass');
+    }
+}
+
+function main() {
+    getMainContent();
+    getFirstPostTitle();
+    getFirstPost();
+    getAllPostTitles();
+    changeValueOfFirstTitle();
+    changeFirstUrlLink();
+    changeColorOfBody();
+    addedNewClass();
+}
+main();
