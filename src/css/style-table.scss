@@ -101,13 +101,11 @@ body{
   flex-direction: column-reverse;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .white-circles {
   border-radius: 100%;
-  height: 20px;
-  width: 20px;
-  border: 10px solid white;
-  position: relative;
-
+  margin: 5px;
+  border: 30px solid white;
 }
