@@ -25,7 +25,7 @@ const config = {
 					'sass-loader'
 				]
 			},
-
+			{test: /\.jpg$/, use: 'url-loader?mimetype=image/jpeg'},
 		]
 	},
 	plugins: [

@@ -1,5 +1,3 @@
-import "../css/styles.scss";
-
 // Exercise 1&5 a
 function productMark(n1, n2, n3){
     if ((n1 * n2 * n3) >= 0){
