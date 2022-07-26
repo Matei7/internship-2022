@@ -16,23 +16,34 @@ function displayCountdown()
 }
 setInterval(displayCountdown, 1000);
 
-const newDivElement = document.createElement('div');
-newDivElement.classList.add('tableClass');
-appElement.appendChild(newDivElement);
 
-let newCellElements = [];
-for(let i = 0; i < 64; i++)
+
+function generateTable()
 {
-    newCellElements[i] = document.createElement('div');
-    newCellElements[i].classList.add('cellClass');
-    newDivElement.appendChild(newCellElements[i]);
+    const newDivElement = document.createElement('div');
+    newDivElement.classList.add('tableClass');
+    appElement.appendChild(newDivElement);
+    let newCellElements = [];
+    for (let i = 0; i < 64; i++) {
+        newCellElements[i] = document.createElement('div');
+        newCellElements[i].classList.add('cellClass');
+        newDivElement.appendChild(newCellElements[i]);
+    }
 }
 
-let newPiecesElements = [];
-for(let i = 0; i < 64; i++)
+function generatePieces()
 {
-    newPiecesElements[i] = document.createElement('div');
-    newPiecesElements[i].classList.add('pieceClass');
-    newDivElement.appendChild(newPiecesElements[i]);
+    const newDivElement = document.createElement('div');
+    newDivElement.classList.add('piecesClass');
+    appElement.appendChild(newDivElement);
+    let newPiecesElements = [];
+    for (let i = 0; i < 64; i++) {
+        newPiecesElements[i] = document.createElement('div');
+        newPiecesElements[i].classList.add('pieceClass');
+        newDivElement.appendChild(newPiecesElements[i]);
+    }
 }
 
+generateTable();
+generateTable();
+generatePieces();

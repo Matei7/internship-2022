@@ -19,10 +19,11 @@ body {
     background-color: darkslategrey;
     width: 500px;
     height: 500px;
+    margin: 20px;
 
     > .cellClass {
-      width: 62px;
-      height: 62px;
+      width: 62.5px;
+      height: 62.5px;
       border: 1px solid green;
       box-sizing: border-box;
     }
