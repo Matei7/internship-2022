@@ -52,9 +52,16 @@ function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
     {
         let newPieceId = pieceId + i;
         pieceElements[i] = createDivElementInElement(newPieceId, piecesElement);
+        const image = document.createElement('img');
+        let value = '../images/' + pieceId + i + '.png';
+        image.setAttribute(
+            'src',
+            value,
+        );
+        pieceElements[i].appendChild(image);
     }
 
 }
 
-generatePieces(5, 'piecesClass', 'piece', divTable1);
 const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
+generatePieces(5, 'piecesClass', 'piece', divTable2);
