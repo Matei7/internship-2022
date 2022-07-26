@@ -1,3 +1,5 @@
+let highlightedPiece;
+
 const newPElement = document.createElement('p');
 const appElement = document.getElementById('app');
 appElement.appendChild(newPElement);
@@ -16,12 +18,23 @@ function displayCountdown()
 }
 setInterval(displayCountdown, 1000);
 
+const newGameButton = document.createElement('button');
+newGameButton.setAttribute('type', "button");
+newGameButton.innerText = "New Game";
+appElement.appendChild(newGameButton);
+
 function createDivElementInElement(className, parentElement)
 {
     const newDivElement = document.createElement('div');
     newDivElement.classList.add(className);
     parentElement.appendChild(newDivElement);
     return newDivElement;
+}
+
+function movePiece()
+{
+    highlightedPiece.parentElement.removeChild(highlightedPiece);
+    this.appendChild(highlightedPiece);
 }
 
 function createDivElementsInElement(numberOfDivElements, className, parentElement)
@@ -31,6 +44,9 @@ function createDivElementsInElement(numberOfDivElements, className, parentElemen
         newDivElements[i] = document.createElement('div');
         newDivElements[i].classList.add(className);
         parentElement.appendChild(newDivElements[i]);
+        newDivElements[i].dataset.row = parseInt(i / 8);
+        newDivElements[i].dataset.column = i % 8;
+        newDivElements[i].addEventListener("click", movePiece);
     }
     return newDivElements;
 }
@@ -44,6 +60,12 @@ function generateTable(tableClassName, cellsClassName, parentElement, numberOfCe
 
 const divTable1 = generateTable('tableClass', 'cellClass', appElement, 64);
 
+function highlightPiece()
+{
+    this.style.setProperty('filter', 'saturate(300%)');
+    this.dataset.highlight = "highlight";
+    highlightedPiece = this;
+}
 function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
 {
     const piecesElement = createDivElementInElement(piecesClassName, parentElement);
@@ -58,10 +80,26 @@ function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
             'src',
             value,
         );
+        pieceElements[i].addEventListener("click", highlightPiece);
         pieceElements[i].appendChild(image);
     }
-
+    return pieceElements;
 }
 
 const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
-generatePieces(5, 'piecesClass', 'piece', divTable2);
+let pieceElements = generatePieces(5, 'piecesClass', 'piece', divTable2);
+/*function callGeneratePieces()
+{
+    generatePieces(5, 'piecesClass', 'piece', divTable2);
+}
+setTimeout(callGeneratePieces, 1000);*/
+
+function generateNewGame()
+{
+    const divTable1 = generateTable('tableClass', 'cellClass', appElement, 64);
+    const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
+    generatePieces(5, 'piecesClass', 'piece', divTable2);
+}
+
+newGameButton.addEventListener("click", generateNewGame);
+

@@ -1,8 +1,13 @@
 $primary-color: white;
 $bg: black;
 
+
+:root{
+  --cell:22.5;
+  --cellsize: 62.5;
+}
 body {
-  margin: 0;
+  margin: 0 calc(var(--cell)*2px);
 }
 
 #app {
@@ -19,7 +24,7 @@ body {
     background-color: darkslategrey;
     width: 500px;
     height: 500px;
-    margin: 20px;
+    margin: 20px 0;
 
     > .cellClass {
       width: 62.5px;
@@ -36,7 +41,7 @@ body {
     background-color: #24569C;
     width: 500px;
     height: 500px;
-    margin: 20px;
+    margin: 20px 0;
 
     > .cellClass2 {
       width: 62.5px;
@@ -45,20 +50,20 @@ body {
       box-sizing: border-box;
     }
   }
-  .piece0 {
-    width: 125px;
-    height: 62.5px;
+  .piece0 > img{
+    width: calc(var(--cellsize)*2px);
+    height: var(--cellsize)px;
   }
-  .piece1, .piece2 {
-    width: 187.5px;
-    height: 62.5px;
+  .piece1 > img, .piece2 > img{
+    width: calc(var(--cellsize)*3px);
+    height: var(--cellsize)px;
   }
-  .piece3 {
-    width: 250px;
-    height: 62.5px;
+  .piece3 > img{
+    width: calc(var(--cellsize)*4px);
+    height: var(--cellsize)px;
   }
-  .piece4 {
-    width: 312.5px;
-    height: 62.5px;
+  .piece4 > img{
+    width: calc(var(--cellsize)*5px);
+    height: var(--cellsize)px;
   }
 }
