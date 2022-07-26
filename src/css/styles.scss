@@ -28,4 +28,21 @@ body {
       box-sizing: border-box;
     }
   }
+  > .tableClass2 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #24569C;
+    width: 500px;
+    height: 500px;
+    margin: 20px;
+
+    > .cellClass2 {
+      width: 62.5px;
+      height: 62.5px;
+      border: 1px solid #3B8FBF;
+      box-sizing: border-box;
+    }
+  }
 }

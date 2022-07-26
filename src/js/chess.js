@@ -16,34 +16,45 @@ function displayCountdown()
 }
 setInterval(displayCountdown, 1000);
 
-
-
-function generateTable()
+function createDivElementInElement(className, parentElement)
 {
     const newDivElement = document.createElement('div');
-    newDivElement.classList.add('tableClass');
-    appElement.appendChild(newDivElement);
-    let newCellElements = [];
-    for (let i = 0; i < 64; i++) {
-        newCellElements[i] = document.createElement('div');
-        newCellElements[i].classList.add('cellClass');
-        newDivElement.appendChild(newCellElements[i]);
-    }
+    newDivElement.classList.add(className);
+    parentElement.appendChild(newDivElement);
+    return newDivElement;
 }
 
-function generatePieces()
+function createDivElementsInElement(numberOfDivElements, className, parentElement)
 {
-    const newDivElement = document.createElement('div');
-    newDivElement.classList.add('piecesClass');
-    appElement.appendChild(newDivElement);
-    let newPiecesElements = [];
-    for (let i = 0; i < 64; i++) {
-        newPiecesElements[i] = document.createElement('div');
-        newPiecesElements[i].classList.add('pieceClass');
-        newDivElement.appendChild(newPiecesElements[i]);
+    let newDivElements = [];
+    for (let i = 0; i < numberOfDivElements; i++) {
+        newDivElements[i] = document.createElement('div');
+        newDivElements[i].classList.add(className);
+        parentElement.appendChild(newDivElements[i]);
     }
+    return newDivElements;
 }
 
-generateTable();
-generateTable();
-generatePieces();
+function generateTable(tableClassName, cellsClassName, parentElement, numberOfCells)
+{
+    const divTable = createDivElementInElement(tableClassName, parentElement);
+    let divCells = createDivElementsInElement(numberOfCells, cellsClassName, divTable);
+    return divTable;
+}
+
+const divTable1 = generateTable('tableClass', 'cellClass', appElement, 64);
+
+function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
+{
+    const piecesElement = createDivElementInElement(piecesClassName, parentElement);
+    let pieceElements = [];
+    for(let i = 0; i < numberOfPieces; i++)
+    {
+        let newPieceId = pieceId + i;
+        pieceElements[i] = createDivElementInElement(newPieceId, piecesElement);
+    }
+
+}
+
+generatePieces(5, 'piecesClass', 'piece', divTable1);
+const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
