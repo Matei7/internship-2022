@@ -1,6 +1,5 @@
 import "../css/styles.scss";
 
-
 let productSign = (n1, n2, n3) => {
     let sign = 1;
     sign *= Math.sign(n1);
