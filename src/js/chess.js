@@ -10,6 +10,7 @@ let matrix={
     "a2":"p","b2":"p","c2":"p","d2":"p","e2":"p","f2":"p","g2":"p","h2":"p",
     "a1":"r","b1":"n","c1":"b","d1":"k","e1":"q","f1":"b","g1":"n","h1":"r",
 };
+
 function createTable(){
     const main = document.createElement("div");
     main.setAttribute("class","main");
