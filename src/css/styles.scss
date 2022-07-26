@@ -1,40 +1,97 @@
 body {
   margin: 0;
-  background-color: black;
-}
-
-.dio {
-  background-color: black;
-  z-index: inherit;
-  width: 100%;
+  align-items: center;
+  background-color: red;
 }
 
 h1{
-position: absolute;
-z-index: 0;
 margin-left: 50%;
-color: white;
+color: yellow;
 }
 
-.countdown{
-  position: absolute;
-  z-index: 0;
-  margin-left: 50%;
-  color: white;
-  }
-
-.buttonGrid {
-  display: grid;
-  position: absolute;
-  z-index: 0;
-  top: 0%;
-  width: 5%;
-  height: 10%;
-  grid-template-columns: repeat(20, 100%);
-  grid-template-rows: repeat(20, 100%);
-  justify-content: space-between;
+.middleArticle{
+  display: flex;
+  width: 100%;
+  margin-top: 5%;
+  flex-direction: row;
+  align-content: space-between;
 }
 
-.button{
-  border-radius: 10%;
+.gridLayout {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 70%;
+  margin-left: 5%;
+  background-color: white;
+  align-content: center;
+  border-top: 5px solid black;
+  border-bottom: 5px solid black;
+  border-left: 5px solid black;
+  border-collapse: collapse;
+  border-radius: 10px;
+}
+
+.divImg{
+  width: 33.333%;
+  height: 150px;
+  border-right: 5px solid black;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.slotImages{
+  max-width: 70%;
+  max-height: 70%;
+  flex: 0 0 33.3%;
+  height: auto;
+  background-color: white;
+  margin-top: 7%;
+}
+
+.spinDiv{
+  flex-basis: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.spinButton{
+  border-radius: 50%;
+  height: 40%;
+  width: 40%;
+  font-weight: bolder;
+  font-size: 35px;
+  border: 2px solid grey;
+  background-color: yellow;
+}
+
+.spinButton:hover{
+  color: red;
+  box-shadow: 10px 10px 5px grey;
+}
+
+.bottomArticle{
+  display: flex;
+  width: 95%;
+  margin-top: 1%;
+  margin-left: 5%;
+  flex-direction: row;
+  align-content: space-between;
+}
+
+.balanceDiv{
+  display: flex;
+  width: 15%;
+}
+
+.balance{
+  width: 95%;
+  height: auto;
+  background-color: yellow;
+  border: 2px solid grey;
+  border-radius: 10px;
+  font-weight: bolder;
+  font-size: 30px;
+  text-align: center;
 }
