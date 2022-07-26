@@ -45,7 +45,7 @@ function drawTable() {
         thirdTriangleDiv.appendChild(triangleDiv);
     }
 
-    // upside down third set of triangles
+    // upside down fourth set of triangles
     const fourthTriangleDiv = document.createElement("div");
     fourthTriangleDiv.classList.add("setOfFiveFourth");
     tableDiv.appendChild(fourthTriangleDiv);
@@ -53,13 +53,27 @@ function drawTable() {
     for(let i = 0; i < 6; i++ ) {
         const triangleDiv = document.createElement("div");
         triangleDiv.classList.add("triangle-arrowDownEven");
-        triangleDiv.setAttribute("id","triangleDownEven_"+i);
+        triangleDiv.setAttribute("id","triangleDownEven_" + i);
         fourthTriangleDiv.appendChild(triangleDiv);
+    }
+}
+
+function initialState() {
+    const firstFiveWhiteDiv = document.createElement("div")
+    firstFiveWhiteDiv.classList.add("first-five-white");
+    document.getElementById("triangleDownEven_0").appendChild(firstFiveWhiteDiv);
+
+    for(let i = 0; i < 5; i++) {
+        const circleDiv = document.createElement("div");
+        circleDiv.classList.add("white-circles");
+        circleDiv.setAttribute("id", "circle_" + i);
+        firstFiveWhiteDiv.appendChild(circleDiv);
     }
 }
 
 function main() {
     drawTable();
+    initialState();
 }
 
 main();
