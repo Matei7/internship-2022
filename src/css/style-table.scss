@@ -1,0 +1,97 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+.main {
+  margin-top: 5%;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.tableBoard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 25px solid #593F3B;
+  border-radius: 12px;
+  justify-content: space-between;
+  background-color: #E4D4C8;
+  width: 90vw;
+  height: 100%;
+}
+
+.triangle-arrowUpOdd {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+
+  border-top: 360px solid #593F3B;
+
+  &:nth-child(odd) {
+    border-top-color: #D59A68;
+  }
+}
+
+.setOfFiveFirst {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 100px;
+}
+
+.triangle-arrowUpEven {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+
+  border-top: 360px solid #593F3B;
+}
+
+.setOfFiveSecond {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 100px;
+}
+
+.triangle-arrowUpEven:nth-child(odd) {
+  border-top: 360px solid #D59A68;
+}
+
+.triangle-arrowDownOdd {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+
+  border-bottom: 360px solid #593F3B;
+}
+
+.setOfFiveThird {
+  display: flex;
+  flex-direction: row;
+}
+
+.triangle-arrowDownOdd:nth-child(even) {
+  border-bottom: 360px solid #D59A68;
+}
+
+.triangle-arrowDownEven {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+
+  border-bottom: 360px solid #D59A68;
+}
+
+.triangle-arrowDownEven:nth-child(odd) {
+  border-bottom: 360px solid #593F3B;
+}
+
+.setOfFiveFourth {
+  display: flex;
+  flex-direction: row;
+}
