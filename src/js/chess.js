@@ -18,7 +18,7 @@ function createTable(){
     let l ;
     let color;
     let colorCheck = true;
-    for (let i = 1; i < 9;i++){
+    for (let i = 8; i >= 1;i--){
         for (l of letters){
           const child = document.createElement("div");
           child.setAttribute("id", l+i);
@@ -32,90 +32,27 @@ function createTable(){
 }
 
 function placeThePieces(){
-    const rb = document.createElement("img");
-    const nb = document.createElement("img");
-    const bb = document.createElement("img");
-    const kb = document.createElement("img");
-    const qb = document.createElement("img");
-
-    const r = document.createElement("img");
-    const n = document.createElement("img");
-    const b = document.createElement("img");
-    const k = document.createElement("img");
-    const q = document.createElement("img");
-
-    const pb = document.createElement("img");
-    const p = document.createElement("img");
-
-    rb.setAttribute("src", "../src/img/Negru/Chess_rdt45.svg");
-    nb.setAttribute("src", "../src/img/Negru/Chess_ndt45.svg");
-    bb.setAttribute("src", "../src/img/Negru/Chess_bdt45.svg");
-    kb.setAttribute("src", "../src/img/Negru/Chess_kdt45.svg");
-    qb.setAttribute("src", "../src/img/Negru/Chess_qdt45.svg");
-
-    r.setAttribute("src", "../src/img/Alb/Chess_rlt45.svg");
-    n.setAttribute("src", "../src/img/Alb/Chess_nlt45.svg");
-    b.setAttribute("src", "../src/img/Alb/Chess_blt45.svg");
-    k.setAttribute("src", "../src/img/Alb/Chess_klt45.svg");
-    q.setAttribute("src", "../src/img/Alb/Chess_qlt45.svg");
-
-    pb.setAttribute("src", "../src/img/Negru/Chess_pdt45.svg");
-    p.setAttribute("src", "../src/img/Alb/Chess_plt45.svg");
-
-    rb.classList.add("piesa");
-    nb.classList.add("piesa");
-    bb.classList.add("piesa");
-    kb.classList.add("piesa");
-    qb.classList.add("piesa");
-    r.classList.add("piesa");
-    n.classList.add("piesa");
-    b.classList.add("piesa");
-    k.classList.add("piesa");
-    q.classList.add("piesa");
-    pb.classList.add("piesa");
-    p.classList.add("piesa");
-
     let cell = Object.keys(matrix);
-    for (let i of cell){
-        switch (matrix[i]) {
-            case "rb":
-                document.getElementById(i).appendChild(rb.cloneNode());
-                break;
-            case "nb":
-                document.getElementById(i).appendChild(nb.cloneNode());
-                break;
-            case "bb":
-                document.getElementById(i).appendChild(bb.cloneNode());
-                break;
-            case "kb":
-                document.getElementById(i).appendChild(kb.cloneNode());
-                break;
-            case "qb":
-                document.getElementById(i).appendChild(qb.cloneNode());
-                break;
-
-            case "r":
-                document.getElementById(i).appendChild(r.cloneNode());
-                break;
-            case "n":
-                document.getElementById(i).appendChild(n.cloneNode());
-                break;
-            case "b":
-                document.getElementById(i).appendChild(b.cloneNode());
-                break;
-            case "k":
-                document.getElementById(i).appendChild(k.cloneNode());
-                break;
-            case "q":
-                document.getElementById(i).appendChild(q.cloneNode());
-                break;
-
-            case "pb":
-                document.getElementById(i).appendChild(pb.cloneNode());
-                break;
-            case "p":
-                document.getElementById(i).appendChild(p.cloneNode());
-                break;
+    let piecesNameArray = ["rb","nb","bb","kb","qb","r","n","b","k","q","pb","p"];
+    for (let i =0; i<piecesNameArray.length;i++){
+        let location;
+        let dark;
+        if(piecesNameArray[i].length == 2){
+            location = "Negru";
+            dark = "";
+        }
+        else {
+            location = "Alb"
+            dark = "l";
+        }
+        let piecesName = piecesNameArray[i];
+        piecesName = document.createElement("img");
+        piecesName.setAttribute("src", "../src/img/"+location+"/Chess_"+piecesNameArray[i]+dark+"t45.svg");
+        piecesName.classList.add("piesa");
+        for (let j of cell) {
+            if (matrix[j] == piecesNameArray[i]){
+                document.getElementById(j).appendChild(piecesName.cloneNode());
+            }
         }
     }
 }
