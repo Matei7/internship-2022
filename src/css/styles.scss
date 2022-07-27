@@ -52,18 +52,18 @@ body {
   }
   .piece0 > img{
     width: calc(var(--cellsize)*2px);
-    height: var(--cellsize)px;
+    height: calc(var(--cellsize)*1px);
   }
   .piece1 > img, .piece2 > img{
     width: calc(var(--cellsize)*3px);
-    height: var(--cellsize)px;
+    height: calc(var(--cellsize)*1px);
   }
   .piece3 > img{
     width: calc(var(--cellsize)*4px);
-    height: var(--cellsize)px;
+    height: calc(var(--cellsize)*1px);
   }
   .piece4 > img{
     width: calc(var(--cellsize)*5px);
-    height: var(--cellsize)px;
+    height: calc(var(--cellsize)*1px);
   }
 }
