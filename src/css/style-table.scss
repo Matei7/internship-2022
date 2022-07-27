@@ -1,7 +1,8 @@
-body{
+body {
   margin: 0;
   padding: 0;
 }
+
 .main {
   margin-top: 5%;
   display: flex;
@@ -22,32 +23,32 @@ body{
   height: 100%;
 }
 
-.triangle-arrowUpOdd {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-
-  border-top: 360px solid #593F3B;
-
-  &:nth-child(odd) {
-    border-top-color: #D59A68;
-  }
-}
-
 .setOfFiveFirst {
   display: flex;
   flex-direction: row;
   padding-bottom: 100px;
 }
 
-.triangle-arrowUpEven {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
+.triangle-arrowUpOdd {
+  width: 100px;
+  height: 360px;
+  position: relative;
 
-  border-top: 360px solid #593F3B;
+  &:after {
+    top: 0;
+    position: absolute;
+    content: '';
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+
+    border-top: 360px solid #593F3B;
+  }
+
+  &:nth-child(odd) {
+    &:after {
+    border-top-color: #D59A68;
+    }
+  }
 }
 
 .setOfFiveSecond {
@@ -56,17 +57,25 @@ body{
   padding-bottom: 100px;
 }
 
-.triangle-arrowUpEven:nth-child(odd) {
-  border-top: 360px solid #D59A68;
-}
+.triangle-arrowUpEven {
+    width: 100px;
+    height: 360px;
+    position: relative;
 
-.triangle-arrowDownOdd {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
+    &:after {
+      top: 0;
+      position: absolute;
+      content: '';
+      border-left: 50px solid transparent;
+      border-right: 50px solid transparent;
 
-  border-bottom: 360px solid #593F3B;
+      border-top: 360px solid #593F3B;
+    }
+  &:nth-child(odd) {
+    &:after {
+      border-top: 360px solid #D59A68;
+    }
+  }
 }
 
 .setOfFiveThird {
@@ -74,21 +83,24 @@ body{
   flex-direction: row;
 }
 
-.triangle-arrowDownOdd:nth-child(even) {
-  border-bottom: 360px solid #D59A68;
-}
+.triangle-arrowDownOdd {
+  width: 100px;
+  height: 360px;
+  position: relative;
 
-.triangle-arrowDownEven {
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-
-  border-bottom: 360px solid #D59A68;
-}
-
-.triangle-arrowDownEven:nth-child(odd) {
-  border-bottom: 360px solid #593F3B;
+  &:after {
+    position: absolute;
+    bottom: 0;
+    content: '';
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 360px solid #593F3B;
+  }
+  &:nth-child(even) {
+    &:after {
+      border-bottom: 360px solid #D59A68;
+    }
+ }
 }
 
 .setOfFiveFourth {
@@ -96,16 +108,61 @@ body{
   flex-direction: row;
 }
 
-.first-five-white {
+.triangle-arrowDownEven {
+  width: 100px;
+  height: 360px;
+  position: relative;
+
+  &:after {
+    position: absolute;
+    bottom: 0;
+    content: '';
+
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 360px solid #D59A68;
+  }
+
+  &:nth-child(odd) {
+    &:after {
+      border-bottom: 360px solid #593F3B;
+    }
+  }
+}
+
+.first-five-black, .two-white, .five-white, .three-black {
   display: flex;
-  flex-direction: column-reverse;
   justify-content: center;
   flex-wrap: wrap;
   position: relative;
+  z-index: 2;
+
+  //&.two-black, .three-white {
+  //  position: absolute;
+  //  bottom: 0;
+  //}
+}
+
+.two-black, .three-white, .first-five-white, .five-black, {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
 }
 
 .white-circles {
   border-radius: 100%;
   margin: 5px;
   border: 30px solid white;
+  box-shadow: 2px 3px 0 #000000;
 }
+
+.black-circles {
+  border-radius: 100%;
+  margin: 5px;
+  border: 30px solid black;
+  box-shadow: 2px 3px 0 #ffffff;
+}
+
