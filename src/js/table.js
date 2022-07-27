@@ -4,6 +4,7 @@ function drawTable() {
     // main div in body
     const mainDiv = document.createElement("div");
     mainDiv.classList.add("main");
+    mainDiv.setAttribute("id", "main");
     document.body.appendChild(mainDiv);
 
     const tableDiv = document.createElement("div");
@@ -59,7 +60,7 @@ function drawTable() {
 }
 
 function initialState() {
-    //primele 5 din casa
+    // primele 5 din casa
     const firstFiveWhiteDiv = document.createElement("div")
     firstFiveWhiteDiv.classList.add("first-five-white");
     document.getElementById("triangleDownEven_0").appendChild(firstFiveWhiteDiv);
@@ -144,9 +145,28 @@ function initialState() {
     }
 }
 
+// function startGame() {
+//     const startButton = document.createElement("button");
+//     startButton.classList.add("start-button");
+//     startButton.innerHTML = "Start new game";
+//     document.body.appendChild(startButton);
+//     startButton.addEventListener('click', clickStart);
+// }
+
+function clearTable() {
+    drawTable();
+}
+
+function clickStart() {
+    clearTable();
+    // initialState();
+}
+
 function main() {
     drawTable();
     initialState();
+    // startGame();
+    // clearTable();
 }
 
 main();
