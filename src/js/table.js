@@ -1,15 +1,21 @@
 import "../css/style-table.scss";
 
-function drawTable() {
-    // main div in body
-    const mainDiv = document.createElement("div");
-    mainDiv.classList.add("main");
-    mainDiv.setAttribute("id", "main");
-    document.body.appendChild(mainDiv);
+let mainDiv = document.createElement("div");
+document.body.appendChild(mainDiv);
 
+const top = document.createElement('div');
+mainDiv.appendChild(top);
+
+function createMain() {
+    mainDiv = document.createElement("div");
+    document.body.appendChild(mainDiv);
+}
+
+function drawTable() {
     const tableDiv = document.createElement("div");
     tableDiv.classList.add("tableBoard");
     mainDiv.appendChild(tableDiv);
+    mainDiv.classList.add("main");
 
     // first set of five
     const firstTriangleDiv = document.createElement("div");
@@ -145,28 +151,32 @@ function initialState() {
     }
 }
 
-// function startGame() {
-//     const startButton = document.createElement("button");
-//     startButton.classList.add("start-button");
-//     startButton.innerHTML = "Start new game";
-//     document.body.appendChild(startButton);
-//     startButton.addEventListener('click', clickStart);
+function startGame() {
+    const startButton = document.createElement("button");
+    startButton.classList.add("start-button");
+    startButton.innerHTML = "Start new game";
+    mainDiv.appendChild(startButton);
+    startButton.addEventListener('click', clickStart);
+}
+
+// function rollDice() {
+//
 // }
 
 function clearTable() {
-    drawTable();
+    mainDiv.remove();
 }
 
 function clickStart() {
     clearTable();
-    // initialState();
+    createMain();
+    startGame();
+    drawTable();
+    initialState();
 }
 
 function main() {
-    drawTable();
-    initialState();
-    // startGame();
-    // clearTable();
+    startGame();
 }
 
 main();

@@ -1,7 +1,4 @@
 body {
-  //display: flex;
-  //flex-wrap: wrap;
-  //flex-direction: row;
   margin: 0;
   padding: 0;
 }
@@ -9,6 +6,7 @@ body {
 .main {
   margin-top: 5%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   height: 100%;
   width: 100%;
@@ -139,11 +137,6 @@ body {
   flex-wrap: wrap;
   position: relative;
   z-index: 2;
-
-  //&.two-black, .three-white {
-  //  position: absolute;
-  //  bottom: 0;
-  //}
 }
 
 .two-black, .three-white, .first-five-white, .five-black {
@@ -184,9 +177,10 @@ body {
   border-radius: 12px;
   color: black;
   font-size: 16px;
-  width: 100px;
+  width: 400px;
   height: 80px;
 }
+
 .start-button:hover {
   background-color: #4CAF50;
   color: white;
