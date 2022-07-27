@@ -95,3 +95,87 @@ color: yellow;
   font-size: 30px;
   text-align: center;
 }
+
+$primary: black;
+$easing: cubic-bezier(0.5,2,0.5,0.75);
+
+.betButton {
+  position: relative;
+  display: flex;
+  align-self: center;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 30px;
+  border-bottom: 3px solid black;
+  min-width: 60%;
+  max-height: 40%;
+  text-align: left;
+  outline: none;
+  cursor: pointer;
+  z-index: 2;
+  
+  &:after {
+     content: '▾';
+     position: absolute;
+     right: 0px;
+     top: 0%;
+  }
+}
+
+.betDiv, .betMultiplierDiv {
+  position: relative;
+  display: flex;
+  width: 15%;
+  
+  #list1, #list2 {
+     list-style: none;
+     border: 4px solid black;
+     border-radius: 10px;
+     margin: 0;
+     padding: 0;
+     align-self: center;
+     background: red;
+     box-shadow: 0 2px 4px rgba(black, 0.24);
+     display: flex;
+     position: absolute;
+     max-height: 40%;
+     opacity: 0;
+     transform: scale(0.8) translate3d(-20px, 0px, 0);
+     
+     transition: opacity 0.1s $easing, transform 0.3s $easing;
+     
+     transform-origin: 0 100%;
+     z-index: 1;
+     
+     &.open {
+        opacity: 1;
+        transform: scale(1) translate3d(0, 0, 0);
+        z-index: 5;
+     }
+     
+     li {
+        display: inline-block;
+        a {
+           text-decoration: none;
+           border-right: 5px solid black;
+           display: inline-block;
+           font-size: 20px;
+           padding: 10px 16px;
+           color: $primary;
+           
+           &:hover {
+              color: darken($primary, 20%);
+           }
+           
+           &.active {
+              border-bottom: 2px solid black;
+              color: black;
+              &:hover {
+                 color: black;
+              }
+           }
+        }
+     }
+  }
+}

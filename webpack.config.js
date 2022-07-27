@@ -4,7 +4,9 @@ const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const config = {
 	entry: {
 		app: './src/js/app.js',
-		dom: './src/js/dom.js'
+		dom: './src/js/dom.js',
+		middleArticle: './src/js/middleArticle.js',
+		bottomArticle: './src/js/bottomArticle.js'
 	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
