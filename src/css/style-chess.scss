@@ -1,7 +1,138 @@
 $primary-color: white;
 $bg: black;
 
-body{
+
+body {
   background-color: bisque;
+  display: flex;
+  flex-direction: row;
 }
 
+.main {
+  background-color: azure;
+  height: 729px;
+  width: 729px;
+  margin-left: 370px;
+  border: 4px solid black;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.count {
+  height: 100px;
+  width: 500px;
+  position: absolute;
+  color: black;
+  font-size: xxx-large;
+  font-weight: bold;
+  margin-left: 680px;
+  margin-top: 300px;
+}
+
+.divButton {
+  //margin-right: 400px;
+}
+
+button {
+  width: 200px;
+  height: 60px;
+  background-color: coral;
+  border: 1px solid black;
+  margin-left: 200px;
+  margin-top: 400px;
+  font-size: large;
+  font-weight: bold;
+}
+
+//$chess-pieces: 'rook', 'queen', 'bishop', 'knight', 'king', 'pawn';
+//$chess-pieces-color: 'W', 'B';
+.cell {
+  flex: 1 0 12.5%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+//
+//
+//  @each $piece in $chess-pieces {
+//    @each $color in $chess-pieces-color {
+//      &.#{$color}#{$piece} {
+//        &:after {
+//          background-image: url("../images/#{$piece}#{$color}.svg");
+//        }
+//      }
+//    }
+//  }
+//
+//}
+
+.white {
+  background-color: white;
+}
+
+.black {
+  background-color: dimgray;
+}
+
+.rook-black{
+  background-image: url('../images/rookB.svg');
+}
+
+.knight-black{
+  background-image: url('../images/knightB.svg');
+}
+
+.bishop-black{
+  background-image: url('../images/bishopB.svg');
+}
+
+.queen-black{
+  background-image: url('../images/queenB.svg');
+}
+
+.king-black{
+  background-image: url('../images/kingB.svg');
+}
+
+.pawn-black{
+  background-image: url('../images/pawnB.svg');
+}
+
+.rook-white{
+  background-image: url('../images/rookW.svg');
+}
+
+.knight-white{
+  background-image: url('../images/knightW.svg');
+}
+
+.bishop-white{
+  background-image: url('../images/bishopW.svg');
+}
+
+.queen-white{
+  background-image: url('../images/queenW.svg');
+}
+
+.king-white{
+  background-image: url('../images/kingW.svg');
+}
+
+.pawn-white{
+  background-image: url('../images/pawnW.svg');
+}
+
+
+
+
+.selector {
+  background-color: coral;
+}
+
+.clicked {
+  background-color: blue;
+}
+
+.red {
+  background-color: red;
+}
