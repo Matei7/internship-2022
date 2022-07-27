@@ -3,7 +3,8 @@ import "../css/style-table.scss";
 let mainDiv = document.createElement("div");
 document.body.appendChild(mainDiv);
 
-const top = document.createElement('div');
+let top = document.createElement('div');
+top.classList.add("top");
 mainDiv.appendChild(top);
 
 function createMain() {
@@ -12,156 +13,131 @@ function createMain() {
 }
 
 function drawTable() {
+    let indexColumn;
     const tableDiv = document.createElement("div");
     tableDiv.classList.add("tableBoard");
     mainDiv.appendChild(tableDiv);
     mainDiv.classList.add("main");
 
-    // first set of five
-    const firstTriangleDiv = document.createElement("div");
-    firstTriangleDiv.classList.add("setOfFiveFirst");
-    tableDiv.appendChild(firstTriangleDiv);
+    const topLeftSet = document.createElement("div");
+    topLeftSet.classList.add("top-left-set-of-five");
+    tableDiv.appendChild(topLeftSet);
 
+    indexColumn = 6;
     for(let i = 0; i < 6; i++ ) {
         const triangleDiv = document.createElement("div");
-        triangleDiv.classList.add("triangle-arrowUpOdd");
-        triangleDiv.setAttribute("id","triangleOdd_"+i);
-        firstTriangleDiv.appendChild(triangleDiv);
-    }
-    // second set of five
-    const secondTriangleDiv = document.createElement("div");
-    secondTriangleDiv.classList.add("setOfFiveSecond");
-    tableDiv.appendChild(secondTriangleDiv);
-
-    for(let i = 0; i < 6; i++ ) {
-        const triangleDiv = document.createElement("div");
-        triangleDiv.classList.add("triangle-arrowUpEven");
-        triangleDiv.setAttribute("id","triangleEven_"+i);
-        secondTriangleDiv.appendChild(triangleDiv);
+        triangleDiv.classList.add("top-left-triangles");
+        triangleDiv.setAttribute("id","column-" + indexColumn);
+        indexColumn++;
+        topLeftSet.appendChild(triangleDiv);
     }
 
-    // upside down third set of triangles
-    const thirdTriangleDiv = document.createElement("div");
-    thirdTriangleDiv.classList.add("setOfFiveThird");
-    tableDiv.appendChild(thirdTriangleDiv);
+    const topRightSet = document.createElement("div");
+    topRightSet.classList.add("top-right-set-of-five");
+    tableDiv.appendChild(topRightSet);
 
+    indexColumn = 0;
     for(let i = 0; i < 6; i++ ) {
         const triangleDiv = document.createElement("div");
-        triangleDiv.classList.add("triangle-arrowDownOdd");
-        triangleDiv.setAttribute("id","triangleDownOdd_"+i);
-        thirdTriangleDiv.appendChild(triangleDiv);
+        triangleDiv.classList.add("top-right-triangles");
+        triangleDiv.setAttribute("id","column-" + indexColumn);
+        indexColumn++;
+        topRightSet.appendChild(triangleDiv);
     }
 
-    // upside down fourth set of triangles
-    const fourthTriangleDiv = document.createElement("div");
-    fourthTriangleDiv.classList.add("setOfFiveFourth");
-    tableDiv.appendChild(fourthTriangleDiv);
+    const bottomLeftSet = document.createElement("div");
+    bottomLeftSet.classList.add("bottom-left-set-of-five");
+    tableDiv.appendChild(bottomLeftSet);
+
+    indexColumn = 12;
+    for(let i = 0; i < 6; i++ ) {
+        const triangleDiv = document.createElement("div");
+        triangleDiv.classList.add("bottom-left-triangles");
+        triangleDiv.setAttribute("id","column-" + indexColumn);
+        indexColumn++;
+        bottomLeftSet.appendChild(triangleDiv);
+    }
+
+    indexColumn = 18;
+    const bottomRightSet = document.createElement("div");
+    bottomRightSet.classList.add("bottom-right-set-of-five");
+    tableDiv.appendChild(bottomRightSet);
 
     for(let i = 0; i < 6; i++ ) {
         const triangleDiv = document.createElement("div");
-        triangleDiv.classList.add("triangle-arrowDownEven");
-        triangleDiv.setAttribute("id","triangleDownEven_" + i);
-        fourthTriangleDiv.appendChild(triangleDiv);
+        triangleDiv.classList.add("bottom-right-triangles");
+        triangleDiv.setAttribute("id","column-" + indexColumn);
+        indexColumn++;
+        bottomRightSet.appendChild(triangleDiv);
+    }
+}
+
+
+// let whites = [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5];
+// function drawPieces(nr, index) {
+//     console.log(`${index + 1} - nr de piese: ${nr}`)
+//     ;}
+// whites.forEach((nr, index) => drawPieces(nr, index));
+
+
+function drawPiece(numberOfPieces, columnIndex, color) {
+    const divElement = document.createElement('div');
+    divElement.classList.add('div-set');
+    divElement.setAttribute("id", "set-" + columnIndex);
+    document.getElementById("column-" + columnIndex).appendChild(divElement);
+
+    for(let index = 0; index < numberOfPieces; index++) {
+        const circleDiv = document.createElement("div");
+        circleDiv.classList.add(color + "-pieces");
+        circleDiv.setAttribute("id", color+ "-piece-" + index);
+        document.getElementById("set-"+ columnIndex).appendChild(circleDiv);
+    }
+
+    if(columnIndex > 11) {
+        console.log(columnIndex);
+        divElement.style.bottom = '0';
+        divElement.style.position = 'absolute';
+        divElement.style.bottom = '0';
     }
 }
 
 function initialState() {
-    // primele 5 din casa
-    const firstFiveWhiteDiv = document.createElement("div")
-    firstFiveWhiteDiv.classList.add("first-five-white");
-    document.getElementById("triangleDownEven_0").appendChild(firstFiveWhiteDiv);
+    let whites = [2,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,3,0,5,0,0,0,0,0];
+    let blacks = [0,0,0,0,0,5,0,3,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,2];
+    const white = "white";
+    const black = "black";
 
-    const firstFiveBlackDiv = document.createElement("div")
-    firstFiveBlackDiv.classList.add("first-five-black");
-    document.getElementById("triangleEven_0").appendChild(firstFiveBlackDiv);
-
-    for(let i = 0; i < 5; i++) {
-        const circleWhiteDiv = document.createElement("div");
-        circleWhiteDiv.classList.add("white-circles");
-        circleWhiteDiv.setAttribute("id", "circleWhite_" + i);
-        firstFiveWhiteDiv.appendChild(circleWhiteDiv);
-
-        const circleBlackDiv = document.createElement('div');
-        circleBlackDiv.classList.add("black-circles");
-        circleBlackDiv.setAttribute("id", "circleBlack_" + i);
-        firstFiveBlackDiv.appendChild(circleBlackDiv);
-    }
-
-    // cele 2 piese din casa
-    const twoPiecesWhiteDiv = document.createElement("div")
-    twoPiecesWhiteDiv.classList.add("two-white");
-    document.getElementById("triangleEven_5").appendChild(twoPiecesWhiteDiv);
-
-    const twoPiecesBlackDiv = document.createElement("div")
-    twoPiecesBlackDiv.classList.add("two-black");
-    document.getElementById("triangleDownEven_5").appendChild(twoPiecesBlackDiv);
-
-    for(let i = 0; i < 2; i++) {
-        const circleWhiteDiv = document.createElement("div");
-        circleWhiteDiv.classList.add("white-circles");
-        circleWhiteDiv.setAttribute("id", "circleWhite_" + i);
-        twoPiecesWhiteDiv.appendChild(circleWhiteDiv);
-
-        const circleBlackDiv = document.createElement('div');
-        circleBlackDiv.classList.add("black-circles");
-        circleBlackDiv.setAttribute("id", "circleBlack_" + i);
-        twoPiecesBlackDiv.appendChild(circleBlackDiv);
-    }
-
-    // cele 5 din afara casei
-    const outerFivePiecesWhiteDiv = document.createElement("div")
-    outerFivePiecesWhiteDiv.classList.add("five-white");
-    document.getElementById("triangleOdd_0").appendChild(outerFivePiecesWhiteDiv);
-
-    const outerFivePiecesBlackDiv = document.createElement("div")
-    outerFivePiecesBlackDiv.classList.add("five-black");
-    document.getElementById("triangleDownOdd_0").appendChild(outerFivePiecesBlackDiv);
-
-    for(let i = 0; i < 5; i++) {
-        const circleWhiteDiv = document.createElement("div");
-        circleWhiteDiv.classList.add("white-circles");
-        circleWhiteDiv.setAttribute("id", "circleWhite_" + i);
-        outerFivePiecesWhiteDiv.appendChild(circleWhiteDiv);
-
-        const circleBlackDiv = document.createElement('div');
-        circleBlackDiv.classList.add("black-circles");
-        circleBlackDiv.setAttribute("id", "circleBlack_" + i);
-        outerFivePiecesBlackDiv.appendChild(circleBlackDiv);
-    }
-
-    // cele 3 din afara casei
-    const outerThreePiecesWhiteDiv = document.createElement("div")
-    outerThreePiecesWhiteDiv.classList.add("three-white");
-    document.getElementById("triangleDownOdd_4").appendChild(outerThreePiecesWhiteDiv);
-
-    const outerThreePiecesBlackDiv = document.createElement("div")
-    outerThreePiecesBlackDiv.classList.add("three-black");
-    document.getElementById("triangleOdd_4").appendChild(outerThreePiecesBlackDiv);
-
-    for(let i = 0; i < 3; i++) {
-        const circleWhiteDiv = document.createElement("div");
-        circleWhiteDiv.classList.add("white-circles");
-        circleWhiteDiv.setAttribute("id", "circleWhite_" + i);
-        outerThreePiecesWhiteDiv.appendChild(circleWhiteDiv);
-
-        const circleBlackDiv = document.createElement('div');
-        circleBlackDiv.classList.add("black-circles");
-        circleBlackDiv.setAttribute("id", "circleBlack_" + i);
-        outerThreePiecesBlackDiv.appendChild(circleBlackDiv);
-    }
+    whites.forEach((nr, index) => drawPiece(nr, index, white));
+    blacks.forEach((nr, index) => drawPiece(nr, index, black));
 }
 
 function startGame() {
-    const startButton = document.createElement("button");
-    startButton.classList.add("start-button");
-    startButton.innerHTML = "Start new game";
-    mainDiv.appendChild(startButton);
-    startButton.addEventListener('click', clickStart);
+    // top = document.createElement('div');
+    top.classList.add("top");
+    mainDiv.appendChild(top);
+    const startBtn = document.createElement("button");
+    startBtn.classList.add("start-button");
+    startBtn.innerHTML = "Start new game";
+    top.appendChild(startBtn);
+    startBtn.addEventListener('click', clickStart);
 }
 
-// function rollDice() {
-//
+// function createDice() {
+//     const rollDiceBtn = document.createElement('button');
+//     rollDiceBtn.classList.add("dice-button");
+//     rollDiceBtn.innerHTML = "Roll the dice";
+//     top.appendChild(rollDiceBtn);
+//     rollDiceBtn.addEventListener('click', rollDice);
 // }
+
+const rollDiceBtn = document.createElement('button');
+rollDiceBtn.classList.add("dice-button");
+rollDiceBtn.innerHTML = "Roll the dice";
+top.appendChild(rollDiceBtn);
+rollDiceBtn.addEventListener('click', rollDice);
+function rollDice() {
+
+}
 
 function clearTable() {
     mainDiv.remove();
@@ -177,6 +153,10 @@ function clickStart() {
 
 function main() {
     startGame();
+    drawTable();
+    initialState();
+
+    // createDice();
 }
 
 main();
