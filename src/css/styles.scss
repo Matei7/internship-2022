@@ -1,6 +1,6 @@
 *,
 *::before,
-*::after{
+*::after {
   padding: 0;
   margin: 0;
   border: 0;
@@ -8,59 +8,81 @@
 
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-ul, ol, li{
+ul, ol, li {
   list-style: none;
 }
 
-img{
+img {
   vertical-align: top;
 }
 
 $chess-pieces: 'k', 'q', 'r', 'b', 'n', 'p';
 $chess-pieces-color: 'w', 'b';
 
-body{
+body {
   background-color: black;
 
 }
-.chess-table{
+
+.chess-table {
   display: flex;
   width: 80vh;
   height: 80vh;
   flex-wrap: wrap;
   margin: 40px auto;
 }
-.piece-box{
+
+.piece-box {
   flex: 1 0 12.5%;
   position: relative;
 
-  &:after {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: 100%;
-  }
 
-  @each $piece in $chess-pieces {
-    @each $color in $chess-pieces-color {
-      &.#{$color}#{$piece} {
-        &:after {
-          background-image: url("../svgs/#{$color}#{$piece}.svg");
+  .chessPiece {
+    cursor: grab;
+
+
+
+
+    &:after {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-size: 100%;
+    }
+
+    @each $piece in $chess-pieces {
+      @each $color in $chess-pieces-color {
+        &.#{$color}#{$piece} {
+
+          &.grab{
+            &:after{
+              background-color: rgba(255, 255, 80, 0.8);
+            }
+          }
+
+          &:after {
+            background-image: url("../svgs/#{$color}#{$piece}.svg");
+          }
         }
       }
     }
   }
 }
 
-.black-box{
+.chessPiece :active {
+  cursor: grabbing;
+}
+
+.black-box {
   background-color: rgb(119, 148, 85);
 }
-.white-box{
+
+.white-box {
   background-color: rgb(235, 235, 208)
 }
