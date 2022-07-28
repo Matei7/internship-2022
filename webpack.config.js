@@ -5,7 +5,8 @@ const config = {
 	entry: {
 		app: './src/js/app.js',
 		dom: './src/js/dom.js',
-		table: './src/js/table.js'
+		table: './src/js/table.js',
+		jQuery: './src/js/jQuery.js'
 	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
