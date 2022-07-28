@@ -6,7 +6,7 @@ const config = {
 		app: './src/js/app.js',
 		dom: './src/js/dom.js',
 		chess: './src/js/chess.js',
-		jQuery_tasks: './src/js/jQuery_task.js'
+		jQuery_tasks: './src/js/jQuery_tasks.js'
 	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
