@@ -2,13 +2,13 @@ body{
     display: flex;
     justify-content: center;
 }
-.blakc-box{
+.black-box{
     background-color: gray;
 }
 .white-box{
     background-color:  #FFFDD0 ;
 }
-.chess-table{
+.chess-box{
     //flex: 1 0 12.5%;
     width: 10vh;
     height: 10vh;
@@ -24,4 +24,10 @@ body{
 .piesa{
     width: 100%;
     height: 100%;
+}
+.piece-selected{
+    background-color: yellow;
+}
+.piece-ready{
+    background-color: green;
 }
