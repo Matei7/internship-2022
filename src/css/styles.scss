@@ -31,6 +31,15 @@ color: yellow;
   border-radius: 10px;
 }
 
+.glide{
+  transition: height 1s ease-in-out;
+  height: 0%;
+}
+
+.glideOut{
+  height: 100%;
+}
+
 .divImg{
   width: 33.333%;
   height: 150px;
@@ -46,6 +55,7 @@ color: yellow;
   height: auto;
   background-color: white;
   margin-top: 7%;
+  pointer-events: none;
 }
 
 .spinDiv{
@@ -74,15 +84,17 @@ color: yellow;
 .bottomArticle{
   display: flex;
   width: 95%;
+  max-height: 10%;
   margin-top: 1%;
   margin-left: 5%;
   flex-direction: row;
   align-content: space-between;
+  max-height: 100px;
 }
 
-.balanceDiv{
+.balanceDiv, .coinInsertionDiv, .smallCoinDiv, .bigCoinDiv{
   display: flex;
-  width: 15%;
+  width: 18%;
 }
 
 .balance{
@@ -146,7 +158,7 @@ $easing: cubic-bezier(0.5,2,0.5,0.75);
      transition: opacity 0.1s $easing, transform 0.3s $easing;
      
      transform-origin: 0 100%;
-     z-index: 1;
+     z-index: -1;
      
      &.open {
         opacity: 1;
@@ -178,4 +190,26 @@ $easing: cubic-bezier(0.5,2,0.5,0.75);
         }
      }
   }
+}
+
+.coinInsertionImg, .smallCoinImg, .bigCoinImg{
+  display: flex;
+  align-self: center;
+  max-height: 80%;
+  border-radius: 50%;
+  border-top-right-radius: 0%;
+}
+
+.smallCoinImg{
+  margin-left: auto;
+  margin-right: 5%;
+}
+
+.bigCoinImg{
+  max-height: 120%;
+  margin-left: 5%;
+}
+
+.coinInsertionImg.over{
+  background-color: yellow;
 }

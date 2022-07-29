@@ -11,7 +11,16 @@ function addElements() {
     bottomArticle();
     createImages();
     buttonEvent();
+    //hideGridLayout();
     
+}
+
+function hideGridLayout(){
+    let balance = localStorage.getItem('balance');
+
+    if(balance === '0'){
+        document.querySelector(".gridLayout").classList.toggle("glide");
+    }
 }
 
 console.log(addElements());

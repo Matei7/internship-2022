@@ -50,9 +50,39 @@ export function bottomArticle() {
     betMultiplierDiv.append(createList(2, 2));
     betFunctionality(2);
 
+    //<----------------------------------------------------Coin Insertion Image---------------------------------------------------->
+    const coinInsertionDiv = document.createElement("div");
+    coinInsertionDiv.classList += "coinInsertionDiv";
+    bottomArticle.appendChild(coinInsertionDiv);
+    const coinInsertionImg = document.createElement("img");
+    coinInsertionImg.classList += "coinInsertionImg";
+    coinInsertionImg.src = "C:\\Projects\\new\\internship-2022\\public\\images\\insert.png";
+    coinInsertionDiv.appendChild(coinInsertionImg);
+
+    //<----------------------------------------------------Small Coin Image---------------------------------------------------->
+    const smallCoinDiv = document.createElement("div");
+    smallCoinDiv.classList += "smallCoinDiv";
+    bottomArticle.appendChild(smallCoinDiv);
+    const smallCoinImg = document.createElement("img");
+    smallCoinImg.classList += "smallCoinImg";
+    smallCoinImg.dataset.value = '20';
+    smallCoinImg.src = "C:\\Projects\\new\\internship-2022\\public\\images\\20Coin.png";
+    smallCoinDiv.appendChild(smallCoinImg);
+
+    //<----------------------------------------------------Big Coin Image---------------------------------------------------->
+    const bigCoinDiv = document.createElement("div");
+    bigCoinDiv.classList += "bigCoinDiv";
+    bottomArticle.appendChild(bigCoinDiv);
+    const bigCoinImg = document.createElement("img");
+    bigCoinImg.classList += "bigCoinImg";
+    bigCoinImg.dataset.value = '50';
+    bigCoinImg.src = "C:\\Projects\\new\\internship-2022\\public\\images\\50Coin.png";
+    bigCoinDiv.appendChild(bigCoinImg);
+
+    droppable();
 }
 
-//<----------------------------------------------------Create Buttons For Middle Article---------------------------------------------------->
+//<----------------------------------------------------Create Buttons For Bottom Article---------------------------------------------------->
 
 function createButton(number) {
 
@@ -63,7 +93,7 @@ function createButton(number) {
     return selectionButton;
 }
 
-//<----------------------------------------------------Create Lists For Middle Article---------------------------------------------------->
+//<----------------------------------------------------Create Lists For Bottom Article---------------------------------------------------->
 
 function createList(number, option) {
 
@@ -88,6 +118,8 @@ function createList(number, option) {
 
     return list;
 }
+
+//<----------------------------------------------------Bet Buttons Functionality---------------------------------------------------->
 
 function betFunctionality(option) {
 
@@ -124,7 +156,7 @@ function betFunctionality(option) {
             }
 
             optionLinks[i].classList.add("active");
-            if (option === 2){
+            if (option === 2) {
                 betMultiplier();
                 localStorage.setItem('mul', btn.innerText);
             }
@@ -134,6 +166,8 @@ function betFunctionality(option) {
         }, false);
     }
 }
+
+//<----------------------------------------------------Multiplier Functionality---------------------------------------------------->
 
 function betMultiplier() {
     let multiplier = document.querySelector("#betButton2").innerText;
@@ -153,4 +187,55 @@ function betMultiplier() {
         document.querySelector("#betButton1").innerText = pureNumber + "$";
         localStorage.setItem('bet', pureNumber + "$");
     }
+}
+
+//<----------------------------------------------------Drag and Drop---------------------------------------------------->
+
+function handleDragStart(e) {
+    this.style.opacity = '0';
+    localStorage.setItem('currentCoin', this.dataset.value);
+}
+
+function handleDragEnd(e) {
+    this.style.opacity = '1';
+}
+
+function handleDragEnter(e) {
+    this.classList.add('over');
+}
+
+
+function handleDragLeave(e) {
+    this.classList.remove('over');
+}
+
+function handleDragOver(e){
+    e.preventDefault();
+}
+
+function droppable() {
+    let coins = document.querySelectorAll("div .smallCoinImg, div .bigCoinImg");
+    coins.forEach(function (coin) {
+        coin.addEventListener('dragstart', handleDragStart);
+        coin.addEventListener('dragend', handleDragEnd);
+    })
+
+    let slot = document.querySelector("div .coinInsertionImg");
+    slot.addEventListener('dragenter', handleDragEnter);
+    slot.addEventListener('dragleave', handleDragLeave);
+    slot.addEventListener('dragover', handleDragOver);
+    slot.addEventListener('drop', function(event) {
+        event.preventDefault();
+        
+        if (event.target.classList.contains('over')) {
+            let balance = localStorage.getItem('balance');
+            let currentCoinValue = localStorage.getItem('currentCoin');
+
+            balance = parseFloat(balance) + parseFloat(currentCoinValue);
+            localStorage.setItem('balance', balance);
+            document.querySelector("p.balance").innerText = "Balance: " + balance + '$';
+
+            this.classList.remove('over');
+        }
+    });
 }

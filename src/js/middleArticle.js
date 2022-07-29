@@ -75,6 +75,8 @@ export function buttonEvent() {
 
     document.addEventListener('keyup', (event) => {
         if ((event.code === 'Space') || (event.code === ' ')) {
+            event.preventDefault();
+            event.stopPropagation();
             removeAllFields();
 
             slotImages.sort(() => Math.random() - 0.5);
@@ -92,6 +94,8 @@ export function buttonEvent() {
 
     document.addEventListener('keydown', (event) => {
         if ((event.code === 'Space') || (event.code === ' ')) {
+            event.preventDefault();
+            event.stopPropagation();
             const spinButton = document.querySelector(".spinButton");
             spinButton.style.boxShadow = "10px 10px 5px grey";
             spinButton.style.color = "red";
