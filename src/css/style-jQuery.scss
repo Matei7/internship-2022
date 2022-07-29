@@ -1,4 +1,5 @@
-.ex1Div, .ex4Div {
+.ex1Div, .ex4Div, .ex20Div, .ex21Div, .ex22Div, .ex27Div, .ex35Div {
+  margin-top: 50px;
   display: flex;
   flex-direction: row;
 
@@ -9,12 +10,20 @@
   }
 }
 
-.paragraphDiv1, .ex5Div, .ex6Div {
+.paragraphDiv1, .ex5Div, .ex6Div, .ex8Div, .ex9Div, .ex10Div, .ex17Div,
+.ex18Div, .ex19Div, .ex23Div, .ex24Div, .ex25Div, .ex26Div, .ex28Div,
+.ex29Div, .ex30Div, .ex31Div, .ex32Div, .ex33Div, .ex34Div
+{
   display: flex;
   flex-direction: column;
+  margin-top: 50px;
 }
 
-#button1, #button2, #button3 {
+#button1, #button2, #button3, #button4, #button5, #button6, #button7,
+#button8, #button9, #button21, #button22, #button23, #button24, #button25,
+#button26, #button28, #button29, #button30, #button31, #button32,
+#button33, #button34, #button35
+{
   width: 200px;
 }
 
@@ -86,4 +95,45 @@
 }
 .w3r_bg_red {
   color: red;
+}
+
+#div17, #span17, #ex17p, #div18, #span18, #ex18p {
+  width: 160px;
+  height: 40px;
+  float: left;
+  padding: 10px;
+  margin: 10px;
+  background-color:#B0E0E6
+}
+
+#ex19p  {
+  background-color: #B0E0E6;
+  width: 500px;
+  border: 1px solid red;
+}
+
+.ex20DivIn {
+  display: block;
+}
+
+.ex20DivInSquare, .div21 {
+  position: relative;
+  background-color: #B0E0E6;
+  left: 40px;
+  width: 80px;
+  height: 80px;
+  margin: 5px;
+}
+
+#div22_1, #div22_2, #div22_3 {
+  background: #B0E0E6;
+  border: 1px solid #e30ae8;
+  width: 20px;
+  height: 30px;
+  margin: 0 5px;
+  float: left;
+
+  &.colored {
+    background: #000000;
+  }
 }
