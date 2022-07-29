@@ -56,8 +56,9 @@ function addButton(){
     divButton.appendChild(button);
     document.body.appendChild(divButton);
     button.addEventListener("click",function (){
-        alert("am apasat butonul");
+        board();
         startGame();
+        movePieces();
     });
 }
 
@@ -200,7 +201,7 @@ function startGame(){
 
 // count.innerHTML = "The game will start in";
 // document.body.appendChild(count);
-// let seconds = 5;
+let seconds = 5;
 // let countDown = setInterval(function(){
 //     if(seconds > 0){
 //         count.innerHTML = seconds;
@@ -209,13 +210,10 @@ function startGame(){
 //     else{
 //         clearInterval(countDown);
 //         count.innerHTML = " ";
-//         board();
 //         addButton();
 //     }
 // },1000);
 
-board();
-startGame();
 addButton();
 
 function movePieces(){
@@ -248,12 +246,8 @@ function movePieces(){
     }
 
 
-        // let onClick = document.getElementsByClassName('selector');
-        // onClick.addEventListener("click", function (){
-        //     alert("da");
-        // })
-
-
+    // let onClick = document.getElementsByClassName('selector');
+    // onClick.addEventListener("click", function (){
+    //     alert("da");
+    // })
 }
-
-movePieces()
