@@ -12,19 +12,21 @@
 
 .paragraphDiv1, .ex5Div, .ex6Div, .ex8Div, .ex9Div, .ex10Div, .ex17Div,
 .ex18Div, .ex19Div, .ex23Div, .ex24Div, .ex25Div, .ex26Div, .ex28Div,
-.ex29Div, .ex30Div, .ex31Div, .ex32Div, .ex33Div, .ex34Div
+.ex29Div, .ex30Div, .ex31Div, .ex32Div, .ex33Div, .ex34Div, .ex36Div,
+.ex37Div, .ex38Div, .ex39Div, .ex40Div
 {
   display: flex;
   flex-direction: column;
   margin-top: 50px;
 }
 
-#button1, #button2, #button3, #button4, #button5, #button6, #button7,
-#button8, #button9, #button21, #button22, #button23, #button24, #button25,
-#button26, #button28, #button29, #button30, #button31, #button32,
-#button33, #button34, #button35
-{
+[id^="button"] {
   width: 200px;
+}
+
+[id^="target"] {
+  width: 100px;
+  margin-bottom: 20px;
 }
 
 .ex1TextArea {

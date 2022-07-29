@@ -413,3 +413,85 @@ $('.ex35Div').append("<button  id='button35'>Click to see the effect</button>");
 $('#button35').click(function(){
     $( ".input35[name^='P']" ).val("Bla bla");
 });
+
+// ex 36
+$('<div>', {
+    class: 'ex36Div',
+}).appendTo('body');
+$('.ex36Div').append("<p class='p36'>PHP</p>");
+$('.ex36Div').append("<p class='p36'>Python Tutorial</p>");
+$('.ex36Div').append("<p class='p36'>Java Tutorial</p>");
+$('.ex36Div').append("<button  id='button36'>Click to see the effect</button>");
+$('#button36').click(function(){
+    $( ".p36" ).before("<i>w3resource.com</i>");
+});
+
+// ex 37
+$('<div>', {
+    class: 'ex37Div',
+}).appendTo('body');
+$('.ex37Div').append("<b class='b37'>PHP</b>");
+$('.ex37Div').append("<p class='p37'>Python Tutorial</p>");
+$('.ex37Div').append("<p class='p37'>Java Tutorial</p>");
+$('.ex37Div').append("<button  id='button37'>Click to see the effect</button>");
+$('#button37').click(function(){
+    $( ".p37" ).before( $( ".b37" ) );
+});
+
+// ex 38
+$('<div>', {
+    class: 'ex38Div',
+}).appendTo('body');
+$('.ex38Div').append("<p class='p38'>Python Tutorial</p> <b class='b38'>w3resource</b>");
+$('.ex38Div').append("<button  id='button38'>Click to see the effect</button>");
+$('#button38').click(function(){
+    $( ".p38" ).before( $( ".b38" ) );
+});
+
+// ex 39
+$('<div>', {
+    class: 'ex39Div',
+}).appendTo('body');
+$('.ex39Div').append("<p class='p39'>Click or double click here.</p>");
+$('.ex39Div').append("<p id='result'></p>");
+
+$(".p39").bind( "click", function( event ) {
+    let str = "( " + event.pageX + ", " + event.pageY + " )";
+    $( "#result" ).text( "Click happened! " + str );
+});
+$( ".p39" ).bind( "dblclick", function() {
+    $( "#result" ).text( "Double-click happened");
+});
+$( "#result" ).bind( "mouseenter mouseleave", function() {
+    $( this ).toggleClass( "over" );
+});
+
+// ex 40
+$('<div>', {
+    class: 'ex40Div',
+}).appendTo('body');
+$('.ex40Div').append("<input id='target1' type='text' value='Field 1'>");
+$('.ex40Div').append("<input id='target2' type='text' value='Field 2'>");
+$('.ex40Div').append("<p id='p40'>Set and remove focus from fields</p>");
+
+$( "#target1" ).blur(function() {
+    console.log( "Remove focus from field1!" );
+});
+
+$( "#target2" ).blur(function() {
+    console.log( "Remove focus from field2!" );
+});
+
+// ex 41
+$('<div>', {
+    class: 'ex41Div',
+}).appendTo('body');
+$('.ex41Div').append("<fieldset><textarea rows=\"4\" cols=\"50\">At w3resource.com you will learn how to make a website. " +
+    "We offer free tutorials in all web development technologies. </textarea><input type='button' value='Input Button'> </fieldset>");
+$('.ex41Div').append("<p id='p41'></p>");
+$('.ex41Div').append("<button  id='button41'>Click to see the effect</button>");
+
+$('#button41').click(function(){
+    let input = $( ":button" ).addClass( "marked" );
+    $( ".p41" ).text( "No. of butttons(s): " + input.length  );
+});
