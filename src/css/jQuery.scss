@@ -1,6 +1,6 @@
 
 #Ex1 {
-  height: 300px;
+  height: 260px;
   width: auto;
   margin-left: 20px;
 
@@ -27,7 +27,7 @@
 }
 
 #Ex2{
-  height: 300px;
+  height: 280px;
   width: auto;
   margin-left: 20px;
 
@@ -255,7 +255,7 @@
 }
 
 #Ex17{
-  height: 250px;
+  height: 200px;
   width: auto;
   margin-left: 20px;
   margin-top: 50px;
@@ -312,7 +312,7 @@
 }
 
 #Ex19{
-  height: 180px;
+  height: 140px;
   width: auto;
   margin-left: 20px;
 
@@ -349,16 +349,6 @@
   h2 {
     margin-left: 20px;
   }
-  button{
-    margin-left: 20px;
-    margin-bottom: 20px;
-  }
-
-  #button9 {
-    display: block;
-    margin-left: 20px;
-  }
-
   p {
     background-color: #B0E0E6;
     width: 70px;
@@ -380,6 +370,518 @@
     width: 80px;
     height: 80px;
     margin: 5px;
+  }
+
+}
+
+#Ex21 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button10 {
+    position: relative;
+    left: 20px;
+  }
+
+  p {
+    background-color: #B0E0E6;
+    width: 70px;
+    border: 1px solid red;
+    margin-left: 20px;
+  }
+
+  .block {
+    position: relative;
+    background-color: #B0E0E6;
+    width: 45px;
+    height: 45px;
+    float: left;
+    margin-left: 10px;
+    margin-top: 50px;
+  }
+}
+
+#Ex22 {
+  height: 120px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button10 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    background-color: #B0E0E6;
+    width: 70px;
+    border: 1px solid red;
+    margin-left: 20px;
+  }
+
+  div {
+    background: #B0E0E6;
+    border: 1px solid #e30ae8;
+    width: 20px;
+    height: 30px;
+    margin: 0 5px;
+    float: left;
+  }
+  div.colored {
+    background: #000000;
+  }
+}
+
+#Ex23 {
+  height: 150px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button12 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex24 {
+  height: 190px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button13 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex25 {
+  height: 170px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button14 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex26 {
+  height: 170px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button15 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  span{
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex27 {
+  height: 100px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex28 {
+  height: 120px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button16 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  span{
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex29 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button17 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  span{
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex30 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button18 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex31 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button19 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex32 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button20 {
+    display: block;
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+}
+
+#Ex33 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button21 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex34 {
+  height: 180px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button22 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex35{
+  height: 140px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button23 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex36{
+  height: 280px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button24 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex37{
+  height: 280px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button25 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex38{
+  height: 160px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button26 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input {
+    margin-left: 20px;
+  }
+
+  b{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex39{
+  height: 90px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input {
+    margin-left: 20px;
+  }
+
+  b{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex40{
+  height: 130px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input {
+    margin-left: 20px;
+  }
+
+  b{
+    margin-left: 20px;
+  }
+
+}
+
+#Ex41{
+  height: 300px;
+  width: auto;
+  margin-left: 20px;
+
+
+  h2 {
+    margin-left: 20px;
+  }
+
+  #button27 {
+    display: block;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-left: 20px;
+  }
+
+  input {
+    margin-left: 20px;
+  }
+
+  b{
+    margin-left: 20px;
   }
 
 }
