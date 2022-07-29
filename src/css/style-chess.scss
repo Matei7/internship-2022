@@ -17,6 +17,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+
 }
 
 .count {
@@ -51,6 +52,7 @@ button {
   flex: 1 0 12.5%;
   background-repeat: no-repeat;
   background-size: contain;
+
 }
 //
 //
@@ -68,10 +70,12 @@ button {
 
 .white {
   background-color: white;
+
 }
 
 .black {
   background-color: dimgray;
+
 }
 
 .rook-black{
