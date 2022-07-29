@@ -182,3 +182,108 @@ $("#button9").click(function() {
 });
 
 //31
+$("body").append("<div class=\"new-div divs-same\">" +
+"<div  name=\"tutorial-php\"><p>PHP</p></div>" +
+"<div  name=\"java-articles\"<p>Java</p></div>" + 
+"<div  name=\"python-tutorial-and-exercises\"><p>Python</p></div>" +
+"<button  id=\"button10\">Click to see the effect</button></div>");
+$("#button10").click(function() { 
+    $(".divs-same div[name*=tutorial]").css("background-color", "yellow");
+});
+
+//32
+$("body").append("<div class=\"new-div divs-end\">" +
+"<div  name=\"tutorial-php\"><p>PHP</p></div>" +
+"<div  name=\"java-articles\"<p>Java</p></div>" + 
+"<div  name=\"python-tutorial\"><p>Python</p></div>" +
+"<button  id=\"button11\">Click to see the effect</button></div>");
+$("#button11").click(function() { 
+    $(".divs-end div[name$=tutorial]").css("background-color", "yellow");
+});
+
+//33
+$("body").append("<div class=\"new-div red-inputs\">" + 
+"<div><label><input type=\"radio\" name=\"color\"  value=\"Red\"><span>name?</span></label></div>" +
+"<div><label><input type=\"radio\" name=\"color\"  value=\"Green\"><span>value?</span></label></div>" +
+"<div><label><input type=\"radio\" name=\"color\"  value=\"Black\"><span>value?</span></label></div>" +
+"<button id=\"button12\">Click to see the  effect</button>");
+$("#button12").click(function() { 
+    $(".red-inputs input[value=Red]").siblings().filter("span").first().text("Red");
+});
+
+//34
+$("body").append("<div class=\"new-div color-input\">" + 
+"<div><input type=\"radio\" name=\"color\"  value=\"Red\"><span>Red</span></div>" +
+"<div><input type=\"radio\" value=\"Cold Fusion\"><span>Sky</span></div>" +
+"<div><input type=\"radio\" name=\"accept\"  value=\"Evil Plans\"><span>Sea</span></div>" +
+"<button id=\"button13\">Click to see the  effect</button>");
+$("#button13").click(function() { 
+    $(".color-input input[name!=color]").siblings().filter("span").append(" some text");
+});
+
+//35
+$("body").append("<div class=\"new-div color-p\">" + 
+"<div><input type=\"radio\" name=\"Pcolor\"  value=\"Red\"><span>Red</span></div>" +
+"<div><input type=\"radio\" value=\"Cold Fusion\"><span>Sky</span></div>" +
+"<div><input type=\"radio\" name=\"accept\"  value=\"Evil Plans\"><span>Sea</span></div>" +
+"<button id=\"button14\">Click to see the  effect</button>");
+$("#button14").click(function() { 
+    $(".color-p input[name^=P]").siblings().filter("span").append(" some text");
+});
+
+//36
+$("body").append("<div class=\"new-div p-html\">" + 
+"<body><p>PHP Tutorial</p><p>Python Tutorial</p><p>Java Tutorial</p> "+
+  "<button id=\"button15\">Click to see the effect</button>");
+$("#button15").click(function() { 
+    $(".p-html p").before("<div>Some text</div>");
+});
+
+//37
+$("body").append("<div class=\"new-div p-dom\">" + 
+"<body><p>PHP Tutorial</p><p>Python Tutorial</p><p>Java Tutorial</p> "+
+  "<button id=\"button16\">Click to see the effect</button>");
+$("#button16").click(function() { 
+    $(".p-dom p").before(document.createTextNode("new text "));
+});
+
+//38
+$("body").append("<div class=\"new-div p-jquery\">" + 
+"<body><p>PHP Tutorial</p><p>Python Tutorial</p><p>Java Tutorial</p> "+
+  "<button id=\"button17\">Click to see the effect</button>");
+$("#button17").click(function() { 
+    $(".p-jquery p").before($("<div>some text<\div>"));
+});
+
+//39
+$("body").append("<div class=\"new-div p-click\">" + 
+"<p>Click or double click here.</p><p id=\"result\"></p>");
+$(".p-click p").first().click(function() { 
+    $("#result").text("Click");
+});
+$(".p-click p").first().dblclick(function() { 
+    $("#result").text("Double Click");
+});
+
+//40
+$("body").append("<div class=\"new-div p-focus\">" + 
+"<form><fieldset><textarea rows=\"4\" cols=\"50\">" +
+"At w3resource.com you will learn how to make a website. We offer free tutorials in all web development technologies. " +
+"</textarea><input type=\"button\" id=\"focus-change\"value=\"Input Button\"></fieldset>" +
+"</form><p></p>" );
+$("#focus-change").click(function(){
+    if($(".p-focus textarea").focus())
+        $(".p-focus p").text("Focus");
+})
+
+//41
+$("body").append("<div class=\"new-div p-buttons\">" + 
+"<form><fieldset><textarea rows=\"4\" cols=\"50\">" +
+"At w3resource.com you will learn how to make a website. We offer free tutorials in all web development technologies. " +
+"</textarea><input type=\"button\" id=\"focus-change\"value=\"Input Button\"></fieldset>" +
+"</form><p></p><button id=\"button19\">Click to see the effect</button>");
+$("#button19").click(function(){
+    $(".p-buttons button,.p-buttons input[type=button]").css("background-color", "green");
+})
+
+//42
