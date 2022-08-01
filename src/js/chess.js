@@ -14,14 +14,14 @@ let piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "q
                        "a1": "rookW", "b1": "knightW", "c1": "bishopW", "d1": "queenW", "e1": "kingW", "f1": "bishopW", "g1": "knightW", "h1": "rookW"
 }
 
-let position = [['a8','b8','c8','d8','e8','f8','g8','h8'],
-                ['a7','b7','c7','d7','e7','f7','g7','h7'],
-                ['a6','b6','c6','d6','e6','f6','g6','h6'],
-                ['a5','b5','c5','d5','e5','f5','g5','h5'],
-                ['a4','b4','c4','d4','e4','f4','g4','h4'],
-                ['a3','b3','c3','d3','e3','f3','g3','h1'],
-                ['a2','b2','c2','d2','e2','f2','g2','h2'],
-                ['a1','b1','c1','d1','e1','f1','g1','h3']];
+const position = [['rookB','knightB','bishopB','queenB','kingB','bishopB','knightB','rookB'],
+                ['pawnB','pawnB','pawnB','pawnB','pawnB','pawnB','pawnB','pawnB'],
+                ['none','none','none','none','none','none','none','none'],
+                ['none','none','none','none','none','none','none','none'],
+                ['none','none','none','none','none','none','none','none'],
+                ['none','none','none','none','none','none','none','none'],
+                ['pawnW','pawnW','pawnW','pawnW','pawnW','pawnW','pawnW','pawnW'],
+                ['rookW','knightW','bishopW','queenW','kingW','bishopW','knightW','rookW']];
 
 function board() {
     table = document.createElement("div");
@@ -56,17 +56,60 @@ function board() {
 
 }
 
+function dragStart(e){
+    this.style.opacity("0.2");
+    e.currentTarget.classList.add("dragging");
+}
+
+function dragEnd(e){
+    this.style.opacity("1.0");
+    e.currentTarget.classList.add("dragging");
+}
+
+function handleDrop(e) {
+    e.stopPropagation(); // stops the browser from redirecting.
+    return false;
+}
+
+function drag(e){
+    e.dataTransfer.setData('text/html',e.currentTarget.outerHTML);
+    e.dataTransfer.setData('text/plain',e.currentTarget.dataset.id);
+}
+
+function dragEnter(e){
+    e.currentTarget.classList.add('drop');
+}
+
+function dragLeave(e){
+    e.currentTarget.classList.remove('drop');
+}
+
 function startGame() {
     for (let piece in piecesPosition) {
         let p = piecesPosition[piece];
         let pieceId = document.getElementById(piece);
+        let newDiv = document.createElement("div");
         if (piecesPosition[piece].includes("B")) {
-            pieceId.classList.add(p.substring(0, p.indexOf('B')) + "-black");
-            pieceId.classList.add("piece");
+            newDiv.classList.add("piece");
+            newDiv.classList.add(p.substring(0, p.indexOf('B')) + "B");
+            newDiv.addEventListener("dragstart", dragStart);
+            newDiv.addEventListener("dragend", dragEnd);
+            newDiv.addEventListener("dragenter", dragEnter);
+            newDiv.addEventListener("dragleave",dragLeave);
+            newDiv.addEventListener("drop",handleDrop);
+            newDiv.draggable = true;
+            pieceId.appendChild(newDiv);
         } else {
             if (piecesPosition[piece].includes("W")) {
-                pieceId.classList.add(p.substring(0, p.indexOf('W')) + "-white");
-                pieceId.classList.add("piece");
+                newDiv.classList.add("piece");
+                newDiv.classList.add(p.substring(0, p.indexOf('W')) + "W");
+                newDiv.addEventListener("dragstart", dragStart);
+                newDiv.addEventListener("dragend", dragEnd);
+                newDiv.addEventListener("dragenter", dragEnter);
+                newDiv.addEventListener("dragleave",dragLeave);
+                newDiv.addEventListener("drop",handleDrop);
+                newDiv.draggable = true;
+                pieceId.appendChild(newDiv);
             }
         }
     }
@@ -168,10 +211,5 @@ function movePieces() {
             }
         })
     }
-
-
-    // let onClick = document.getElementsByClassName('selector');
-    // onClick.addEventListener("click", function (){
-    //     alert("da");
-    // })
 }
+

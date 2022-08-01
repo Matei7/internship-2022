@@ -1,6 +1,9 @@
 $primary-color: white;
 $bg: black;
 
+$chess-pieces: 'king', 'queen', 'rook', 'bishop', 'knight', 'pawn';
+$chess-pieces-color:'B','W';
+
 
 body {
   background-color: bisque;
@@ -45,26 +48,44 @@ button {
   font-weight: bold;
 }
 
-//$chess-pieces: 'rook', 'queen', 'bishop', 'knight', 'king', 'pawn';
-//$chess-pieces-color: 'W', 'B';
 .cell {
   flex: 1 0 12%;
   background-repeat: no-repeat;
   background-size: contain;
 }
-//
-//
-//  @each $piece in $chess-pieces {
-//    @each $color in $chess-pieces-color {
-//      &.#{$color}#{$piece} {
-//        &:after {
-//          background-image: url("../images/#{$piece}#{$color}.svg");
-//        }
-//      }
-//    }
-//  }
-//
-//}
+
+.piece{
+
+  &:after {
+    position: absolute;
+    content: '';
+    width: 80px;
+    height: 80px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: grab;
+  }
+
+
+  @each $piece in $chess-pieces {
+    @each $color in $chess-pieces-color {
+      &.#{$piece}#{$color} {
+        &:after {
+          background-image: url("../images/#{$piece}#{$color}.svg");
+        }
+      }
+    }
+  }
+}
+
+.piece:active{
+  cursor: grabbing;
+}
+.piece.dragging{
+  opacity: .5;
+}
+
+
 
 .white {
   background-color: white;
@@ -72,54 +93,6 @@ button {
 
 .black {
   background-color: dimgray;
-}
-
-.rook-black{
-  background-image: url('../images/rookB.svg');
-}
-
-.knight-black{
-  background-image: url('../images/knightB.svg');
-}
-
-.bishop-black{
-  background-image: url('../images/bishopB.svg');
-}
-
-.queen-black{
-  background-image: url('../images/queenB.svg');
-}
-
-.king-black{
-  background-image: url('../images/kingB.svg');
-}
-
-.pawn-black{
-  background-image: url('../images/pawnB.svg');
-}
-
-.rook-white{
-  background-image: url('../images/rookW.svg');
-}
-
-.knight-white{
-  background-image: url('../images/knightW.svg');
-}
-
-.bishop-white{
-  background-image: url('../images/bishopW.svg');
-}
-
-.queen-white{
-  background-image: url('../images/queenW.svg');
-}
-
-.king-white{
-  background-image: url('../images/kingW.svg');
-}
-
-.pawn-white{
-  background-image: url('../images/pawnW.svg');
 }
 
 .selector {
@@ -134,3 +107,4 @@ button {
   -webkit-box-shadow: inset 0 0 8px 8px rgba(95, 231, 219, 0.63);
   box-shadow: inset 0 0 8px 8px rgba(95, 231, 219, 0.63);
 }
+
