@@ -81,7 +81,6 @@ function moveFrom(){
         console.log(pieceType);
         console.log("from "+from);
         potentialMoveLight();
-        turn = "black";
         console.log(turn)
     }
     else if (turn === "black" && game[this.parentElement.id].length === 2 && (game[this.parentElement.id] !== "e")){
@@ -91,7 +90,6 @@ function moveFrom(){
         pieceType = game[from];
         console.log(pieceType);
         console.log("from "+from);
-        turn = "white";
         potentialMoveDark();
     }
 
@@ -111,6 +109,12 @@ function moveFrom(){
 function moveTo(){
     to = this.id;
     if($(`#${to}`).hasClass("potential")){
+        if(turn = "white"){
+            turn = "black"
+        }
+        else{
+            turn = "white";
+        }
         console.log("to "+to);
         game[to] = game[from];
         game[from] = "e";
