@@ -15,12 +15,4 @@ function addElements() {
     
 }
 
-function hideGridLayout(){
-    let balance = localStorage.getItem('balance');
-
-    if(balance === '0'){
-        document.querySelector(".gridLayout").classList.toggle("glide");
-    }
-}
-
 console.log(addElements());

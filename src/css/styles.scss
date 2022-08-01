@@ -1,15 +1,20 @@
 body {
   margin: 0;
   align-items: center;
-  background-color: red;
+  background-image: url("C:\\Projects\\new\\internship-2022\\public\\images\\coins-removebg-preview.png");
+  background-color: rgb(212, 0, 11);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-h1{
-margin-left: 50%;
-color: yellow;
+h1 {
+  text-align: center;
+  color: #471d00;
+  font-size: 60px;
+  margin: auto;
 }
 
-.middleArticle{
+.middleArticle {
   display: flex;
   width: 100%;
   margin-top: 5%;
@@ -24,31 +29,58 @@ color: yellow;
   margin-left: 5%;
   background-color: white;
   align-content: center;
-  border-top: 5px solid black;
-  border-bottom: 5px solid black;
-  border-left: 5px solid black;
+  border-top: 7px dashed #00d655;
+  border-bottom: 7px dashed #00d655;
+  border-left: 7px dashed #00d655;
   border-collapse: collapse;
   border-radius: 10px;
+  position: relative;
+
+  &:after {
+    content: "";
+    visibility: hidden;
+    display: flex;
+    width: calc(100% - 7px);
+    height: 100%;
+    background-color: rgb(212, 0, 11);
+    color: #00d655;
+    font-size: 60px;
+    align-items: center;
+    justify-content: center;
+    flex-basis: 70%;
+    border-radius: 6px;
+    z-index: 10;
+    flex-grow: 0;
+    flex-shrink: 1;
+    position: absolute;
+    box-sizing: border-box;
+  }
+
+  &.hide::after{
+    padding: 0% 5%;
+    visibility: visible;
+    animation: fadeOut 1s;
+  }
+
+  &.show::after {
+    content: "No tengo dinero!";
+    visibility: visible;
+    animation: fadeIn 1s;
+  }
+  
 }
 
-.glide{
-  transition: height 1s ease-in-out;
-  height: 0%;
-}
 
-.glideOut{
-  height: 100%;
-}
 
-.divImg{
+.divImg {
   width: 33.333%;
   height: 150px;
-  border-right: 5px solid black;
+  border-right: 7px dashed #00d655;
   text-align: center;
   box-sizing: border-box;
 }
 
-.slotImages{
+.slotImages {
   max-width: 70%;
   max-height: 70%;
   flex: 0 0 33.3%;
@@ -58,7 +90,7 @@ color: yellow;
   pointer-events: none;
 }
 
-.spinDiv{
+.spinDiv {
   flex-basis: 30%;
   display: flex;
   align-items: center;
@@ -66,22 +98,22 @@ color: yellow;
   min-height: 100%;
 }
 
-.spinButton{
+.spinButton {
   border-radius: 50%;
   height: 40%;
   width: 40%;
   font-weight: bolder;
   font-size: 35px;
-  border: 2px solid grey;
+  border: 10px solid rgb(219, 205, 0);
   background-color: yellow;
 }
 
-.spinButton:hover{
+.spinButton:hover {
   color: red;
   box-shadow: 10px 10px 5px grey;
 }
 
-.bottomArticle{
+.bottomArticle {
   display: flex;
   width: 95%;
   max-height: 10%;
@@ -92,24 +124,27 @@ color: yellow;
   max-height: 100px;
 }
 
-.balanceDiv, .coinInsertionDiv, .smallCoinDiv, .bigCoinDiv{
+.balanceDiv,
+.coinInsertionDiv,
+.smallCoinDiv,
+.bigCoinDiv {
   display: flex;
   width: 18%;
 }
 
-.balance{
+.balance {
   width: 95%;
   height: auto;
   background-color: yellow;
-  border: 2px solid grey;
+  border: 3px dashed #00d655;
   border-radius: 10px;
   font-weight: bolder;
   font-size: 30px;
   text-align: center;
 }
 
-$primary: black;
-$easing: cubic-bezier(0.5,2,0.5,0.75);
+$primary: #00d655;
+$easing: cubic-bezier(0.5, 2, 0.5, 0.75);
 
 .betButton {
   position: relative;
@@ -119,80 +154,88 @@ $easing: cubic-bezier(0.5,2,0.5,0.75);
   border: none;
   outline: none;
   font-size: 30px;
-  border-bottom: 3px solid black;
+  border-bottom: 3px dashed #00d655;
   min-width: 60%;
   max-height: 40%;
   text-align: left;
   outline: none;
   cursor: pointer;
+  color: #00d655;
   z-index: 2;
-  
+
   &:after {
-     content: '▾';
-     position: absolute;
-     right: 0px;
-     top: 0%;
+    content: '▾';
+    position: absolute;
+    right: 0px;
+    top: 0%;
+    color: #00d655;
   }
 }
 
-.betDiv, .betMultiplierDiv {
+.betDiv,
+.betMultiplierDiv {
   position: relative;
   display: flex;
   width: 15%;
-  
-  #list1, #list2 {
-     list-style: none;
-     border: 4px solid black;
-     border-radius: 10px;
-     margin: 0;
-     padding: 0;
-     align-self: center;
-     background: red;
-     box-shadow: 0 2px 4px rgba(black, 0.24);
-     display: flex;
-     position: absolute;
-     max-height: 40%;
-     opacity: 0;
-     transform: scale(0.8) translate3d(-20px, 0px, 0);
-     
-     transition: opacity 0.1s $easing, transform 0.3s $easing;
-     
-     transform-origin: 0 100%;
-     z-index: -1;
-     
-     &.open {
-        opacity: 1;
-        transform: scale(1) translate3d(0, 0, 0);
-        z-index: 5;
-     }
-     
-     li {
+
+  #list1,
+  #list2 {
+    list-style: none;
+    border: 3px dashed #00d655;
+    border-radius: 10px;
+    margin: 0;
+    padding: 0;
+    align-self: center;
+    background: rgb(212, 0, 11);
+    box-shadow: 0 2px 4px rgba(#00d655, 0.24);
+    display: flex;
+    position: absolute;
+    max-height: 40%;
+    opacity: 0;
+    transform: scale(0.8) translate3d(-20px, 0px, 0);
+
+    transition: opacity 0.1s $easing, transform 0.3s $easing;
+
+    transform-origin: 0 100%;
+    z-index: -1;
+
+    &.open {
+      opacity: 1;
+      transform: scale(1) translate3d(0, 0, 0);
+      z-index: 5;
+    }
+
+    li {
+      display: inline-block;
+
+      a {
+        text-decoration: none;
+        border-right: 3px dashed #00d655;
         display: inline-block;
-        a {
-           text-decoration: none;
-           border-right: 5px solid black;
-           display: inline-block;
-           font-size: 20px;
-           padding: 10px 16px;
-           color: $primary;
-           
-           &:hover {
-              color: darken($primary, 20%);
-           }
-           
-           &.active {
-              border-bottom: 2px solid black;
-              color: black;
-              &:hover {
-                 color: black;
-              }
-           }
+        font-size: 20px;
+        padding: 10px 16px;
+        color: $primary;
+
+        &:hover {
+          color: darken($primary, 20%);
         }
-     }
+
+        &.active {
+          border-bottom: 3px dashed #00d655;
+          color: #00d655;
+
+          &:hover {
+            color: #00d655;
+          }
+        }
+      }
+    }
   }
 }
 
-.coinInsertionImg, .smallCoinImg, .bigCoinImg{
+.coinInsertionImg,
+.smallCoinImg,
+.bigCoinImg {
   display: flex;
   align-self: center;
   max-height: 80%;
@@ -200,16 +243,45 @@ $easing: cubic-bezier(0.5,2,0.5,0.75);
   border-top-right-radius: 0%;
 }
 
-.smallCoinImg{
+.smallCoinImg {
   margin-left: auto;
   margin-right: 5%;
 }
 
-.bigCoinImg{
+.bigCoinImg {
   max-height: 120%;
   margin-left: 5%;
 }
 
-.coinInsertionImg.over{
+.coinInsertionImg.over {
   background-color: yellow;
+}
+
+@keyframes fadeIn {
+  from {
+    height: 0%;
+  }
+
+  to {
+    height: 100%;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    height: 100%;
+  }
+
+  to {
+    height: 0%;
+  }
+}
+
+.blink{
+  animation: blink-text 1000ms linear infinite;
+}
+
+@keyframes blink-text {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
 }

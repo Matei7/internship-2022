@@ -209,7 +209,7 @@ function handleDragLeave(e) {
     this.classList.remove('over');
 }
 
-function handleDragOver(e){
+function handleDragOver(e) {
     e.preventDefault();
 }
 
@@ -224,9 +224,9 @@ function droppable() {
     slot.addEventListener('dragenter', handleDragEnter);
     slot.addEventListener('dragleave', handleDragLeave);
     slot.addEventListener('dragover', handleDragOver);
-    slot.addEventListener('drop', function(event) {
+    slot.addEventListener('drop', function (event) {
         event.preventDefault();
-        
+
         if (event.target.classList.contains('over')) {
             let balance = localStorage.getItem('balance');
             let currentCoinValue = localStorage.getItem('currentCoin');
@@ -234,6 +234,21 @@ function droppable() {
             balance = parseFloat(balance) + parseFloat(currentCoinValue);
             localStorage.setItem('balance', balance);
             document.querySelector("p.balance").innerText = "Balance: " + balance + '$';
+
+            if (parseFloat(localStorage.getItem('balance')) <= 0) {
+                    document.querySelector(".gridLayout").classList.add("show");
+                    localStorage.setItem("popup", "visible");
+            } else {
+                if (localStorage.getItem("popup") === "visible") {
+                        document.querySelector(".gridLayout").classList.remove("show");
+                        document.querySelector(".gridLayout").classList.add("hide");
+                        localStorage.setItem("popup", "hidden");
+                        setTimeout( () => {
+                            document.querySelector(".gridLayout").classList.remove("hide");
+                        }, 1000);
+                        localStorage.setItem("popup", "hidden");
+                }
+            }
 
             this.classList.remove('over');
         }
