@@ -307,6 +307,33 @@ function rotate(piece)
     }
 }
 
+function movePieceByKeyboardHelper(row, col)
+{
+    let highlightedPieceParent = $(highlightedPiece).parent();
+    let rowVal = parseInt(highlightedPieceParent.attr("data-row"));
+    let colVal = parseInt(highlightedPieceParent.attr("data-column"));
+    rowVal += row;
+    colVal += col;
+    let divElem = $(`.cellClass2[data-row="${rowVal}"][data-column="${colVal}"]`);
+    divElem.click();
+}
+
+function movePieceByKeyboard(direction)
+{
+    if(highlightedPiece != null) {
+        if(highlightedPiece.parentElement.classList == "piecesClass"){
+            document.getElementsByClassName("cellClass2")[0].dispatchEvent(new Event('click'));
+            return;
+        }
+        switch (direction) {
+            case "up" : {movePieceByKeyboardHelper(-1, 0); return;}
+            case "left" : {movePieceByKeyboardHelper(0, -1); return;}
+            case "down" : {movePieceByKeyboardHelper(1, 0); return;}
+            case "right" : {movePieceByKeyboardHelper(0, 1); return;}
+        }
+    }
+}
+
 function handleKeyboard(e)
 {
     const keyname = e.key;
@@ -319,6 +346,10 @@ function handleKeyboard(e)
         case '4' : {className = "piece3"; break;}
         case '5' : {className = "piece4"; break;}
         case 'r' : {rotate(highlightedPiece); return;}
+        case 'w' : {movePieceByKeyboard("up"); return;}
+        case 'a' : {movePieceByKeyboard("left"); return;}
+        case 's' : {movePieceByKeyboard("down"); return;}
+        case 'd' : {movePieceByKeyboard("right"); return;}
         default : return;
     }
     let piece = document.getElementsByClassName(className);
