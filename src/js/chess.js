@@ -4,7 +4,7 @@ let rows = 8;
 let columns = 8;
 let matrixTable2 = [];
 initializeMatrix2(8, 8);
-let piecesPositions = [];
+let piecesPositions = {};
 
 const newPElement = document.createElement('p');
 const appElement = document.getElementById('app');
@@ -69,7 +69,7 @@ function movePiece()
     this.appendChild(highlightedPiece);
     highlightedPiece.style.setProperty('filter', 'unset');
     highlightedPiece.dataset.highlight = "no";
-    piecesPositions[highlightedPiece.classList[0]] = {row : this.dataset.row, column : this.dataset.column};
+    piecesPositions[pieceIndex] = {key: pieceIndex, row : this.dataset.row, column : this.dataset.column};
     localStorage.setItem("positions", JSON.stringify(piecesPositions));
     highlightedPiece = null;
 }
@@ -84,6 +84,7 @@ function createDivElementsInElement(numberOfDivElements, className, parentElemen
         parentElement.appendChild(newDivElements[i]);
         newDivElements[i].dataset.row = parseInt(i / 8);
         newDivElements[i].dataset.column = i % 8;
+        newDivElements[i].style.setProperty("position", "relative");
         newDivElements[i].addEventListener("click", movePiece);
         newDivElements[i].addEventListener('dragover', handleDragOver);
         newDivElements[i].addEventListener('drop', handleDrop);
@@ -187,7 +188,7 @@ function handleDrop(e)
         {
             matrixTable2[this.dataset.row][parseInt(this.dataset.column)+i] = pieceIndex;
         }
-        piecesPositions[pieceIndex] = {row : this.dataset.row, column : this.dataset.column};
+        piecesPositions[pieceIndex] = {key: pieceIndex, row : this.dataset.row, column : this.dataset.column};
         localStorage.setItem("positions", JSON.stringify(piecesPositions));
     }
     return false;
@@ -218,16 +219,50 @@ function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
 }
 
 const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
+
+function getShipClassByKey(key)
+{
+    switch (key)
+    {
+        case 1: return "piece0";
+        case 2: return "piece1";
+        case 3: return "piece2";
+        case 4: return "piece3";
+        case 5: return "piece4";
+    }
+}
+
 //let pieceElements = generatePieces(5, 'piecesClass', 'piece', divTable2);
 function callGeneratePieces()
 {
     generatePieces(5, 'piecesClass', 'piece', divTable2);
-
+    let parsed = JSON.parse(localStorage.getItem("positions"));
+    if(parsed != null) {
+        piecesPositions = Object.values(parsed);
+        for (let i = 0; i < piecesPositions.length; i++) {
+            if(piecesPositions[i] != null) {
+                console.log(piecesPositions[i]);
+                let className = getShipClassByKey(piecesPositions[i].key);
+                let elem = document.getElementsByClassName(className)[0];
+                elem.dispatchEvent(new Event('click'));
+                let rowElem = piecesPositions[i].row;
+                let colElem = piecesPositions[i].column;
+                let divElem = $(`.cellClass2[data-row="${rowElem}"][data-column="${colElem}"]`)[0];
+                divElem.dispatchEvent(new Event('click'));
+            }
+        }
+    }
+    //localStorage.clear();
 }
-setTimeout(callGeneratePieces, 5000);
+setTimeout(callGeneratePieces, 2000);
 
 function generateNewGame()
 {
+    localStorage.clear();
+    for(let i = 0; i < piecesPositions.length; i++)
+    {
+        piecesPositions[i] = null;
+    }
     while(appElement.children.length > 1)
     {
         appElement.removeChild(appElement.children[1]);
