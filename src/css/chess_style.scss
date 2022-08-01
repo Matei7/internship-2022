@@ -25,9 +25,12 @@ body{
     width: 100%;
     height: 100%;
 }
-.piece-selected{
-    background-color: yellow;
-}
 .piece-ready{
     background-color: green;
+}
+.potential{
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Blue_circle_for_diabetes.svg/2048px-Blue_circle_for_diabetes.svg.png");
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
