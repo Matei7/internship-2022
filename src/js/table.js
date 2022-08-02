@@ -306,6 +306,9 @@ function selectPieceToMove(numberOfDiceUsed) {
                         blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
                         selectPieceToMove(numberOfDiceUsed);
                         break;
+                }
+            } else {
+                switch (numberOfDiceUsed) {
                     case 1:
                         movePiece(randNumTwo, currentPieceToMove);
                         console.log("dice 1 used");
@@ -321,22 +324,6 @@ function selectPieceToMove(numberOfDiceUsed) {
 
                 }
             }
-            // else if (blacks[Number(columnNumber) + Number(randNumTwo)] === 1) {
-            //     switch (numberOfDiceUsed) {
-            //         case 1:
-            //             movePiece(randNumTwo, currentPieceToMove);
-            //             console.log("dice 1 used");
-            //             numberOfDiceUsed--;
-            //             console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
-            //             console.log("luata inca o piesa");
-            //             blacks[Number(columnNumber) + Number(randNumTwo)]--;
-            //             reRenderPieces(whites, blacks);
-            //             blacksOut++;
-            //             blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
-            //             selectPieceToMove(numberOfDiceUsed);
-            //             break;
-            //     }
-            // }
         }
 
 
@@ -397,13 +384,13 @@ function reEnterPiece(color) {
             console.log(columnNumber);
             if (columnNumber > 18 && whites[columnNumber] === 0) {
                 console.log("plm");
-                if ((24 - randNumOne) === columnNumber) {
+                if ((24 - randNumOne).toString() === columnNumber) {
                     console.log("reenter 1");
                     blacks[24 - randNumOne]++;
                     blacksOut--;
                     blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
                     reRenderPieces(whites, blacks);
-                } else if (whites[24 - randNumTwo] === 0 && (24 - randNumTwo) === columnNumber) {
+                } else if (whites[24 - randNumTwo] === 0 && (24 - randNumTwo).toString() === columnNumber) {
                     console.log("reenter 2");
                     blacks[24 - randNumTwo]++;
                     blacksOut--;
