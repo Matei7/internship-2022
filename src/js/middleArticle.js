@@ -1,5 +1,9 @@
 const slotImages = [];
-const lastSet = [];
+let lastSet = [];
+
+import { saveLastData } from "./ajax";
+
+//<----------------------------------------------------Main Creation Function---------------------------------------------------->
 
 export function middleArticle() {
     const articleLayout = document.createElement("article");
@@ -7,7 +11,7 @@ export function middleArticle() {
     document.querySelector('#app').appendChild(articleLayout);
 
     const gridInterface = document.createElement("div");
-    gridInterface.classList += "gridLayout";
+    gridInterface.classList += "flexLayout";
     document.querySelector('.middleArticle').appendChild(gridInterface);
 
     const spinButtonDiv = document.createElement("div");
@@ -22,6 +26,8 @@ export function middleArticle() {
     popupReload();
 }
 
+//<----------------------------------------------------Add image in array---------------------------------------------------->
+
 function addImage(url, floatValue) {
     let divImage = document.createElement("div");
     divImage.classList += "divImg";
@@ -34,64 +40,44 @@ function addImage(url, floatValue) {
     divImage.appendChild(sevenSlotImage);
 
     if (number < 10)
-        document.querySelector(".gridLayout").appendChild(divImage);
+        document.querySelector(".flexLayout").appendChild(divImage);
 
     slotImages.push(divImage);
 }
 
+//<----------------------------------------------------Create Images---------------------------------------------------->
+
 export function createImages() {
 
-
-    for (let i = 0; i < 81; i++) {
-        addImage("7-512.webp", 2);
-        addImage("Grapes-512.webp", 1.6);
-        addImage("Bananas-512.webp", 1.1);
-        addImage("Watermelon-512.webp", 1.5);
+    for (let i = 0; i < 90; i++) {
+        addImage("7-512.webp", 10);
+        addImage("Grapes-512.webp", 2.5);
+        addImage("Bananas-512.webp", 2.2);
+        addImage("Watermelon-512.webp", 3);
         addImage("casino_token-512.webp", 1);
-        addImage("Cherry-512.webp", 1.3);
-        addImage("LEMON-512.webp", 1.2);
-        addImage("power-stars-f1.png", 1.7);
-        addImage("strawberry-512.webp", 1.4);
+        addImage("Cherry-512.webp", 5);
+        addImage("LEMON-512.webp", 2);
+        addImage("power-stars-f1.png", 4);
+        addImage("strawberry-512.webp", 1.5);
     }
 }
 
+//<----------------------------------------------------Clear all images from grid---------------------------------------------------->
+
 function removeAllFields() {
-    const gridInterface = document.querySelector('.gridLayout');
+    const gridInterface = document.querySelector('.flexLayout');
     while (gridInterface.firstChild)
         gridInterface.removeChild(gridInterface.firstChild);
 }
+
+//<----------------------------------------------------Button events for spin---------------------------------------------------->
 
 export function buttonEvent() {
     const spinButton = document.querySelector('.spinButton');
     spinButton.addEventListener('click', () => {
         let bettingSum = document.querySelector('#betButton1').innerText.replace(/\D+$/g, "");
         if (parseFloat(localStorage.getItem('balance')) >= parseFloat(bettingSum)) {
-            removeAllFields();
-
-            slotImages.sort(() => Math.random() - 0.5);
-            for (let i = 0; i < 9; i++) {
-                let currentImage = slotImages[i];
-                document.querySelector(".gridLayout").appendChild(currentImage);
-
-                if((i + 1) % 3 === 0){
-                    let childrenVector = document.querySelector(".gridLayout").childNodes;
-                    if((currentImage.dataset.value === childrenVector[i - 1].dataset.value) && (currentImage.dataset.value === childrenVector[i - 2].dataset.value)){
-                        
-                        let multiplier = parseFloat(currentImage.dataset.value) * 3.0;
-                        childrenVector[i - 2].querySelector(".slotImages").classList.add("blink");
-                        childrenVector[i - 1].querySelector(".slotImages").classList.add("blink");
-                        childrenVector[i].querySelector(".slotImages").classList.add("blink");
-
-                        let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
-                        let balance = parseFloat(localStorage.getItem("balance"));
-                        balance += currentBetValue * multiplier;
-                        localStorage.setItem("balance", balance);
-
-                        document.querySelector(".balance").innerText = "Balance: " + balance + "$";
-                    }
-                }
-            }
-
+            linesLogic();
             spinCounts();
         }
     });
@@ -102,31 +88,8 @@ export function buttonEvent() {
             if ((event.code === 'Space') || (event.code === ' ')) {
                 event.preventDefault();
                 event.stopPropagation();
-                removeAllFields();
 
-                slotImages.sort(() => Math.random() - 0.5);
-                for (let i = 0; i < 9; i++) {
-                    let currentImage = slotImages[i];
-                    document.querySelector(".gridLayout").appendChild(currentImage);
-
-                    if((i + 1) % 3 === 0){
-                        let childrenVector = document.querySelector(".gridLayout").childNodes;
-                        if((currentImage.dataset.value === childrenVector[i - 1].dataset.value) && (currentImage.dataset.value === childrenVector[i - 2].dataset.value)){
-                            
-                            let multiplier = parseFloat(currentImage.dataset.value) * 3.0;
-                            childrenVector[i - 2].querySelector(".slotImages").classList.add("blink");
-                            childrenVector[i - 1].querySelector(".slotImages").classList.add("blink");
-                            childrenVector[i].querySelector(".slotImages").classList.add("blink");
-
-                            let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
-                            let balance = parseFloat(localStorage.getItem("balance"));
-                            balance += currentBetValue * multiplier;
-                            localStorage.setItem("balance", balance);
-
-                            document.querySelector(".balance").innerText = "Balance: " + balance + "$";
-                        }
-                    }
-                }
+                linesLogic();
 
                 const spinButton = document.querySelector(".spinButton");
                 spinButton.style.boxShadow = "none";
@@ -150,28 +113,145 @@ export function buttonEvent() {
     });
 }
 
-function spinCounts() {
+//<----------------------------------------------------Lines Winning Logic---------------------------------------------------->
+
+export function linesLogic() {
+    removeAllFields();
+
+    slotImages.forEach(slotImage => {
+        slotImage.querySelector(".slotImages").classList.remove("blink");
+    });
+
+    lastSet = [];
+
+    slotImages.sort(() => Math.random() - 0.5);
+    for (let i = 0; i < 9; i++) {
+        let currentImage = slotImages[i];
+
+        lastSet.push(currentImage);
+        document.querySelector(".flexLayout").appendChild(currentImage);
+
+        //Line Logic
+        if ((i + 1) % 3 === 0) {
+            if ((currentImage.dataset.value === lastSet[i - 1].dataset.value) && (currentImage.dataset.value === lastSet[i - 2].dataset.value)) {
+
+                let multiplier = parseFloat(currentImage.dataset.value) * 3.0;
+                lastSet[i - 2].querySelector(".slotImages").classList.add("blink");
+                lastSet[i - 1].querySelector(".slotImages").classList.add("blink");
+                lastSet[i].querySelector(".slotImages").classList.add("blink");
+
+                let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
+                let balance = parseFloat(localStorage.getItem("balance"));
+                balance += currentBetValue * multiplier;
+                balance = Math.round(balance * 100) / 100;
+                localStorage.setItem("balance", balance);
+
+                document.querySelector(".balance").innerText = "Balance: " + balance + "$";
+            }
+        }
+    }
+
+    //Diagonal logic
+    diagonalLogic(0, 4, 8);
+    diagonalLogic(2, 4, 6);
+
+    //Semi-diagonal logic
+    for(let i = 0; i < 6; i++)
+        semiDiagonalLogic(i);
+
+    //saveLastData("codrescu.razvan@gmail.com", "razvan", lastSet, parseFloat(localStorage.getItem('balance')));
+}
+
+function diagonalLogic(position1, position2, position3) {
+    if ((lastSet[position1].dataset.value === lastSet[position2].dataset.value) &&
+        (lastSet[position2].dataset.value === lastSet[position3].dataset.value)) {
+        let multiplier = parseFloat(lastSet[position1].dataset.value) * 2.5;
+
+        lastSet[position1].querySelector(".slotImages").classList.add("blink");
+        lastSet[position2].querySelector(".slotImages").classList.add("blink");
+        lastSet[position3].querySelector(".slotImages").classList.add("blink");
+
+        let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
+        let balance = parseFloat(localStorage.getItem("balance"));
+        balance += currentBetValue * multiplier;
+        balance = Math.round(balance * 100) / 100;
+        localStorage.setItem("balance", balance);
+
+        document.querySelector(".balance").innerText = "Balance: " + balance + "$";
+    }
+}
+
+function semiDiagonalLogic(i) {
+    if (i < 6 && (i % 3 !== 0) &&
+    lastSet[i].dataset.value === lastSet[i + 1].dataset.value &&
+    lastSet[i + 1].dataset.value === lastSet[i + 2].dataset.value) {
+            recalculateBalanceMethod(i, i + 1, i + 2);
+    }
+
+    if (i < 5 && lastSet[i].dataset.value === lastSet[i + 2].dataset.value &&
+        lastSet[i + 2].dataset.value === lastSet[i + 4].dataset.value) {
+            recalculateBalanceMethod(i, i + 2, i + 4);
+    }
+
+    if((i % 3 === 0) && i < 4 &&
+    lastSet[i].dataset.value === lastSet[i + 1].dataset.value && 
+    lastSet[i + 1].dataset.value === lastSet[i + 5].dataset.value){
+        recalculateBalanceMethod(i, i + 1, i + 5);
+    }
+
+    if((i % 3 === 0) && i < 4 &&
+    lastSet[i].dataset.value === lastSet[i + 4].dataset.value && 
+    lastSet[i + 4].dataset.value === lastSet[i + 5].dataset.value){
+        recalculateBalanceMethod(i, i + 4, i + 5);
+    }
+
+
+}
+
+function recalculateBalanceMethod(position1, position2, position3){
+    let multiplier = parseFloat(lastSet[position1].dataset.value) * 2;
+
+            lastSet[position1].querySelector(".slotImages").classList.add("blink");
+            lastSet[position2].querySelector(".slotImages").classList.add("blink");
+            lastSet[position3].querySelector(".slotImages").classList.add("blink");
+    
+            let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
+            let balance = parseFloat(localStorage.getItem("balance"));
+            balance += currentBetValue * multiplier;
+            balance = Math.round(balance * 100) / 100;
+            localStorage.setItem("balance", balance);
+    
+            document.querySelector(".balance").innerText = "Balance: " + balance + "$";
+}
+
+//<----------------------------------------------------Balance and spinning logic---------------------------------------------------->
+
+export function spinCounts() {
     let balance = parseFloat(localStorage.getItem('balance'));
     let currentBet = parseFloat(document.querySelector('#betButton1').innerText);
     if (balance >= currentBet) {
         balance -= parseFloat(currentBet);
+        balance = Math.round(balance * 100) / 100;
         localStorage.setItem('balance', balance);
         document.querySelector('.balanceDiv p').innerText = "Balance: " + balance + "$";
     }
 
     popupReload();
+    //saveLastData("codrescu.razvan@gmail.com", "razvan", lastSet, balance);
 }
 
+//<----------------------------------------------------No money logic---------------------------------------------------->
+
 function popupReload() {
-    if (parseFloat(localStorage.getItem('balance')) <= 0) {
-            document.querySelector(".gridLayout").classList.add("show");
-            localStorage.setItem("popup", "visible");
+    if (parseFloat(localStorage.getItem('balance')) <= 0.5) {
+        document.querySelector(".flexLayout").classList.add("show");
+        localStorage.setItem("popup", "visible");
     } else {
         if (localStorage.getItem("popup") === "visible") {
-            document.querySelector(".gridLayout").classList.remove("show");
-            document.querySelector(".gridLayout").classList.add("hide");
-            setTimeout( () => {
-                document.querySelector(".gridLayout").classList.remove("hide");
+            document.querySelector(".flexLayout").classList.remove("show");
+            document.querySelector(".flexLayout").classList.add("hide");
+            setTimeout(() => {
+                document.querySelector(".flexLayout").classList.remove("hide");
             }, 1000);
             localStorage.setItem("popup", "hidden");
         }

@@ -1,5 +1,9 @@
 const betMultiplierVector = [0.5, 1, 2, 4, 8];
 const betVector = [1, 5, 10, 50, 100,];
+const spinsVector = [1, 5, 10, 20, 50];
+
+import { linesLogic } from "./middleArticle";
+import { spinCounts } from "./middleArticle";
 
 export function bottomArticle() {
 
@@ -49,6 +53,20 @@ export function bottomArticle() {
         document.querySelector('#betButton2').innerText = "x1";
     betMultiplierDiv.append(createList(2, 2));
     betFunctionality(2);
+
+    //<----------------------------------------------------Auto Spins---------------------------------------------------->
+    const spinsNumberDiv = document.createElement("div");
+    spinsNumberDiv.classList += "spinsNumberDiv";
+    bottomArticle.appendChild(spinsNumberDiv);
+    let selectionSpins = createButton(3);
+    spinsNumberDiv.appendChild(selectionSpins);
+    if (localStorage.getItem('spins') === null)
+        selectionSpins.innerText = "Spins";
+    else
+        document.querySelector('#betButton3').innerText = "S:1";
+    spinsNumberDiv.append(createList(3, 3));
+    betFunctionality(3);
+
 
     //<----------------------------------------------------Coin Insertion Image---------------------------------------------------->
     const coinInsertionDiv = document.createElement("div");
@@ -110,8 +128,10 @@ function createList(number, option) {
         textField.href = "#";
         if (option === 1) {
             textField.innerText = betVector[i] + "$";
-        } else {
+        } else if (option === 2) {
             textField.innerText = "x" + betMultiplierVector[i];
+        } else {
+            textField.innerText = "S:" + spinsVector[i];
         }
         listItem.appendChild(textField);
     }
@@ -129,13 +149,15 @@ function betFunctionality(option) {
         btn = document.querySelector("#betButton1");
         dropdown = document.querySelector("#list1");
         optionLinks = document.querySelectorAll("#list1 .option a");
-    } else {
+    } else if (option === 2) {
         btn = document.querySelector("#betButton2");
         dropdown = document.querySelector("#list2");
         optionLinks = document.querySelectorAll("#list2 .option a");
+    } else {
+        btn = document.querySelector("#betButton3");
+        dropdown = document.querySelector("#list3");
+        optionLinks = document.querySelectorAll("#list3 .option a");
     }
-
-    console.log(optionLinks);
 
     btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -159,12 +181,40 @@ function betFunctionality(option) {
             if (option === 2) {
                 betMultiplier();
                 localStorage.setItem('mul', btn.innerText);
+            } else if (option === 1)
+                localStorage.setItem('firstBetValue', document.querySelector("#betButton1").innerText);
+            else if (option === 3) {
+                localStorage.setItem('spins', document.querySelector("#betButton3").innerText);
+                let spinsChosen = parseFloat(localStorage.getItem('spins').match(/[+-]?\d+(\.\d+)?/g));
+                // let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
+                // let balance = parseFloat(localStorage.getItem('balance'));
+                // if(currentBetValue * spinsChosen < balance)
+                recursiveSpins(0, spinsChosen);
             }
 
-            if (option === 1)
-                localStorage.setItem('firstBetValue', document.querySelector("#betButton1").innerText);
+
         }, false);
     }
+}
+
+//<----------------------------------------------------Recursive FUnction---------------------------------------------------->
+
+function recursiveSpins(currentSpin, maximum) {
+
+    if (currentSpin >= maximum)
+        return;
+
+    let promise = new Promise(function (resolve, reject) {
+        linesLogic();
+        spinCounts();
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    });
+
+    promise.then(() => {
+        setTimeout(() => { recursiveSpins(parseFloat(currentSpin) + 1, maximum); }, 2000);
+    });
 }
 
 //<----------------------------------------------------Multiplier Functionality---------------------------------------------------->
@@ -236,17 +286,17 @@ function droppable() {
             document.querySelector("p.balance").innerText = "Balance: " + balance + '$';
 
             if (parseFloat(localStorage.getItem('balance')) <= 0) {
-                    document.querySelector(".gridLayout").classList.add("show");
-                    localStorage.setItem("popup", "visible");
+                document.querySelector(".flexLayout").classList.add("show");
+                localStorage.setItem("popup", "visible");
             } else {
                 if (localStorage.getItem("popup") === "visible") {
-                        document.querySelector(".gridLayout").classList.remove("show");
-                        document.querySelector(".gridLayout").classList.add("hide");
-                        localStorage.setItem("popup", "hidden");
-                        setTimeout( () => {
-                            document.querySelector(".gridLayout").classList.remove("hide");
-                        }, 1000);
-                        localStorage.setItem("popup", "hidden");
+                    document.querySelector(".flexLayout").classList.remove("show");
+                    document.querySelector(".flexLayout").classList.add("hide");
+                    localStorage.setItem("popup", "hidden");
+                    setTimeout(() => {
+                        document.querySelector(".flexLayout").classList.remove("hide");
+                    }, 1000);
+                    localStorage.setItem("popup", "hidden");
                 }
             }
 
