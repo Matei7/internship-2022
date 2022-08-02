@@ -1,6 +1,9 @@
 import "../css/style-table.scss";
 import $ from "jquery";
 
+let blacksOut = 0;
+let whitesOut = 0;
+
 let mainDiv = document.createElement("div");
 mainDiv = document.createElement("div");
 mainDiv.setAttribute("id", "main");
@@ -10,6 +13,29 @@ let top = document.createElement('div');
 top = document.createElement('div');
 top.classList.add("top");
 mainDiv.appendChild(top);
+
+let gameInfo = document.createElement('div');
+gameInfo.classList.add("game-info");
+mainDiv.appendChild(gameInfo);
+
+let piecesOutDiv = document.createElement('div');
+piecesOutDiv.classList.add("pieces-out");
+gameInfo.appendChild(piecesOutDiv);
+
+let whitePiecesTakenOut = document.createElement('p');
+whitePiecesTakenOut.classList.add("white-pieces-taken");
+piecesOutDiv.appendChild(whitePiecesTakenOut);
+whitePiecesTakenOut.textContent = "Whites out: " + whitesOut;
+
+let blackPiecesTakenOut = document.createElement('p');
+blackPiecesTakenOut.classList.add("black-pieces-taken");
+piecesOutDiv.appendChild(blackPiecesTakenOut);
+blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+
+let gameInfoText = document.createElement('p');
+gameInfoText.classList.add("game-info-text");
+gameInfo.appendChild(gameInfoText);
+gameInfoText.textContent = "ROLL THE DICE TO START!\nFIRST TO MOVE: WHITE";
 
 let tableDiv;
 
@@ -89,7 +115,7 @@ function drawPiece(numberOfPieces, columnIndex, color) {
     if (columnIndex > 11) {
         divElement.style.bottom = '0';
         divElement.style.position = 'absolute';
-        divElement.style.bottom = '0';
+        divElement.style.justifyContent = 'center';
     }
 }
 
@@ -130,6 +156,7 @@ function getRandomInt(min, max) {
 let diceDiv;
 let randNumOne;
 let randNumTwo;
+let diceMoves;
 
 function createDiceButton() {
     diceDiv = document.createElement('div');
@@ -169,6 +196,7 @@ function createDiceButton() {
         let currentClassTwo = '';
 
         function rollDice() {
+            whiteTurn = !whiteTurn;
             randNumOne = getRandomInt(1, 7);
             randNumTwo = getRandomInt(1, 7);
 
@@ -185,22 +213,37 @@ function createDiceButton() {
             dice2.classList.add(showClassTwo);
             currentClassOne = showClassOne;
             currentClassTwo = showClassTwo;
-            if(randNumOne === randNumTwo) {
+            if (randNumOne === randNumTwo) {
                 reRenderPieces(whites, blacks);
-                selectPieceToMove(4);
+                diceMoves = 4;
+                selectPieceToMove(diceMoves);
 
             } else {
                 reRenderPieces(whites, blacks);
-                selectPieceToMove(2);
+                diceMoves = 2;
+                selectPieceToMove(diceMoves);
             }
         }
+
         rollBtn.addEventListener("click", rollDice);
     });
+}
 
+let whiteTurn = false;
+
+function toggleColorToMove() {
+    if (!whiteTurn) {
+        $('.white-pieces').addClass("disable-div");
+        gameInfoText.textContent = "Current turn: BLACK";
+    } else {
+        $('.black-pieces').addClass("disable-div");
+        gameInfoText.textContent = "Current turn: WHITE";
+    }
 }
 
 function selectPieceToMove(numberOfDiceUsed) {
     let currentPieceToMove;
+    toggleColorToMove();
     $(".div-set").click(function () {
         let myClass = $(this).closest('[class$="triangles"]');
         let divColor = $(this).children().get(0);
@@ -210,51 +253,184 @@ function selectPieceToMove(numberOfDiceUsed) {
         } else {
             currentPieceToMove = {color: "black", columnNumber: myClass.get(0).id}
         }
-        switch (numberOfDiceUsed) {
-            case 4:
-                movePiece(randNumOne, currentPieceToMove);
-                numberOfDiceUsed--;
-                console.log("numberOfDiceUsed: " + numberOfDiceUsed);
-                selectPieceToMove(numberOfDiceUsed);
-                break;
-            case 3:
-                movePiece(randNumOne, currentPieceToMove);
-                numberOfDiceUsed--;
-                console.log("numberOfDiceUsed: " + numberOfDiceUsed);
-                selectPieceToMove(numberOfDiceUsed);
-                break;
-            case 2:
-                movePiece(randNumOne, currentPieceToMove);
-                console.log("dice 1 used");
-                numberOfDiceUsed--;
-                console.log("numberOfDiceUsed: " + numberOfDiceUsed);
-                selectPieceToMove(numberOfDiceUsed);
-                break;
-            case 1:
-                movePiece(randNumTwo, currentPieceToMove);
-                console.log("dice 2 used");
-                numberOfDiceUsed--;
-                console.log("numberOfDiceUsed: " + numberOfDiceUsed);
-                selectPieceToMove(numberOfDiceUsed);
-                break;
-            case 0:
-                break;
 
+        columnNumber = currentPieceToMove.columnNumber.substr(7);
+
+        if (currentPieceToMove.color === "white") {
+            if (blacks[Number(columnNumber) + Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
+                switch (numberOfDiceUsed) {
+                    case 4:
+                        movePiece(randNumOne, currentPieceToMove);
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                    case 3:
+                        movePiece(randNumOne, currentPieceToMove);
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                    case 2:
+                        movePiece(randNumOne, currentPieceToMove);
+                        console.log("dice 1 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                }
+            } else if (blacks[Number(columnNumber) + Number(randNumTwo)] === 0) {
+                switch (numberOfDiceUsed) {
+                    case 1:
+                        movePiece(randNumTwo, currentPieceToMove);
+                        console.log("dice 2 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        gameInfoText.textContent += "\nROLL DICE TO TURN BLACK";
+                        break;
+                    case 0:
+                        break;
+                }
+            } else if (blacks[Number(columnNumber) + Number(randNumOne)] === 1) {
+                switch (numberOfDiceUsed) {
+                    case 2:
+                        movePiece(randNumOne, currentPieceToMove);
+                        console.log("dice 1 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        console.log("luata o piesa");
+                        blacks[Number(columnNumber) + Number(randNumOne)]--;
+                        reRenderPieces(whites, blacks);
+                        blacksOut++;
+                        blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                    case 1:
+                        movePiece(randNumTwo, currentPieceToMove);
+                        console.log("dice 1 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        console.log("luata inca o piesa");
+                        blacks[Number(columnNumber) + Number(randNumTwo)]--;
+                        reRenderPieces(whites, blacks);
+                        blacksOut++;
+                        blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+
+                }
+            }
+            // else if (blacks[Number(columnNumber) + Number(randNumTwo)] === 1) {
+            //     switch (numberOfDiceUsed) {
+            //         case 1:
+            //             movePiece(randNumTwo, currentPieceToMove);
+            //             console.log("dice 1 used");
+            //             numberOfDiceUsed--;
+            //             console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+            //             console.log("luata inca o piesa");
+            //             blacks[Number(columnNumber) + Number(randNumTwo)]--;
+            //             reRenderPieces(whites, blacks);
+            //             blacksOut++;
+            //             blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+            //             selectPieceToMove(numberOfDiceUsed);
+            //             break;
+            //     }
+            // }
+        }
+
+
+        if (currentPieceToMove.color === "black") {
+            if (blacksOut >= 1) {
+                gameInfoText.textContent = "\nChoose where to insert your piece back in game";
+                reEnterPiece(currentPieceToMove.color);
+
+            } else if (whites[Number(columnNumber) - Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
+                switch (numberOfDiceUsed) {
+                    case 4:
+                        movePiece(randNumOne, currentPieceToMove);
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                    case 3:
+                        movePiece(randNumOne, currentPieceToMove);
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                    case 2:
+                        movePiece(randNumOne, currentPieceToMove);
+                        console.log("e nebun");
+                        console.log("dice 1 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        break;
+                }
+            } else if (whites[Number(columnNumber) - Number(randNumTwo)] === 0) {
+                console.log("here " + numberOfDiceUsed);
+                switch (numberOfDiceUsed) {
+                    case 1:
+                        movePiece(randNumTwo, currentPieceToMove);
+                        console.log("dice 2 used");
+                        numberOfDiceUsed--;
+                        console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
+                        selectPieceToMove(numberOfDiceUsed);
+                        gameInfoText.textContent += "\nROLL DICE TO TURN WHITE";
+                        break;
+                    case 0:
+                        break;
+                }
+            }
         }
     });
 }
 
+function reEnterPiece(color) {
+    if (color === "black") {
+        console.log("choose where to reEnter the piece");
+        $('[class$="triangles"]').click(function () {
+            let selectedColumn = $(this).children().get(0);
+            let selectedColumnId = $(selectedColumn).attr("id");
+            columnNumber = selectedColumnId.substr(4);
+            console.log(columnNumber);
+            if (columnNumber > 18 && whites[columnNumber] === 0) {
+                console.log("plm");
+                if ((24 - randNumOne) === columnNumber) {
+                    console.log("reenter 1");
+                    blacks[24 - randNumOne]++;
+                    blacksOut--;
+                    blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+                    reRenderPieces(whites, blacks);
+                } else if (whites[24 - randNumTwo] === 0 && (24 - randNumTwo) === columnNumber) {
+                    console.log("reenter 2");
+                    blacks[24 - randNumTwo]++;
+                    blacksOut--;
+                    blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+                    reRenderPieces(whites, blacks);
+                }
+            } else {
+                gameInfoText.textContent = "Please choose a place in the opponent home...";
+            }
+        });
+    }
+}
+
+let columnNumber;
+
 function movePiece(diceValue, currentPieceToMove) {
-    console.log("this piece was selected " + currentPieceToMove.color + ' ' +
-        currentPieceToMove.columnNumber + ' ' + diceValue);
-    let columnNumber;
     switch (currentPieceToMove.color) {
         case "white":
             columnNumber = currentPieceToMove.columnNumber.substr(7);
-            whites[columnNumber]--;
-            whites[Number(columnNumber) + Number(diceValue)]++;
-            reRenderPieces(whites, blacks);
-             break;
+            if (blacks[Number(columnNumber) + Number(diceValue)] > 1) {
+                break;
+            } else {
+                whites[columnNumber]--;
+                whites[Number(columnNumber) + Number(diceValue)]++;
+                reRenderPieces(whites, blacks);
+                break;
+            }
         case "black":
             columnNumber = currentPieceToMove.columnNumber.substr(7);
             blacks[columnNumber]--;

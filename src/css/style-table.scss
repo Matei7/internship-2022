@@ -1,5 +1,6 @@
 body {
-  margin: 30px;
+  margin-top: 15px;
+  margin-left: 30px;
   padding: 0;
 }
 
@@ -11,6 +12,14 @@ body {
   width: 100%;
 }
 
+.pieces-out {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: right;
+  position: relative;
+}
+
 .top {
   display: flex;
   flex-direction: row;
@@ -19,8 +28,33 @@ body {
   position: relative;
 }
 
+.game-info {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: left;
+  position: relative;
+}
+
+.game-info-text {
+  margin-left: 400px;
+  margin-top: 40px;
+  text-align: center;
+  font-size: 20px;
+  font-family: ui-sans-serif;
+  font-weight: bold;
+  width: 300px;
+}
+
+.white-pieces-taken, .black-pieces-taken {
+  width: 200px;
+  font-size: 20px;
+  font-family: ui-sans-serif;
+  font-weight: bold;
+  text-align: center;
+  }
+
 .tableBoard {
-  margin-top: 60px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -28,7 +62,7 @@ body {
   border-radius: 12px;
   justify-content: space-between;
   background-color: #E4D4C8;
-  width: 90vw;
+  max-width: 90vw;
   height: 60%;
 }
 
@@ -154,6 +188,11 @@ body {
   box-shadow: 2px 3px 0 #000000;
 }
 
+.disable-div {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .white-pieces-clicked {
   border: 30px solid #988780;
 }
@@ -182,13 +221,11 @@ body {
 .start-button {
   text-align: center;
   font-family: ui-sans-serif;
-  width: 400px;
-  height: 80px;
-  margin-bottom: 20px;
+  width: 300px;
+  height: 60px;
   top: 0;
   outline: none;
   position: relative;
-  margin-left: 40px;
   padding: 15px 50px;
   color: #fff;
   background-color: #f4d35e;
@@ -208,9 +245,8 @@ body {
 
 .roll-button {
     position: relative;
-    margin-left: 40px;
     padding: 15px 50px;
-    height: 65px;
+    height: 60px;
     width: 200px;
     color: #fff;
     background-color: #f4d35e;
@@ -234,12 +270,10 @@ body {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
   position: relative;
   margin-left: 100px;
   width: 50%;
-  margin-top: 10px;
-  //perspective:600px
 }
 
 .dice-one, .dice-two {
@@ -248,30 +282,30 @@ body {
   width: 60px;
   height: 60px;
   transform-style: preserve-3d;
-  transform: translateZ(0px);
+  transform: translateZ(100px);
   transition: transform .5s;
 }
 
-.dice-one.show-1  { transform: translateZ(-100px) rotateY(   0deg); }
-.dice-one.show-2  { transform: translateZ(-100px) rotateY(-180deg); }
-.dice-one.show-3  { transform: translateZ(-100px) rotateY( -90deg); }
-.dice-one.show-4   { transform: translateZ(-100px) rotateY(  90deg); }
-.dice-one.show-5   { transform: translateZ(-100px) rotateX( -90deg); }
-.dice-one.show-6 { transform: translateZ(-100px) rotateX(  90deg); }
+.dice-one.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-one.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-one.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-one.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-one.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-one.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
 
-.dice-two.show-1  { transform: translateZ(-100px) rotateY(   0deg); }
-.dice-two.show-2  { transform: translateZ(-100px) rotateY(-180deg); }
-.dice-two.show-3  { transform: translateZ(-100px) rotateY( -90deg); }
-.dice-two.show-4   { transform: translateZ(-100px) rotateY(  90deg); }
-.dice-two.show-5   { transform: translateZ(-100px) rotateX( -90deg); }
-.dice-two.show-6 { transform: translateZ(-100px) rotateX(  90deg); }
+.dice-two.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-two.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-two.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-two.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-two.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-two.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
 
 
 .dice-face {
   position: absolute;
   width: 60px;
   height: 60px;
-  border: 2px solid black;
+  border: 3px ridge #B9B7BD;
   border-radius: 12px;
   line-height: 60px;
   font-size: 40px;
@@ -287,9 +321,9 @@ body {
 .dice-face-5  { background: ghostwhite;  opacity: 1.00; }
 .dice-face-6  { background: ghostwhite;  opacity: 1.00; }
 
-.dice-face-1  { transform: rotateY(  0deg) translateZ(100px); }
-.dice-face-2  { transform: rotateY(180deg) translateZ(100px); }
-.dice-face-3  { transform: rotateY( 90deg) translateZ(100px); }
-.dice-face-4  { transform: rotateY(-90deg) translateZ(100px); }
-.dice-face-5  { transform: rotateX( 90deg) translateZ(100px); }
-.dice-face-6  { transform: rotateX(-90deg) translateZ(100px); }
+.dice-face-1  { transform: rotateY(  0deg) translateZ(30px); }
+.dice-face-2  { transform: rotateY(180deg) translateZ(30px); }
+.dice-face-3  { transform: rotateY( 90deg) translateZ(30px); }
+.dice-face-4  { transform: rotateY(-90deg) translateZ(30px); }
+.dice-face-5  { transform: rotateX( 90deg) translateZ(30px); }
+.dice-face-6  { transform: rotateX(-90deg) translateZ(30px); }
