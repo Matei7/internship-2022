@@ -18,15 +18,19 @@ let game = Object.assign({},matrix);
 let cell = Object.keys(game);
 
 let turn = "white";
+let isGameOn = true;
+let pieceNameLength;
 
 let from;
 let to;
 let pieceType;
 
+// $("body").append("<button class='startGame' style='margin-top: 50vh'>Start Game</button>");
+// $(".startGame").bind("click",()=>{$("body .startGame").removeAttr("style");game = Object.assign({},matrix); if (isGameOn){generateGame(); isGameOn = !isGameOn} placeThePieces();$(".potential").toggleClass("potential");
+//     $(".beat").toggleClass("beat"); $(".piece-ready").toggleClass("piece-ready"); turn = "white"; });
+
 function createTable(){
-    $("body").append("<button class='startGame'>Start Game</button>");
-    $(".startGame").bind("click",()=>{game = Object.assign({},matrix); placeThePieces();$(".potential").toggleClass("potential");
-        $(".beat").toggleClass("beat"); $(".piece-ready").toggleClass("piece-ready"); turn = "white"})
+
     const main = document.createElement("div");
     main.setAttribute("class","main");
     document.body.appendChild(main);
@@ -75,11 +79,12 @@ function placeThePieces(){
             }
         }
     }
+    $(".potential").toggleClass("potential");
+    $(".beat").toggleClass("beat");
 }
 function moveFrom(){
     if (turn === "white" && game[this.parentElement.id].length === 1 && (game[this.parentElement.id] !== "e")){
         $(".piece-ready").toggleClass("piece-ready")
-        $(".beat").toggleClass("beat");
         this.parentElement.classList.toggle("piece-ready");
         from = this.parentElement.id;
         pieceType = game[from];
@@ -90,7 +95,6 @@ function moveFrom(){
     }
     else if (turn === "black" && game[this.parentElement.id].length === 2 && (game[this.parentElement.id] !== "e")){
         $(".piece-ready").toggleClass("piece-ready");
-        $(".beat").toggleClass("beat");
         this.parentElement.classList.toggle("piece-ready");
         from = this.parentElement.id;
         pieceType = game[from];
@@ -105,21 +109,16 @@ function moveFrom(){
             if($(`#${to}`).hasClass("beat")){
                 game[this.parentElement.id] = game[from];
                 game[from] = "e";
-
-
-                if(turn === "white"){
-                    turn = "black"
+                if (turn ==="white"){
+                    turn = "black";
                 }
                 else{
-                    turn = "white";
+                    turn = "white"
                 }
-                $(".potential").toggleClass("potential");
-                $(".beat").toggleClass("beat");
             }
             else {
                 console.log("fuck you")
             }
-
             placeThePieces();
         }
     }
@@ -129,21 +128,16 @@ function moveFrom(){
             if($(`#${to}`).hasClass("beat")){
                 game[this.parentElement.id] = game[from];
                 game[from] = "e";
-
-
-                if(turn === "white"){
-                    turn = "black"
+                if (turn ==="white"){
+                    turn = "black";
                 }
                 else{
-                    turn = "white";
+                    turn = "white"
                 }
-                $(".potential").toggleClass("potential");
-                $(".beat").toggleClass("beat");
             }
             else {
                 console.log("fuck you")
             }
-
             placeThePieces();
         }
     }
@@ -153,17 +147,16 @@ function moveFrom(){
 function moveTo(){
     to = this.id;
     if($(`#${to}`).hasClass("potential")){
-        if(turn === "white"){
-            turn = "black"
+        if (turn ==="white"){
+            turn = "black";
         }
         else{
-            turn = "white";
+            turn = "white"
         }
         console.log("to "+to);
         game[to] = game[from];
         game[from] = "e";
         console.log("from "+from);
-        $(".potential").toggleClass("potential");
         placeThePieces();
     }
 }
@@ -184,36 +177,93 @@ function potentialMoveLight(){
     if( pieceType === "p"){
         if(matrix[from] === game[from]){
             for(let i = +from[1]+1; i<+from[1]+3;i++){
-                $(`#${from[0]}${i}`).toggleClass("potential");
+                if(game[`${from[0]}${i}`] === "e"){
+                    $(`#${from[0]}${i}`).toggleClass("potential");
+                }
+
             }
         }
 
         else{
             for(let i = +from[1]+1; i<+from[1]+2;i++){
-                $(`#${from[0]}${i}`).toggleClass("potential");
+                if(game[`${from[0]}${i}`] === "e"){
+                    $(`#${from[0]}${i}`).toggleClass("potential");
+                }
             }
         }
     }
-
-    // if(pieceType === "b"){
-    //
-    // }
+    if(pieceType === "b"){
+        if (turn ==="white"){
+            pieceNameLength = 1;
+        }
+        else{
+            pieceNameLength = 2;
+        }
+        piecesVector(1, 1,1, 1);
+        piecesVector(1, -1,1, -1);
+        piecesVector(-1, 1,-1, 1);
+        piecesVector(-1, -1,-1, -1);
+    }
 }
 function potentialMoveDark(){
     $(".potential").toggleClass("potential");
     if( pieceType === "pb"){
         if(matrix[from] === game[from]){
             for(let i = +from[1]-1; i>+from[1]-3;i--){
-                $(`#${from[0]}${i}`).toggleClass("potential");
+                if(game[`${from[0]}${i}`] === "e"){
+                    $(`#${from[0]}${i}`).toggleClass("potential");
+                }
             }
         }
         else{
             for(let i = +from[1]-1; i>+from[1]-2;i--){
-                $(`#${from[0]}${i}`).toggleClass("potential");
+                if(game[`${from[0]}${i}`] === "e"){
+                    $(`#${from[0]}${i}`).toggleClass("potential");
+                }
             }
         }
     }
+    if(pieceType === "bb"){
+        if (turn === "white"){
+            pieceNameLength = 1;
+        }
+        else{
+            pieceNameLength = 2;
+        }
+        piecesVector(1, 1,1, 1);
+        piecesVector(1, -1,1, -1);
+        piecesVector(-1, 1,-1, 1);
+        piecesVector(-1, -1,-1, -1);
+    }
+
 }
+function piecesVector(figure,letter,figureVector,letterVector){
+    let asciiOfIdString = from[0].charCodeAt(0);
+    let i = figure;
+    let ci = figureVector;
+    let l = letter;
+    let li = letterVector;
+    let contor=0;
+
+    while(contor<8){
+        console.log(`${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`)
+        if (game[`${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`] === "e") {
+            $(`#${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`).toggleClass("potential");
+        }else {
+            if(`${String.fromCharCode((asciiOfIdString + l))}`!== "`" && `${String.fromCharCode((asciiOfIdString + l))}`!== "i" && game[`${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`] !== undefined) {
+                if (game[`${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`].length !== pieceNameLength){
+                    $(`#${String.fromCharCode((asciiOfIdString + l))}${+from[1] + i}`).toggleClass("beat");
+                }
+            }
+            break;
+        }
+        i += ci;
+        l += li;
+        contor += 1;
+    }
+}
+
+
 
 function potentialBeatPiecesLight(){
     if (pieceType === "p"){
@@ -228,18 +278,17 @@ function potentialBeatPiecesLight(){
                 $(`#${String.fromCharCode((asciiOfIdString+1))}${+from[1]+1}`).toggleClass("beat");
             }
         }
-
     }
 }
 function potentialBeatPiecesDark(){
     if (pieceType === "pb"){
         let asciiOfIdString = from[0].charCodeAt(0);
-        if(`${String.fromCharCode((asciiOfIdString-1))}`!== "i" ){
+        if(`${String.fromCharCode((asciiOfIdString-1))}`!== "`" ){
             if($(`#${String.fromCharCode((asciiOfIdString-1))}${from[1]-1}`)!==null && game[`${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`].length === 1 && game[`${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`] !== "e"){
                 $(`#${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`).toggleClass("beat");
             }
         }
-        if(`${String.fromCharCode((asciiOfIdString+1))}`!== "`" ){
+        if(`${String.fromCharCode((asciiOfIdString+1))}`!== "i" ){
             if($(`#${String.fromCharCode((asciiOfIdString+1))}${from[1]-1}`)!==null && game[`${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`].length === 1  && game[`${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`] !== "e"){
                 $(`#${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`).toggleClass("beat");
             }
@@ -248,8 +297,10 @@ function potentialBeatPiecesDark(){
     }
 }
 
-createTable();
-placeThePieces();
-event();
+function generateGame(){
+    createTable();
+    placeThePieces();
+    event();
+}
 
-
+generateGame()
