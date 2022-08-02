@@ -1,6 +1,7 @@
 body{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+
 }
 .black-box{
     background-color: gray;
@@ -14,6 +15,7 @@ body{
     height: 10vh;
 }
 .main{
+    margin: 10px auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -33,4 +35,12 @@ body{
     background-size: 50%;
     background-repeat: no-repeat;
     background-position: center;
+}
+.beat{
+    background-image: radial-gradient(red, #130101);
+}
+.startGame{
+    margin: 10px auto;
+    width: 100px;
+    height: 50px;
 }

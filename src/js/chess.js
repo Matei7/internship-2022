@@ -24,9 +24,13 @@ let to;
 let pieceType;
 
 function createTable(){
+    $("body").append("<button class='startGame'>Start Game</button>");
+    $(".startGame").bind("click",()=>{game = Object.assign({},matrix); placeThePieces();$(".potential").toggleClass("potential");
+        $(".beat").toggleClass("beat"); $(".piece-ready").toggleClass("piece-ready"); turn = "white"})
     const main = document.createElement("div");
     main.setAttribute("class","main");
     document.body.appendChild(main);
+
     let l ;
     let color;
     let colorCheck = true;
@@ -75,31 +79,71 @@ function placeThePieces(){
 function moveFrom(){
     if (turn === "white" && game[this.parentElement.id].length === 1 && (game[this.parentElement.id] !== "e")){
         $(".piece-ready").toggleClass("piece-ready")
+        $(".beat").toggleClass("beat");
         this.parentElement.classList.toggle("piece-ready");
         from = this.parentElement.id;
         pieceType = game[from];
         console.log(pieceType);
         console.log("from "+from);
         potentialMoveLight();
-        console.log(turn)
+        potentialBeatPiecesLight();
     }
     else if (turn === "black" && game[this.parentElement.id].length === 2 && (game[this.parentElement.id] !== "e")){
         $(".piece-ready").toggleClass("piece-ready");
+        $(".beat").toggleClass("beat");
         this.parentElement.classList.toggle("piece-ready");
         from = this.parentElement.id;
         pieceType = game[from];
         console.log(pieceType);
         console.log("from "+from);
         potentialMoveDark();
+        potentialBeatPiecesDark();
     }
-
-    if(turn === "white" && game[this.parentElement.id].length === 2 ){
-        console.log(turn);
-        debugger;
+    if(turn === "white" && game[this.parentElement.id].length === 2 && pieceType.length === 1){
         if (pieceType !== undefined) {
-            game[this.parentElement.id] = game[from];
-            game[from] = "e";
-            console.log(this.parentElement.id);
+            to=this.parentElement.id;
+            if($(`#${to}`).hasClass("beat")){
+                game[this.parentElement.id] = game[from];
+                game[from] = "e";
+
+
+                if(turn === "white"){
+                    turn = "black"
+                }
+                else{
+                    turn = "white";
+                }
+                $(".potential").toggleClass("potential");
+                $(".beat").toggleClass("beat");
+            }
+            else {
+                console.log("fuck you")
+            }
+
+            placeThePieces();
+        }
+    }
+    else if(turn === "black" && game[this.parentElement.id].length === 1 && pieceType.length === 2){
+        if (pieceType !== undefined) {
+            to=this.parentElement.id;
+            if($(`#${to}`).hasClass("beat")){
+                game[this.parentElement.id] = game[from];
+                game[from] = "e";
+
+
+                if(turn === "white"){
+                    turn = "black"
+                }
+                else{
+                    turn = "white";
+                }
+                $(".potential").toggleClass("potential");
+                $(".beat").toggleClass("beat");
+            }
+            else {
+                console.log("fuck you")
+            }
+
             placeThePieces();
         }
     }
@@ -109,7 +153,7 @@ function moveFrom(){
 function moveTo(){
     to = this.id;
     if($(`#${to}`).hasClass("potential")){
-        if(turn = "white"){
+        if(turn === "white"){
             turn = "black"
         }
         else{
@@ -140,29 +184,67 @@ function potentialMoveLight(){
     if( pieceType === "p"){
         if(matrix[from] === game[from]){
             for(let i = +from[1]+1; i<+from[1]+3;i++){
-                $("#"+from[0]+i).toggleClass("potential");
+                $(`#${from[0]}${i}`).toggleClass("potential");
             }
         }
+
         else{
             for(let i = +from[1]+1; i<+from[1]+2;i++){
-                $("#"+from[0]+i).toggleClass("potential");
+                $(`#${from[0]}${i}`).toggleClass("potential");
             }
         }
     }
+
+    // if(pieceType === "b"){
+    //
+    // }
 }
 function potentialMoveDark(){
     $(".potential").toggleClass("potential");
     if( pieceType === "pb"){
         if(matrix[from] === game[from]){
             for(let i = +from[1]-1; i>+from[1]-3;i--){
-                $("#"+from[0]+i).toggleClass("potential");
+                $(`#${from[0]}${i}`).toggleClass("potential");
             }
         }
         else{
             for(let i = +from[1]-1; i>+from[1]-2;i--){
-                $("#"+from[0]+i).toggleClass("potential");
+                $(`#${from[0]}${i}`).toggleClass("potential");
             }
         }
+    }
+}
+
+function potentialBeatPiecesLight(){
+    if (pieceType === "p"){
+        let asciiOfIdString = from[0].charCodeAt(0);
+        if(`${String.fromCharCode((asciiOfIdString-1))}`!== "`" ){
+            if($(`#${String.fromCharCode((asciiOfIdString-1))}${from[1]+1}`)!==null && game[`${String.fromCharCode((asciiOfIdString-1))}${+from[1]+1}`].length === 2){
+                $(`#${String.fromCharCode((asciiOfIdString-1))}${+from[1]+1}`).toggleClass("beat");
+            }
+        }
+        if(`${String.fromCharCode((asciiOfIdString+1))}`!== "i" ){
+            if($(`#${String.fromCharCode((asciiOfIdString+1))}${from[1]+1}`)!==null && game[`${String.fromCharCode((asciiOfIdString+1))}${+from[1]+1}`].length === 2  ){
+                $(`#${String.fromCharCode((asciiOfIdString+1))}${+from[1]+1}`).toggleClass("beat");
+            }
+        }
+
+    }
+}
+function potentialBeatPiecesDark(){
+    if (pieceType === "pb"){
+        let asciiOfIdString = from[0].charCodeAt(0);
+        if(`${String.fromCharCode((asciiOfIdString-1))}`!== "i" ){
+            if($(`#${String.fromCharCode((asciiOfIdString-1))}${from[1]-1}`)!==null && game[`${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`].length === 1 && game[`${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`] !== "e"){
+                $(`#${String.fromCharCode((asciiOfIdString-1))}${+from[1]-1}`).toggleClass("beat");
+            }
+        }
+        if(`${String.fromCharCode((asciiOfIdString+1))}`!== "`" ){
+            if($(`#${String.fromCharCode((asciiOfIdString+1))}${from[1]-1}`)!==null && game[`${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`].length === 1  && game[`${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`] !== "e"){
+                $(`#${String.fromCharCode((asciiOfIdString+1))}${+from[1]-1}`).toggleClass("beat");
+            }
+        }
+
     }
 }
 
