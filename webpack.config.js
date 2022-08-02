@@ -5,7 +5,8 @@ const config = {
 	entry: {
 		app: './src/js/app.js',
 		dom: './src/js/dom.js',
-		chess: './src/js/chess.js'
+		chess: './src/js/chess.js',
+		dom2: './src/js/dom2.js',
 	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
