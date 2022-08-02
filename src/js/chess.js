@@ -1,9 +1,10 @@
 import "../css/style-chess.scss";
 import $ from "jquery";
 
+
 let count = document.createElement("div");
 count.classList.add("count");
-let piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "queenB", "e8": "kingB", "f8": "bishopB", "g8": "knightB", "h8": "rookB",
+const piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "queenB", "e8": "kingB", "f8": "bishopB", "g8": "knightB", "h8": "rookB",
                        "a7": "pawnB", "b7": "pawnB", "c7": "pawnB", "d7": "pawnB", "e7": "pawnB", "f7": "pawnB", "g7": "pawnB", "h7": "pawnB",
                        "a6": "none", "b6": "none", "c6": "none", "d6": "none", "e6": "none", "f6": "none", "g6": "none", "h6": "none",
                        "a5": "none", "b5": "none", "c5": "none", "d5": "none", "e5": "none", "f5": "none", "g5": "none", "h5": "none",
@@ -15,32 +16,42 @@ let piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "q
 
 localStorage.setItem("chess",JSON.stringify(piecesPosition));
 
+//
+// count.innerHTML = "The game will start in";
+// document.body.appendChild(count);
+// let seconds = 5;
+// let countDown = setInterval(function(){
+//     if(seconds > 0){
+//         count.innerHTML = seconds;
+//         seconds--;
+//     }
+//     else{
+//         clearInterval(countDown);
+//         count.innerHTML = " ";
+//         let divButton = document.createElement("div");
+//         divButton.classList.add("divButton");
+//         let button = document.createElement("button");
+//         button.innerHTML = "Start new game";
+//         button.addEventListener("click", startNewGame);
+//         divButton.appendChild(button);
+//         document.body.appendChild(divButton);
+//     }
+// },1000);
 
-count.innerHTML = "The game will start in";
-document.body.appendChild(count);
-let seconds = 5;
-let countDown = setInterval(function(){
-    if(seconds > 0){
-        count.innerHTML = seconds;
-        seconds--;
-    }
-    else{
-        clearInterval(countDown);
-        count.innerHTML = " ";
-        let divButton = document.createElement("div");
-        divButton.classList.add("divButton");
-        let button = document.createElement("button");
-        button.innerHTML = "Start new game";
-        button.addEventListener("click", startNewGame);
-        divButton.appendChild(button);
-        document.body.appendChild(divButton);
-    }
-},1000);
-
+let divButton = document.createElement("div");
+divButton.classList.add("divButton");
+let button = document.createElement("button");
+button.innerHTML = "Start new game";
+button.addEventListener("click", startNewGame);
+divButton.appendChild(button);
+document.body.appendChild(divButton);
 let dragItem = null;
 
-function dragEnd(){
+function dragEnd(e){
+    e.preventDefault();
+    console.trace();
     setTimeout(function (){
+        console.log(dragItem);
         dragItem.style.display = "block";
         dragItem.style.position = "absolute";
         dragItem = null;
@@ -59,18 +70,18 @@ function dragEnter(e){
     e.preventDefault();
 }
 
-function dragNdrop(div){
-    div.draggable = true;
-    div.addEventListener("dragstart", function (){
-        dragItem = div;
+function dragNdrop(){
+    $(document).on("dragstart",".piece", function (event){
+        console.trace(event);
+        dragItem = event.target;
         setTimeout(function (){
-            div.style.display = "none";
+            event.target.style.display = "none";
         });
     });
-    div.addEventListener("dragend", dragEnd);
-    div.addEventListener("dragover", dragOver);
-    div.addEventListener("dragenter",dragEnter);
-    div.addEventListener("drop",handleDrop);
+    $(document).on("dragend",".piece",dragEnd);
+    $(document).on("dragover",".cell",dragOver);
+    $(document).on("drop",".cell",handleDrop);
+    $(document).on("dragenter",".cell",dragEnter);
 }
 
 function board(table) {
@@ -88,19 +99,11 @@ function board(table) {
             cell.id = letter[l] + j;
             if (color) {
                 cell.classList.add("white");
-                let newDiv = document.createElement("div");
-                newDiv.classList.add("piece");
-                dragNdrop(newDiv);
-                cell.appendChild(newDiv);
                 table.appendChild(cell);
                 color = false;
 
             } else {
                 cell.classList.add("black");
-                let newDiv = document.createElement("div");
-                newDiv.classList.add("piece");
-                dragNdrop(newDiv);
-                cell.appendChild(newDiv);
                 table.appendChild(cell);
                 color = true;
             }
@@ -116,23 +119,21 @@ function startGame(position) {
         let p = position[piece];
         let pieceId = document.getElementById(piece);
         let newDiv = document.createElement("div");
+        newDiv.draggable = true;
         if (position[piece].includes("B")) {
             newDiv.classList.add("piece");
             newDiv.classList.add(p.substring(0, p.indexOf('B')) + "B");
-            dragNdrop(newDiv);
             pieceId.appendChild(newDiv);
         } else {
             if (position[piece].includes("W")) {
                 newDiv.classList.add("piece");
                 newDiv.classList.add(p.substring(0, p.indexOf('W')) + "W");
-                dragNdrop(newDiv);
                 pieceId.appendChild(newDiv);
             }
         }
     }
+    dragNdrop()
 }
-
-
 
 function startNewGame() {
         localStorage.clear();
@@ -140,75 +141,43 @@ function startNewGame() {
         $( ".main" ).remove();
         board(table);
         startGame(piecesPosition);
-        movePieces();
+        highlightMoves();
 }
 
+let position = JSON.parse(localStorage.getItem("chess"));
 
-function movePieces() {
-
-    let cellSelected = document.getElementsByClassName("piece");
-    for (let i = 0; i < cellSelected.length; i++) {
-        // let cellSelected = document.querySelectorAll(".piece")[i];
-
-        cellSelected[i].addEventListener("mouseover",function (){
-            cellSelected[i].classList.add("selector");
-        });
-        cellSelected[i].addEventListener("mouseout",function (){
-            cellSelected[i].classList.remove("selector");
-        });
+let from;
+let colorTurn = "black";
 
 
-        cellSelected[i].addEventListener("click", () => {
-            let check = document.querySelector(".selector");
-            if (check !== undefined) {
-                let idSelected = cellSelected[i].id;
-                for (let piece in piecesPosition) {
-                    if(idSelected === piece){
-                        if(piece === "a7"){
-                            $(".highlight").toggleClass("highlight");
-                            $(document.getElementById("a5")).toggleClass("highlight");
-                            $(document.getElementById("a6")).toggleClass("highlight");
-
-                        }
-                        else{
-                            if(piece === "b7"){
-                                $(".highlight").toggleClass("highlight");
-                                $(document.getElementById("b5")).toggleClass("highlight");
-                                $(document.getElementById("b6")).toggleClass("highlight");
-                            }
-                            else{
-                                if(piece === "b8"){
-                                    $(".highlight").toggleClass("highlight");
-                                    $(document.getElementById("a6")).toggleClass("highlight");
-                                    $(document.getElementById("c6")).toggleClass("highlight");
-                                }
-                                else{
-                                    if(piece === "a2"){
-                                        $(".highlight").toggleClass("highlight");
-                                        $(document.getElementById("a3")).toggleClass("highlight");
-                                        $(document.getElementById("a4")).toggleClass("highlight");
-                                    } else {
-                                        if (piece === "b2") {
-                                            $(".highlight").toggleClass("highlight");
-                                            $(document.getElementById("b3")).toggleClass("highlight");
-                                            $(document.getElementById("b4")).toggleClass("highlight");
-                                        }
-                                        else{
-                                            if(piece === "b1"){
-                                                $(".highlight").toggleClass("highlight");
-                                                $(document.getElementById("a3")).toggleClass("highlight");
-                                                $(document.getElementById("c3")).toggleClass("highlight");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
+function highlightMoves() {
+    $("div[class*='cell']").on("mouseover", function () {
+        $(this).addClass("selector");
+    });
+    $("div[class*='cell']").on("mouseout", function () {
+        $(this).removeClass("selector");
+    });
+    $("div[class*='cell']").on("click", function () {
+        $(this).removeClass("selector");
+        $(".highlight").toggleClass("highlight");
+        from = this.id;
+        console.log(position[this.id]);
+        if (position[from] === "pawnB") {
+            console.log(from);
+            for (let i = from[1] - 1; i > from[1] - 3; i--) {
+                console.log(i);
+                $(`#${from[0]}${i}`).toggleClass("highlight");
             }
-        })
-    }
+        } else {
+            if (position[from] === "pawnW") {
+                for (let i = +from[1] + 1; i < +from[1] + 3; i++) {
+                    console.log(i);
+                    $(`#${from[0]}${i}`).toggleClass("highlight");
+                }
+            }
+        }
+
+    });
 }
+
 
