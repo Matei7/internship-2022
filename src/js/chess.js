@@ -1,7 +1,6 @@
 import "../css/style-chess.scss";
 import $ from "jquery";
 
-let table;
 let count = document.createElement("div");
 count.classList.add("count");
 let piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "queenB", "e8": "kingB", "f8": "bishopB", "g8": "knightB", "h8": "rookB",
@@ -14,16 +13,67 @@ let piecesPosition = { "a8": "rookB", "b8": "knightB", "c8": "bishopB", "d8": "q
                        "a1": "rookW", "b1": "knightW", "c1": "bishopW", "d1": "queenW", "e1": "kingW", "f1": "bishopW", "g1": "knightW", "h1": "rookW"
 }
 
-const position = [['rookB','knightB','bishopB','queenB','kingB','bishopB','knightB','rookB'],
-                ['pawnB','pawnB','pawnB','pawnB','pawnB','pawnB','pawnB','pawnB'],
-                ['none','none','none','none','none','none','none','none'],
-                ['none','none','none','none','none','none','none','none'],
-                ['none','none','none','none','none','none','none','none'],
-                ['none','none','none','none','none','none','none','none'],
-                ['pawnW','pawnW','pawnW','pawnW','pawnW','pawnW','pawnW','pawnW'],
-                ['rookW','knightW','bishopW','queenW','kingW','bishopW','knightW','rookW']];
+localStorage.setItem("chess",JSON.stringify(piecesPosition));
 
-function board() {
+
+count.innerHTML = "The game will start in";
+document.body.appendChild(count);
+let seconds = 5;
+let countDown = setInterval(function(){
+    if(seconds > 0){
+        count.innerHTML = seconds;
+        seconds--;
+    }
+    else{
+        clearInterval(countDown);
+        count.innerHTML = " ";
+        let divButton = document.createElement("div");
+        divButton.classList.add("divButton");
+        let button = document.createElement("button");
+        button.innerHTML = "Start new game";
+        button.addEventListener("click", startNewGame);
+        divButton.appendChild(button);
+        document.body.appendChild(divButton);
+    }
+},1000);
+
+let dragItem = null;
+
+function dragEnd(){
+    setTimeout(function (){
+        dragItem.style.display = "block";
+        dragItem.style.position = "absolute";
+        dragItem = null;
+    });
+}
+
+function handleDrop() {
+    this.append(dragItem);
+}
+
+function dragOver(e){
+    e.preventDefault();
+}
+
+function dragEnter(e){
+    e.preventDefault();
+}
+
+function dragNdrop(div){
+    div.draggable = true;
+    div.addEventListener("dragstart", function (){
+        dragItem = div;
+        setTimeout(function (){
+            div.style.display = "none";
+        });
+    });
+    div.addEventListener("dragend", dragEnd);
+    div.addEventListener("dragover", dragOver);
+    div.addEventListener("dragenter",dragEnter);
+    div.addEventListener("drop",handleDrop);
+}
+
+function board(table) {
     table = document.createElement("div");
     table.classList.add("main");
     document.body.appendChild(table);
@@ -38,11 +88,19 @@ function board() {
             cell.id = letter[l] + j;
             if (color) {
                 cell.classList.add("white");
+                let newDiv = document.createElement("div");
+                newDiv.classList.add("piece");
+                dragNdrop(newDiv);
+                cell.appendChild(newDiv);
                 table.appendChild(cell);
                 color = false;
 
             } else {
                 cell.classList.add("black");
+                let newDiv = document.createElement("div");
+                newDiv.classList.add("piece");
+                dragNdrop(newDiv);
+                cell.appendChild(newDiv);
                 table.appendChild(cell);
                 color = true;
             }
@@ -50,100 +108,41 @@ function board() {
         }
         color = !color;
     }
-    // setTimeout(() => {
-    //     startGame();
-    // }, 2000);
 
 }
 
-function dragStart(e){
-    this.style.opacity("0.2");
-    e.currentTarget.classList.add("dragging");
-}
-
-function dragEnd(e){
-    this.style.opacity("1.0");
-    e.currentTarget.classList.add("dragging");
-}
-
-function handleDrop(e) {
-    e.stopPropagation(); // stops the browser from redirecting.
-    return false;
-}
-
-function drag(e){
-    e.dataTransfer.setData('text/html',e.currentTarget.outerHTML);
-    e.dataTransfer.setData('text/plain',e.currentTarget.dataset.id);
-}
-
-function dragEnter(e){
-    e.currentTarget.classList.add('drop');
-}
-
-function dragLeave(e){
-    e.currentTarget.classList.remove('drop');
-}
-
-function startGame() {
-    for (let piece in piecesPosition) {
-        let p = piecesPosition[piece];
+function startGame(position) {
+    for (let piece in position) {
+        let p = position[piece];
         let pieceId = document.getElementById(piece);
         let newDiv = document.createElement("div");
-        if (piecesPosition[piece].includes("B")) {
+        if (position[piece].includes("B")) {
             newDiv.classList.add("piece");
             newDiv.classList.add(p.substring(0, p.indexOf('B')) + "B");
-            newDiv.addEventListener("dragstart", dragStart);
-            newDiv.addEventListener("dragend", dragEnd);
-            newDiv.addEventListener("dragenter", dragEnter);
-            newDiv.addEventListener("dragleave",dragLeave);
-            newDiv.addEventListener("drop",handleDrop);
-            newDiv.draggable = true;
+            dragNdrop(newDiv);
             pieceId.appendChild(newDiv);
         } else {
-            if (piecesPosition[piece].includes("W")) {
+            if (position[piece].includes("W")) {
                 newDiv.classList.add("piece");
                 newDiv.classList.add(p.substring(0, p.indexOf('W')) + "W");
-                newDiv.addEventListener("dragstart", dragStart);
-                newDiv.addEventListener("dragend", dragEnd);
-                newDiv.addEventListener("dragenter", dragEnter);
-                newDiv.addEventListener("dragleave",dragLeave);
-                newDiv.addEventListener("drop",handleDrop);
-                newDiv.draggable = true;
+                dragNdrop(newDiv);
                 pieceId.appendChild(newDiv);
             }
         }
     }
 }
-function addButton() {
-    let divButton = document.createElement("div");
-    divButton.classList.add("divButton");
-    let button = document.createElement("button");
-    button.innerHTML = "Start new game";
-    divButton.appendChild(button);
-    document.body.appendChild(divButton);
-    button.addEventListener("click", function () {
-        board();
-        startGame();
+
+
+
+function startNewGame() {
+        localStorage.clear();
+        let table;
+        $( ".main" ).remove();
+        board(table);
+        startGame(piecesPosition);
         movePieces();
-    });
 }
 
-// count.innerHTML = "The game will start in";
-// document.body.appendChild(count);
-// let seconds = 5;
-// let countDown = setInterval(function(){
-//     if(seconds > 0){
-//         count.innerHTML = seconds;
-//         seconds--;
-//     }
-//     else{
-//         clearInterval(countDown);
-//         count.innerHTML = " ";
-//         addButton();
-//     }
-// },1000);
-
-addButton();
 
 function movePieces() {
 
