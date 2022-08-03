@@ -180,7 +180,6 @@ function rollDice() {
     }
     drawDices();
     movePiece();
-
 }
 
 function drawDices() {
@@ -233,12 +232,22 @@ function movePiece() {
             let selectedColumn = $(this).children().get(0);
             let selectedColumnId = $(selectedColumn).attr("id");
             startIndex = selectedColumnId.substr(4);
-            whites[startIndex]++;
-            clearTable();
-            drawTable();
-            renderPieces();
-            $('.white-pieces').addClass("disable-div");
-            $('.black-pieces').addClass("disable-div");
+            console.log(dices + " " + startIndex);
+            if (startIndex < 6) {
+                whites[startIndex]++;
+                whitesOut--;
+                if (blacks[startIndex] === 1) {
+                    blacks[startIndex]--;
+                    blacksOut++;
+                }
+                clearTable();
+                drawTable();
+                renderPieces();
+                $('.white-pieces').addClass("disable-div");
+                $('.black-pieces').addClass("disable-div");
+            } else {
+                alert("Please insert your piece in the opponent house");
+            }
         });
     } else if (whiteTurn === false && blacksOut > 0) {
         $('.black-pieces').addClass("disable-div");
@@ -246,12 +255,22 @@ function movePiece() {
             let selectedColumn = $(this).children().get(0);
             let selectedColumnId = $(selectedColumn).attr("id");
             startIndex = selectedColumnId.substr(4);
-            blacks[startIndex]++;
-            clearTable();
-            drawTable();
-            renderPieces();
-            $('.white-pieces').addClass("disable-div");
-            $('.black-pieces').addClass("disable-div");
+            console.log(startIndex);
+            if (startIndex < 24 && startIndex > 17) {
+                blacks[startIndex]++;
+                blacksOut--;
+                if (whites[startIndex] === 1) {
+                    whites[startIndex]--;
+                    whitesOut++;
+                }
+                clearTable();
+                drawTable();
+                renderPieces();
+                $('.white-pieces').addClass("disable-div");
+                $('.black-pieces').addClass("disable-div");
+            } else {
+                alert("Please insert your piece in the opponent house");
+            }
         });
     } else {
         for (let i = 0; i < pieces.length; i++) {
@@ -269,9 +288,6 @@ function movePiece() {
                 setTimeout(function () {
                     piece.style.display = 'none';
                 }, 0);
-                console.log("Start index = " + startIndex);
-                console.log("Whites before =" + whites);
-                console.log(pieceColor);
             });
 
             piece.addEventListener('dragend', function () {
@@ -280,19 +296,18 @@ function movePiece() {
                     draggedPiece = null;
                 }, 0);
                 console.log(startIndex + ' ' + endIndex);
-                if (pieceColor === "white" && startIndex < endIndex) {
+                if (pieceColor === "white" && startIndex < endIndex && dices.includes(endIndex-startIndex) === true) {
                     whites[startIndex]--;
-                    whites[Number(endIndex)]++;
+                    whites[endIndex]++;
                 }
-                if (pieceColor === "black" && startIndex > endIndex) {
+                if (pieceColor === "black" && startIndex > endIndex  && dices.includes(startIndex-endIndex) === true) {
                     blacks[startIndex]--;
-                    blacks[Number(endIndex)]++;
+                    blacks[endIndex]++;
                 }
                 clearTable();
                 drawTable();
                 renderPieces();
                 toggleColorToMove();
-                console.log("End index = " + endIndex);
                 movePiece();
             });
 
@@ -311,7 +326,8 @@ function movePiece() {
                     let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                     let selectedColumnId = $(selectedColumn).attr("id");
                     endIndex = Number(selectedColumnId.substr(7));
-                    if (startIndex < endIndex && pieceColor === "white") {
+                    console.log(dices.includes(endIndex-startIndex));
+                    if (startIndex < endIndex && pieceColor === "white" && dices.includes(endIndex-startIndex) === true) {
                         if (blacks[endIndex] === 0) {
                             this.append(draggedPiece);
                         }
@@ -321,7 +337,7 @@ function movePiece() {
                             this.append(draggedPiece);
                         }
                     }
-                    if (pieceColor === "black" && startIndex > endIndex) {
+                    if (pieceColor === "black" && startIndex > endIndex  && dices.includes(startIndex-endIndex) === true) {
                         if (whites[endIndex] === 0) {
                             this.append(draggedPiece);
                         }
@@ -331,7 +347,6 @@ function movePiece() {
                             this.append(draggedPiece);
                         }
                     }
-
                 });
             }
         }
