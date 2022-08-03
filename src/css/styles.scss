@@ -35,7 +35,15 @@ body {
   flex-wrap: wrap;
   margin: 40px auto;
 }
-
+.potential{
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Blue_circle_for_diabetes.svg/2048px-Blue_circle_for_diabetes.svg.png");
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.beat{
+  box-shadow: inset 0 0 20px #ff0000 ;
+}
 .piece-box {
   flex: 1 0 12.5%;
   position: relative;
@@ -43,10 +51,6 @@ body {
 
   .chessPiece {
     cursor: grab;
-
-
-
-
     &:after {
       position: absolute;
       content: '';

@@ -10,6 +10,14 @@ const INITIAL_STATE = {
     a2: "wp", b2: "wp", c2: "wp", d2: "wp", e2: "wp", f2: "wp", g2: "wp", h2: "wp",
     a1: "wr", b1: "wn", c1: "wb", d1: "wq", e1: "wk", f1: "wb", g1: "wn", h1: "wr"
 }
+
+let lastPieceCheck = undefined;
+let allowedMove = [];
+let statusCheked = false;
+let moveTurn = "w";
+let MAP_STATE;
+let draggedItem = null;
+
 const pieceMoves = {
     "p": (element)=>{
         let alowMove = [];
@@ -52,7 +60,7 @@ const pieceMoves = {
                 }
             }
         }
-        console.log(alowMove);
+        return alowMove;
     },
     "r": (element)=> {
         let alowMove = [];
@@ -65,7 +73,7 @@ const pieceMoves = {
         alowMove = alowMove.concat(moveVector(x, y, -1, 0, notColor));
         alowMove = alowMove.concat(moveVector(x, y, 0, 1, notColor));
         alowMove = alowMove.concat(moveVector(x, y, 0, -1, notColor));
-        console.log(alowMove);
+        return alowMove;
     },
     "b": (element)=> {
         let alowMove = [];
@@ -78,7 +86,7 @@ const pieceMoves = {
         alowMove = alowMove.concat(moveVector(x, y, -1, 1, notColor));
         alowMove = alowMove.concat(moveVector(x, y, 1, -1, notColor));
         alowMove = alowMove.concat(moveVector(x, y, -1, -1, notColor));
-        console.log(alowMove);
+        return alowMove;
     },
     "q": (element)=> {
         let alowMove = [];
@@ -95,7 +103,7 @@ const pieceMoves = {
         alowMove = alowMove.concat(moveVector(x, y, -1, 0, notColor));
         alowMove = alowMove.concat(moveVector(x, y, 0, 1, notColor));
         alowMove = alowMove.concat(moveVector(x, y, 0, -1, notColor));
-        console.log(alowMove);
+        return alowMove;
     },
     "n": (element)=> {
         let alowMove = [];
@@ -108,59 +116,70 @@ const pieceMoves = {
         alowMove.push(moveKnight(x, y, -1, -2, color));
         alowMove.push(moveKnight(x, y, 2, 1, color));
         alowMove.push(moveKnight(x, y, 2, -1, color));
-        alowMove.push(moveKnight(x, y, -2, 2, color));
-        alowMove.push(moveKnight(x, y, -2, -2, color));
-        console.log(alowMove);
+        alowMove.push(moveKnight(x, y, -2, 1, color));
+        alowMove.push(moveKnight(x, y, -2, -1, color));
+        alowMove = alowMove.filter(Boolean);
+        return alowMove;
     },
     "k": (element)=> {
         let alowMove = [];
         let x = element.id[0];
         let y = +element.id[1];
         let color = MAP_STATE[element.id][0];
-        let notColor;
-        (color == 'w') ? notColor = 'b' : notColor = 'w';
+        alowMove.push(moveKing(x, y, 1, 1, color));
+        alowMove.push(moveKing(x, y, 1, -1, color));
+        alowMove.push(moveKing(x, y, -1, 1, color));
+        alowMove.push(moveKing(x, y, -1, -1, color));
+        alowMove.push(moveKing(x, y, 1, 0, color));
+        alowMove.push(moveKing(x, y, -1, 0, color));
+        alowMove.push(moveKing(x, y, 0, 1, color));
+        alowMove.push(moveKing(x, y, 0, -1, color));
+        alowMove = alowMove.filter(Boolean);
+        return alowMove;
     }
 }
-let lastPieceCheck = undefined;
-let statusCheked = false;
-let moveTurn = "w";
-let MAP_STATE;
 
 function incLet(c, inc){
     return String.fromCharCode(c.charCodeAt() + inc);
 }
+
+function moveKing(i, j, a, b, color){
+    if (('abcdefgh'.includes(incLet(i, a)))
+        && ('12345678'.includes(j+b))
+        && (MAP_STATE[incLet(i, a) + (j+b)][0] != color)){
+        return incLet(i, a) + (j+b)
+    }
+}
+
 function moveVector(i, j, a, b, notColor){
     let result = [];
-    while (true) {
-        if ((i > 'a') && (i < 'h')){
-            i = incLet(i, a);
+    while ('abcdefgh'.includes(i) && '12345678'.includes(j)){
+        if (MAP_STATE[incLet(i, a) + (j + b)] == 'ep') {
+            result.push(incLet(i, a) + (j + b));
         }
-        else{
-            break;
-        }
-        if ((j > 1) && (j < 8)){
-            j += b;
-        }
-        else{
-            break;
-        }
-        if (MAP_STATE[i + j] == 'ep') {
-            result.push(i + j);
-        } else {
-            if (MAP_STATE[i + j][0] == notColor) {
-                result.push(i + j);
+        else {
+            if (MAP_STATE[incLet(i, a) + (j + b)] != undefined) {
+                if (MAP_STATE[incLet(i, a) + (j + b)][0] == notColor) {
+                    result.push(incLet(i, a) + (j + b));
+                }
             }
             break;
         }
-    }
-    return result;
-}
-function moveKnight(i, j, a, b, color){
-    if (('abcdefg'.includes(incLet(i, a))) && ('12345678'.includes(j+b)) && (MAP_STATE[incLet(i, a) + (j+b)][0] != color)){
-        return incLet(i, a) + (j+b);
+        i = incLet(i, a);
+        j += b;
     }
 
+    return result;
 }
+
+function moveKnight(i, j, a, b, color){
+    if (('abcdefgh'.includes(incLet(i, a)))
+        && ('12345678'.includes(j+b))
+        && (MAP_STATE[incLet(i, a) + (j+b)][0] != color)){
+        return incLet(i, a) + (j+b)
+    }
+}
+
 function createChessTable() {
     MAP_STATE = {...INITIAL_STATE};
     let chessTableDiv = document.createElement("div");
@@ -179,6 +198,7 @@ function createChessTable() {
     }
     return chessTableDiv;
 }
+
 function move(toPieceBox){
     if (toPieceBox.childNodes.length){
         toPieceBox.firstChild.remove()
@@ -195,9 +215,35 @@ function move(toPieceBox){
     (moveTurn == 'w')? moveTurn = 'b': moveTurn = 'w';
 }
 
-function moveChessPiece(Piece){
-    move(Piece);
+function moveChessPiece(piece){
+    if (allowedMove.includes(piece.id)) {
+        move(piece);
+    }
+    removeAllowedMove(allowedMove);
 }
+
+function removeAllowedMove(){
+    let element;
+    for (let id of allowedMove){
+        element = document.getElementById(id);
+        element.classList.remove('potential');
+        element.classList.remove('beat');
+    }
+}
+
+function drawAllowedMove(){
+    let element;
+    for (let id of allowedMove){
+        element = document.getElementById(id);
+        if (element.childNodes.length){
+            element.classList.add('beat');
+        }
+        else {
+            element.classList.add('potential');
+        }
+    }
+}
+
 function clickPieceBox() {
     // if has a piece
     if (this.childNodes.length){
@@ -214,14 +260,19 @@ function clickPieceBox() {
                     lastPieceCheck.firstChild.classList.remove("grab");
                     this.firstChild.classList.add("grab");
                     lastPieceCheck = this;
-                    pieceMoves[this.firstChild.classList[0][1]](this);
+                    removeAllowedMove(allowedMove);
+                    allowedMove = pieceMoves[this.firstChild.classList[0][1]](this);
+                    drawAllowedMove(allowedMove);
 
                 } else {
                     console.log('select', this.id);
-                    pieceMoves[this.firstChild.classList[0][1]](this);
+                    allowedMove = pieceMoves[this.firstChild.classList[0][1]](this);
+                    drawAllowedMove(allowedMove);
+
                 }
             } else {
                 console.log('unselect', this.id);
+                removeAllowedMove(allowedMove);
                 lastPieceCheck = undefined;
             }
         }
@@ -246,12 +297,21 @@ function clickPieceBox() {
 
     }
 }
+
 function DragStart() {
-    this.style.opacity = '0.4';
+    draggedItem = this;
+    draggedItem.style.opacity = '0.4';
+    draggedItem.classList.remove("grab");
 }
+
 function DragEnd() {
-    this.style.opacity = '1';
+    draggedItem.style.opacity = '1';
+    removeAllowedMove(allowedMove);
 }
+function drop(){
+    moveChessPiece(this);
+}
+
 function reproduceTheChessTable(state1) {
     for (let cell in state1) {
         if (state1[cell] != "ep") {
@@ -266,16 +326,26 @@ function reproduceTheChessTable(state1) {
         }
     }
 }
+
 function startEvent(){
     let pieceBoxs = document.getElementsByClassName("piece-box");
     for (let pieceBox of pieceBoxs){
         pieceBox.addEventListener("mousedown", clickPieceBox.bind(pieceBox));
+        pieceBox.addEventListener("drop", drop.bind(pieceBox));
+        pieceBox.addEventListener('dragover', function (e){
+            e.preventDefault()
+        })
+        pieceBox.addEventListener('dragenter', function (e){
+            e.preventDefault()
+        })
     }
 
 }
+
 function main() {
     document.body.appendChild(createChessTable());// Create chess table
     reproduceTheChessTable(INITIAL_STATE); //New game
     startEvent()
 }
+
 main()
