@@ -212,17 +212,20 @@ function drawDices() {
     }
 }
 
-// function handleOutPieces(whiteTurn) {
-//     if (whiteTurn === true) {
-//         console.log(whiteTurn);
-//         gameInfoText.innerHTML = "You have pieces out. You have to insert them back in the game..."
-//     }
-// }
-
-function arrayRemove(arr, value) {
+function handleSimpleDice(arr, value) {
     return arr.filter(function(ele){
         return ele !== value;
     });
+}
+
+
+function allAreEqual(array) {
+    const result = array.every(element => {
+        if (element === array[0]) {
+            return true;
+        }
+    });
+    return result;
 }
 
 // move piece and also get indexes: start and end
@@ -247,7 +250,11 @@ function movePiece() {
                         blacks[startIndex]--;
                         blacksOut++;
                     }
-                    dices = arrayRemove(dices, (endIndex-startIndex));
+                    if(allAreEqual(dices) === true) {
+                        dices.pop();
+                    } else {
+                       dices = handleSimpleDice(dices, (endIndex-startIndex));
+                    }
                     console.log(dices);
                     clearTable();
                     drawTable();
@@ -272,7 +279,11 @@ function movePiece() {
                         whites[startIndex]--;
                         whitesOut++;
                     }
-                    dices = arrayRemove(dices, (startIndex-endIndex));
+                    if(allAreEqual(dices) === true) {
+                        dices.pop();
+                    } else {
+                        dices = handleSimpleDice(dices, (startIndex-endIndex));
+                    }
                     console.log(dices);
                     clearTable();
                     drawTable();
@@ -310,14 +321,22 @@ function movePiece() {
                     if (pieceColor === "white" && startIndex < endIndex && dices.includes(endIndex - startIndex) === true) {
                         whites[startIndex]--;
                         whites[endIndex]++;
-                        dices = arrayRemove(dices, (endIndex-startIndex));
+                        if(allAreEqual(dices) === true) {
+                            dices.pop();
+                        } else {
+                            dices = handleSimpleDice(dices, (endIndex-startIndex));
+                        }
                         console.log(dices);
 
                     }
                     if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
                         blacks[startIndex]--;
                         blacks[endIndex]++;
-                        dices = arrayRemove(dices, (startIndex-endIndex));
+                        if(allAreEqual(dices) === true) {
+                            dices.pop();
+                        } else {
+                            dices = handleSimpleDice(dices, (startIndex-endIndex));
+                        }
                         console.log(dices);
 
                     }
