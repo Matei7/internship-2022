@@ -134,9 +134,12 @@ function initialState() {
 
 function reRenderPieces(whites, blacks) {
     clearTable();
+
     drawTable();
     whites.forEach((nr, index) => drawPiece(nr, index, white));
     blacks.forEach((nr, index) => drawPiece(nr, index, black));
+
+
 }
 
 function startGame() {
@@ -199,6 +202,8 @@ function createDiceButton() {
             whiteTurn = !whiteTurn;
             randNumOne = getRandomInt(1, 7);
             randNumTwo = getRandomInt(1, 7);
+            let dices = [randNumTwo, randNumOne];
+
 
             let showClassOne = 'show-' + randNumOne;
             let showClassTwo = 'show-' + randNumTwo;
@@ -211,23 +216,29 @@ function createDiceButton() {
             }
             dice1.classList.add(showClassOne);
             dice2.classList.add(showClassTwo);
+
             currentClassOne = showClassOne;
             currentClassTwo = showClassTwo;
+
+            reRenderPieces(whites, blacks);
             if (randNumOne === randNumTwo) {
-                reRenderPieces(whites, blacks);
-                diceMoves = 4;
+                // diceMoves = 4;
+                dices.push(randNumOne);
+                dices.push(randNumOne);
                 selectPieceToMove(diceMoves);
 
-            } else {
-                reRenderPieces(whites, blacks);
-                diceMoves = 2;
-                selectPieceToMove(diceMoves);
             }
+            // else {
+            //     diceMoves = 2;
+            //     selectPieceToMove(diceMoves);
+            // }
         }
 
         rollBtn.addEventListener("click", rollDice);
     });
 }
+
+
 
 let whiteTurn = false;
 
@@ -254,10 +265,13 @@ function selectPieceToMove(numberOfDiceUsed) {
             currentPieceToMove = {color: "black", columnNumber: myClass.get(0).id}
         }
 
-        columnNumber = currentPieceToMove.columnNumber.substr(7);
+        startIndex = currentPieceToMove.columnNumber.substr(7);
 
         if (currentPieceToMove.color === "white") {
-            if (blacks[Number(columnNumber) + Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
+            if (whitesOut >= 1) {
+                gameInfoText.textContent = "\nChoose where to insert your piece back in game";
+                reEnterPiece(currentPieceToMove.color);
+            } else if (blacks[Number(startIndex) + Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
                 switch (numberOfDiceUsed) {
                     case 4:
                         movePiece(randNumOne, currentPieceToMove);
@@ -279,7 +293,7 @@ function selectPieceToMove(numberOfDiceUsed) {
                         selectPieceToMove(numberOfDiceUsed);
                         break;
                 }
-            } else if (blacks[Number(columnNumber) + Number(randNumTwo)] === 0) {
+            } else if (blacks[Number(startIndex) + Number(randNumTwo)] === 0) {
                 switch (numberOfDiceUsed) {
                     case 1:
                         movePiece(randNumTwo, currentPieceToMove);
@@ -292,7 +306,7 @@ function selectPieceToMove(numberOfDiceUsed) {
                     case 0:
                         break;
                 }
-            } else if (blacks[Number(columnNumber) + Number(randNumOne)] === 1) {
+            } else if (blacks[Number(startIndex) + Number(randNumOne)] === 1) {
                 switch (numberOfDiceUsed) {
                     case 2:
                         movePiece(randNumOne, currentPieceToMove);
@@ -300,7 +314,7 @@ function selectPieceToMove(numberOfDiceUsed) {
                         numberOfDiceUsed--;
                         console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
                         console.log("luata o piesa");
-                        blacks[Number(columnNumber) + Number(randNumOne)]--;
+                        blacks[Number(startIndex) + Number(randNumOne)]--;
                         reRenderPieces(whites, blacks);
                         blacksOut++;
                         blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
@@ -315,13 +329,12 @@ function selectPieceToMove(numberOfDiceUsed) {
                         numberOfDiceUsed--;
                         console.log("numberOfDiceAvailable: " + numberOfDiceUsed);
                         console.log("luata inca o piesa");
-                        blacks[Number(columnNumber) + Number(randNumTwo)]--;
+                        blacks[Number(startIndex) + Number(randNumTwo)]--;
                         reRenderPieces(whites, blacks);
                         blacksOut++;
                         blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
                         selectPieceToMove(numberOfDiceUsed);
                         break;
-
                 }
             }
         }
@@ -332,7 +345,7 @@ function selectPieceToMove(numberOfDiceUsed) {
                 gameInfoText.textContent = "\nChoose where to insert your piece back in game";
                 reEnterPiece(currentPieceToMove.color);
 
-            } else if (whites[Number(columnNumber) - Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
+            } else if (whites[Number(startIndex) - Number(randNumOne)] === 0 && numberOfDiceUsed > 1) {
                 switch (numberOfDiceUsed) {
                     case 4:
                         movePiece(randNumOne, currentPieceToMove);
@@ -355,7 +368,7 @@ function selectPieceToMove(numberOfDiceUsed) {
                         selectPieceToMove(numberOfDiceUsed);
                         break;
                 }
-            } else if (whites[Number(columnNumber) - Number(randNumTwo)] === 0) {
+            } else if (whites[Number(startIndex) - Number(randNumTwo)] === 0) {
                 console.log("here " + numberOfDiceUsed);
                 switch (numberOfDiceUsed) {
                     case 1:
@@ -380,17 +393,17 @@ function reEnterPiece(color) {
         $('[class$="triangles"]').click(function () {
             let selectedColumn = $(this).children().get(0);
             let selectedColumnId = $(selectedColumn).attr("id");
-            columnNumber = selectedColumnId.substr(4);
-            console.log(columnNumber);
-            if (columnNumber > 18 && whites[columnNumber] === 0) {
+            startIndex = selectedColumnId.substr(4);
+            console.log(startIndex);
+            if (startIndex > 18 && whites[startIndex] === 0) {
                 console.log("plm");
-                if ((24 - randNumOne).toString() === columnNumber) {
+                if ((24 - randNumOne).toString() === startIndex) {
                     console.log("reenter 1");
                     blacks[24 - randNumOne]++;
                     blacksOut--;
                     blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
                     reRenderPieces(whites, blacks);
-                } else if (whites[24 - randNumTwo] === 0 && (24 - randNumTwo).toString() === columnNumber) {
+                } else if (whites[24 - randNumTwo] === 0 && (24 - randNumTwo).toString() === startIndex) {
                     console.log("reenter 2");
                     blacks[24 - randNumTwo]++;
                     blacksOut--;
@@ -404,24 +417,24 @@ function reEnterPiece(color) {
     }
 }
 
-let columnNumber;
+let startIndex;
 
 function movePiece(diceValue, currentPieceToMove) {
     switch (currentPieceToMove.color) {
         case "white":
-            columnNumber = currentPieceToMove.columnNumber.substr(7);
-            if (blacks[Number(columnNumber) + Number(diceValue)] > 1) {
+            startIndex = currentPieceToMove.columnNumber.substr(7);
+            if (blacks[Number(startIndex) + Number(diceValue)] > 1) {
                 break;
             } else {
-                whites[columnNumber]--;
-                whites[Number(columnNumber) + Number(diceValue)]++;
+                whites[startIndex]--;
+                whites[Number(startIndex) + Number(diceValue)]++;
                 reRenderPieces(whites, blacks);
                 break;
             }
         case "black":
-            columnNumber = currentPieceToMove.columnNumber.substr(7);
-            blacks[columnNumber]--;
-            blacks[Number(columnNumber) - Number(diceValue)]++;
+            startIndex = currentPieceToMove.columnNumber.substr(7);
+            blacks[startIndex]--;
+            blacks[Number(startIndex) - Number(diceValue)]++;
             reRenderPieces(whites, blacks);
             break;
     }
