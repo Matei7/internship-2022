@@ -1,16 +1,31 @@
 let doc = document;
 let time = 5;
-doc.getElementById('counter').style.setProperty("font-size","35px");
-doc.getElementById('counter').style.setProperty("color","#aee8bf");
-doc.body.style.setProperty("text-align", "center");
+const SCALE_FACTOR = 10;
 let interval = setInterval(countDown, 10);
-setInterval(main,100);
 
-let startGame = () => {
-    myGameArea.start();
+let preset = () => {
+    loadImages();
+    chessBoard = JSON.parse(sessionStorage.getItem("myData"));
+    if(chessBoard === null)
+        chessBoard = [];
+    console.log(chessBoard);
+    doc.getElementById('counter').style.setProperty("font-size", "35px");
+    doc.getElementById('counter').style.setProperty("color", "#aee8bf");
+    doc.body.style.setProperty("text-align", "center");
+    setInterval(main, 100);
 }
 
-let chessBoard = [
+let images = {};
+let types = ['br', 'bn', 'bb', 'bq', 'bk','bp','wr', 'wn', 'wb', 'wq', 'wk','wp'];
+let loadImages = () =>{
+    types.forEach((el) =>{
+        let img = new Image();
+        img.src = './images/' + getImg(el);
+        images[el] = img;
+    })
+}
+
+let initialBoard = [
     ['br', 'bn', 'bb', 'bq', 'bk', 'bb', 'bn','br' ],
     ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp','bp' ],
     ['e', 'e', 'e', 'e', 'e', 'e', 'e','e' ],
@@ -21,8 +36,9 @@ let chessBoard = [
     ['wr', 'wn', 'wb', 'wq', 'wk', 'wb', 'wn','wr' ]
     ];
 
-let width = 8;
-let height = 8;
+let chessBoard = [];
+const WIDTH = 8;
+const HEIGHT = 8;
 
 let turn = 0;
 
@@ -30,20 +46,26 @@ let getImg = (type)=>{
     return type + '.svg';
 }
 
+let isEmpty = (x, y) =>{
+    return chessBoard[y][x] === 'e';
+}
+
+let isWhitePiece = (x,y) =>{
+    return chessBoard[y][x][0] === 'w';
+}
+let isBlackPiece = (x,y) =>{
+    return chessBoard[y][x][0] === 'b';
+}
+
 let drawPiece = (myCanvas, i, j) =>{
     if(chessBoard[i][j] !== 'e'){
-        let img = new Image();
-        img.src = './images/' + getImg(chessBoard[i][j]);
-        img.onload= function() {
-            img.style.setProperty("filter","invert(1)")
-            myCanvas.drawImage(img, j * 10, i * 10, 10, 10);
-        }
+        myCanvas.drawImage(images[chessBoard[i][j]], j * SCALE_FACTOR, i * SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
     }
 }
 
 let drawPieces = (myCanvas)=>{
-    for(let i = 0; i < height; i ++){
-        for(let j = 0; j < width; j ++){
+    for(let i = 0; i < HEIGHT; i ++){
+        for(let j = 0; j < WIDTH; j ++){
             drawPiece(myCanvas,i,j);
         }
     }
@@ -56,12 +78,16 @@ let drawRectangle = (myCanvas,i , j)=>{
     else {
         myCanvas.fillStyle = 'rgba(14,3,3,0)';
     }
-    myCanvas.fillRect(j*10,i*10,10,10);
+    myCanvas.fillRect(j*SCALE_FACTOR,i*SCALE_FACTOR,SCALE_FACTOR,SCALE_FACTOR);
+}
+let drawSelectedRectangle = (myCanvas,i , j)=>{
+    myCanvas.fillStyle = '#c5ffc3';
+    myCanvas.fillRect(j*SCALE_FACTOR,i*SCALE_FACTOR,SCALE_FACTOR,SCALE_FACTOR);
 }
 
 let drawTable= (myCanvas)=>{
-    for(let i = 0; i < height; i ++){
-        for(let j = 0; j < width; j ++){
+    for(let i = 0; i < HEIGHT; i ++){
+        for(let j = 0; j < WIDTH; j ++){
                 drawRectangle(myCanvas, i,j);
         }
     }
@@ -72,7 +98,7 @@ let redo = (myCanvas) => {
     let x1,y1;
     while(queue.length !== 0) {
         [x1, y1] = queue.pop();
-        myCanvas.clearRect(x1*10,y1*10,10,10);
+        myCanvas.clearRect(x1*SCALE_FACTOR,y1*SCALE_FACTOR,SCALE_FACTOR,SCALE_FACTOR);
         drawRectangle(myCanvas,y1,x1);
         drawPiece(myCanvas,y1,x1);
     }
@@ -121,7 +147,7 @@ let computePawnMoves = (i, j, color) =>{
 let moveDiagonally = (i,j,dir1, dir2, color) =>{
     i += dir1;
     j += dir2;
-    while(onBoard(i,j,width,height)){
+    while(onBoard(i,j,WIDTH,HEIGHT)){
         if(chessBoard[i][j] !== 'e') {
             if(chessBoard[i][j][0] !== color){
                 possibleMoves.push([j,i]);
@@ -174,60 +200,59 @@ let canSwap = (dir, color)=>{
     }
 }
 let computeKingMoves = (i, j, color) => {
-    if(onBoard(i,j+1,width,height) && safe(i,j+1,color) && chessBoard[i][j+1][0] !== color){
+    if(onBoard(i,j+1,WIDTH,HEIGHT) && safe(i,j+1,color) && chessBoard[i][j+1][0] !== color){
         possibleMoves.push([j+1,i]);
     }
-    if(onBoard(i,j-1,width,height) && safe(i,j-1,color) && chessBoard[i][j-1][0] !== color){
+    if(onBoard(i,j-1,WIDTH,HEIGHT) && safe(i,j-1,color) && chessBoard[i][j-1][0] !== color){
         possibleMoves.push([j-1,i]);
     }
-    if(onBoard(i+1,j,width,height) && safe(i+1,j,color) && chessBoard[i+1][j][0] !== color){
+    if(onBoard(i+1,j,WIDTH,HEIGHT) && safe(i+1,j,color) && chessBoard[i+1][j][0] !== color){
         possibleMoves.push([j,i+1]);
     }
-    if(onBoard(i-1,j,width,height) && safe(i-1,j,color) && chessBoard[i-1][j][0] !== color){
+    if(onBoard(i-1,j,WIDTH,HEIGHT) && safe(i-1,j,color) && chessBoard[i-1][j][0] !== color){
         possibleMoves.push([j,i-1]);
     }
-    if(onBoard(i+1,j-1,width,height) && safe(i+1,j-1,color) && chessBoard[i+1][j-1][0] !== color){
+    if(onBoard(i+1,j-1,WIDTH,HEIGHT) && safe(i+1,j-1,color) && chessBoard[i+1][j-1][0] !== color){
         possibleMoves.push([j-1,i+1]);
     }
-    if(onBoard(i-1,j-1,width,height) && safe(i-1,j-1,color) && chessBoard[i-1][j-1][0] !== color){
+    if(onBoard(i-1,j-1,WIDTH,HEIGHT) && safe(i-1,j-1,color) && chessBoard[i-1][j-1][0] !== color){
         possibleMoves.push([j-1,i-1]);
     }
-    if(onBoard(i-1,j+1,width,height) && safe(i-1,j+1,color) && chessBoard[i-1][j+1][0] !== color){
+    if(onBoard(i-1,j+1,WIDTH,HEIGHT) && safe(i-1,j+1,color) && chessBoard[i-1][j+1][0] !== color){
         possibleMoves.push([j+1,i-1]);
     }
-    if(onBoard(i+1,j+1,width,height) && safe(i+1,j+1,color) && chessBoard[i+1][j+1][0] !== color){
+    if(onBoard(i+1,j+1,WIDTH,HEIGHT) && safe(i+1,j+1,color) && chessBoard[i+1][j+1][0] !== color){
         possibleMoves.push([j+1,i+1]);
     }
     canSwap('small',color);
     canSwap('big',color);
     let e = possibleMoves.pop();
-    console.log(e);
     possibleMoves.push(e);
 }
 
 let computeKnightMoves = (i, j, color) => {
-    if(onBoard(i+2,j-1,width,height) && chessBoard[i+2][j-1][0] !== color){
+    if(onBoard(i+2,j-1,WIDTH,HEIGHT) && chessBoard[i+2][j-1][0] !== color){
         possibleMoves.push([j-1,i+2]);
     }
-    if(onBoard(i+2,j+1,width,height) && chessBoard[i+2][j+1][0] !== color){
+    if(onBoard(i+2,j+1,WIDTH,HEIGHT) && chessBoard[i+2][j+1][0] !== color){
         possibleMoves.push([j+1,i+2]);
     }
-    if(onBoard(i-2,j-1,width,height) && chessBoard[i-2][j-1][0] !== color){
+    if(onBoard(i-2,j-1,WIDTH,HEIGHT) && chessBoard[i-2][j-1][0] !== color){
         possibleMoves.push([j-1,i-2]);
     }
-    if(onBoard(i-2,j+1,width,height) && chessBoard[i-2][j+1][0] !== color){
+    if(onBoard(i-2,j+1,WIDTH,HEIGHT) && chessBoard[i-2][j+1][0] !== color){
         possibleMoves.push([j+1,i-2]);
     }
-    if(onBoard(i-1,j+2,width,height) && chessBoard[i-1][j+2][0] !== color){
+    if(onBoard(i-1,j+2,WIDTH,HEIGHT) && chessBoard[i-1][j+2][0] !== color){
         possibleMoves.push([j+2,i-1]);
     }
-    if(onBoard(i+1,j+2,width,height) && chessBoard[i+1][j+2][0] !== color){
+    if(onBoard(i+1,j+2,WIDTH,HEIGHT) && chessBoard[i+1][j+2][0] !== color){
         possibleMoves.push([j+2,i+1]);
     }
-    if(onBoard(i-1,j-2,width,height) && chessBoard[i-1][j-2][0] !== color){
+    if(onBoard(i-1,j-2,WIDTH,HEIGHT) && chessBoard[i-1][j-2][0] !== color){
         possibleMoves.push([j-2,i-1]);
     }
-    if(onBoard(i+1,j-2,width,height) && chessBoard[i+1][j-2][0] !== color){
+    if(onBoard(i+1,j-2,WIDTH,HEIGHT) && chessBoard[i+1][j-2][0] !== color){
         possibleMoves.push([j-2,i+1]);
     }
 }
@@ -285,7 +310,7 @@ let drawPossibleMoves = (myCanvas,x,y) =>{
         myCanvas.fillStyle = '#8ff88b';
         [x1,y1] = possibleMoves.pop();
         myCanvas.beginPath();
-        myCanvas.arc(10*x1+5, 10*y1+5,1, 50, 0, 2 * Math.PI);
+        myCanvas.arc(SCALE_FACTOR*x1+5, SCALE_FACTOR*y1+5,1, 50, 0, 2 * Math.PI);
         myCanvas.strokeStyle = '#87ad87';
         myCanvas.strokeOpacity = 0.1;
         myCanvas.stroke();
@@ -327,13 +352,96 @@ let castle = (selectedX, selectedY,x) =>{
     return false;
 }
 
-let doMouseDown = (event)=>{
+let getActualPosition = (event) =>{
     let x = event.offsetX;
     let y = event.offsetY;
+    const squareArea = SCALE_FACTOR * SCALE_FACTOR;
+    x = Math.floor(x/squareArea);
+    y = Math.floor(y/squareArea);
+    return [x,y];
+}
+
+let prevPos = [];
+let drawSpeed = 0;
+
+let restoreSquares = (con, x, y) => {
+    let j = Math.floor(x /(SCALE_FACTOR*SCALE_FACTOR));
+    let i = Math.floor(y /(SCALE_FACTOR*SCALE_FACTOR));
+    if(onBoard(i,j+1,WIDTH,HEIGHT)){
+        drawRectangle(con,i,j+1);
+        drawPiece(con,i,j+1);
+    }
+    if(onBoard(i,j-1,WIDTH,HEIGHT)){
+        drawRectangle(con,i,j-1);
+        drawPiece(con,i,j-1);
+    }
+    if(onBoard(i+1,j,WIDTH,HEIGHT)){
+        drawRectangle(con,i+1,j);
+        drawPiece(con,i+1,j);
+    }
+    if(onBoard(i-1,j,WIDTH,HEIGHT)){
+        drawRectangle(con,i-1,j);
+        drawPiece(con,i-1,j);
+    }
+    if(onBoard(i+1,j-1,WIDTH,HEIGHT)){
+        drawRectangle(con,i+1,j-1);
+        drawPiece(con,i+1,j-1);
+    }
+    if(onBoard(i-1,j-1,WIDTH,HEIGHT)){
+        drawRectangle(con,i-1,j-1);
+        drawPiece(con,i-1,j-1);
+    }
+    if(onBoard(i-1,j+1,WIDTH,HEIGHT)){
+        drawRectangle(con,i-1,j+1);
+        drawPiece(con,i-1,j+1);
+    }
+    if(onBoard(i+1,j+1,WIDTH,HEIGHT)){
+        drawRectangle(con,i+1,j+1);
+        drawPiece(con,i+1,j+1);
+    }
+    drawRectangle(con,i,j);
+    drawPiece(con,i,j);
+}
+
+let drawPieceUnderMouse = (event) =>{
+    if(drawSpeed++ < 1){
+        return;
+    }
+    drawSpeed = 0;
+    let x = event.offsetX;
+    let y = event.offsetY;
+    let con = myGameArea.context;
+    if(selectedPiece.length ===0 )
+        return;
+    let selX, selY;
+    [selX, selY] = selectedPiece;
+    con.clearRect(selX*SCALE_FACTOR,selY*SCALE_FACTOR,SCALE_FACTOR,SCALE_FACTOR);
+    drawRectangle(con,selX,selY);
+    let img = new Image();
+    img.src = './images/' + getImg(chessBoard[selY][selX]);
+    if(prevPos.length !== 0){
+        let prevX,prevY;
+        [prevX,prevY] = prevPos;
+        con.clearRect(prevX/SCALE_FACTOR-SCALE_FACTOR/2,prevY/SCALE_FACTOR-SCALE_FACTOR/2,SCALE_FACTOR,SCALE_FACTOR);
+        restoreSquares(con,prevX,prevY);
+        prevPos = [];
+    }
+    img.onload= function() {
+        img.style.setProperty("filter","invert(1)")
+        con.drawImage(img, x/10-5, y/10-5, SCALE_FACTOR, SCALE_FACTOR);
+    }
+    prevPos = [x,y];
+    drawPossibleMoves(con,selX,selY);
+}
+
+let mousePressed = 0;
+
+let doMouseDown = (event)=>{
+    mousePressed = 1;
+    let x,y;
+    [x, y] = getActualPosition(event);
     let movedPiece = 0;
     let castled = 0;
-    x = Math.floor(x/100);
-    y = Math.floor(y/100);
     if(selectedPiece.length > 0){
         let selectedX, selectedY;
         [selectedX, selectedY] = selectedPiece;
@@ -341,7 +449,6 @@ let doMouseDown = (event)=>{
             let myX, myY;
             [myX, myY] = el;
             if(x === myX && y === myY && (x !== selectedX || y !== selectedY) ){
-
                 if(chessBoard[selectedY][selectedX][0] === 'w'){
                     turn = 1;
                 }
@@ -371,13 +478,108 @@ let doMouseDown = (event)=>{
         drawPossibleMoves(myGameArea.context, x, y);
         selectedPiece = [x,y];
     }
-    else
+    else {
         selectedPiece = [];
+    }
     if(movedPiece !== 0){
         redo(myGameArea.context);
     }
     if(castled) redraw();
+    localStorage.setItem("myData", JSON.stringify(chessBoard));
+}
+let doMouseUp = (event) =>{
+    mousePressed = 0;
+    let x, y;
+    [x, y] = getActualPosition(event);
+    let movedPiece = 0;
+    let castled = 0;
+    if(selectedPiece.length > 0){
+        let selectedX, selectedY;
+        [selectedX, selectedY] = selectedPiece;
+        queue.forEach(el =>{
+            let myX, myY;
+            [myX, myY] = el;
+            if(x === myX && y === myY && (x !== selectedX || y !== selectedY) ){
+                if(chessBoard[selectedY][selectedX][0] === 'w'){
+                    turn = 1;
+                }
+                else
+                    turn = 0;
 
+                castled += castle(selectedX, selectedY,x);//check if castling is possible
+                chessBoard[y][x] = chessBoard[selectedY][selectedX];
+                chessBoard[selectedY][selectedX] = 'e';
+                if( chessBoard[y][x] === 'wp' && y === 0){
+                    promote(x, y, 'w');
+                }
+                else if( chessBoard[y][x] === 'bp' && y === 7){
+                    promote(x, y, 'b');
+                }
+                movedPiece = 1;
+            }
+        });
+        queue.push(selectedPiece);
+    }
+    if(movedPiece !== 0){
+        redo(myGameArea.context);
+    }
+    else{
+        restoreSquares(myGameArea.context,x*SCALE_FACTOR*SCALE_FACTOR,y*SCALE_FACTOR*SCALE_FACTOR);
+    }
+    if(castled) redraw();
+    localStorage.setItem("myData", JSON.stringify(chessBoard));
+}
+
+let hovered = [];
+
+let hoverPiece = (x,y) => {
+    drawSelectedRectangle(myGameArea.context, y,x);
+    drawPiece(myGameArea.context, y,x);
+    doc.body.style.cursor = 'pointer';
+    hovered = [x,y];
+}
+let redoHover = () =>{
+    if(hovered.length === 0)
+        return;
+    let x,y;
+    [x,y]= hovered;
+    myGameArea.context.clearRect(x*SCALE_FACTOR,y*SCALE_FACTOR,SCALE_FACTOR,SCALE_FACTOR);
+    drawRectangle(myGameArea.context, y,x);
+    drawPiece(myGameArea.context, y,x);
+    doc.body.style.cursor = 'default';
+    hovered = [];
+}
+
+let myTime = 0;
+let doOnMouseMove = (event) =>{
+    if(myTime === 0){
+        redraw();
+        myTime = 1;
+    }
+    let x, y;
+    [x, y] = getActualPosition(event);
+    if(mousePressed){
+        drawPieceUnderMouse(event);
+        return;
+    }
+    if(hovered.length === 0) {
+        if (turn === 0 && isWhitePiece(x, y))
+            hoverPiece(x, y);
+        if (turn === 1 && isBlackPiece(x, y))
+            hoverPiece(x, y);
+    }
+    else
+    {
+        let hovX, hovY;
+        [hovX, hovY] = hovered;
+        if(hovX !== x || hovY !== y) {
+            redoHover();
+            if (turn === 0 && isWhitePiece(x, y))
+                hoverPiece(x, y);
+            if (turn === 1 && isBlackPiece(x, y))
+                hoverPiece(x, y);
+        }
+    }
 }
 
 let myGameArea = {
@@ -386,10 +588,17 @@ let myGameArea = {
         this.canvas.width = 800;
         this.canvas.height = 800;
         this.context = this.canvas.getContext("2d");
-        this.context.scale(10,10);
+        this.context.scale(SCALE_FACTOR,SCALE_FACTOR);
+        if(chessBoard.length === 0) {
+           initialBoard.forEach( (el)=> {
+              chessBoard.push(el);
+           });
+        }
         drawTable(this.context);
         drawPieces(this.context);
         this.canvas.addEventListener("mousedown", doMouseDown, false);
+        this.canvas.addEventListener("mousemove", doOnMouseMove, false);
+        this.canvas.addEventListener("mouseup", doMouseUp, false);
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     }
 }
@@ -400,11 +609,43 @@ function countDown(){
        if(time < 0) {
            clearInterval(interval);
            doc.getElementById('counter').style.setProperty('display','none');
-           startGame();
+           setLogin();
            console.log('game started');
        }
 }
 
+let login = () => {
+    if(input.value !== originalVal){
+        email = input.value;
+        startGame();
+        doc.body.removeChild(input);
+        doc.body.removeChild(label);
+        doc.body.removeChild(button);
+    }
+}
+
+let input = doc.createElement("input");
+let button = doc.createElement("button");
+let label = doc.createElement("label");
+let originalVal = input.value;
+
+let setLogin = () =>{
+    input.setAttribute("name", "email");
+    button.innerHTML = "Login";
+    button.style.setProperty("margin-left","20px");
+    label.innerHTML = "Email: ";
+    button.onclick = login;
+    doc.body.appendChild(label);
+    doc.body.appendChild(input);
+    doc.body.appendChild(button);
+}
+
+let email = "";
+
+let startGame = () => {
+    preset();
+    myGameArea.start()
+}
 function main(){
 
 }
