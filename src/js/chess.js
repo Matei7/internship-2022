@@ -1,3 +1,4 @@
+//import $ from "jquery"
 let highlightedPiece = null;
 let dragSrcEl = null;
 let rows = 8;
@@ -12,9 +13,9 @@ appElement.appendChild(newPElement);
 var count = 0;
 function displayCountdown()
 {
-    if(count != 5)
+    if(count != 3)
     {
-        appElement.children[1].innerText = 5 - count;
+        appElement.children[1].innerText = 3 - count;
         count++;
     }
     else
@@ -28,6 +29,7 @@ const countdown = setInterval(displayCountdown, 1000);
 const newGameButton = document.createElement('button');
 newGameButton.setAttribute('type', "button");
 newGameButton.innerText = "New Game";
+newGameButton.id="newgamebutton";
 appElement.appendChild(newGameButton);
 
 function createDivElementInElement(className, parentElement)
@@ -70,7 +72,8 @@ function movePiece()
     highlightedPiece.style.setProperty('filter', 'unset');
     highlightedPiece.dataset.highlight = "no";
     piecesPositions[pieceIndex] = {key: pieceIndex, row : this.dataset.row, column : this.dataset.column};
-    localStorage.setItem("positions", JSON.stringify(piecesPositions));
+    //localStorage.setItem("positions", JSON.stringify(piecesPositions));
+    saveGameEventHandler();
     highlightedPiece = null;
 }
 
@@ -189,7 +192,8 @@ function handleDrop(e)
             matrixTable2[this.dataset.row][parseInt(this.dataset.column)+i] = pieceIndex;
         }
         piecesPositions[pieceIndex] = {key: pieceIndex, row : this.dataset.row, column : this.dataset.column};
-        localStorage.setItem("positions", JSON.stringify(piecesPositions));
+        //localStorage.setItem("positions", JSON.stringify(piecesPositions));
+        saveGameEventHandler();
     }
     return false;
 }
@@ -236,7 +240,7 @@ function getShipClassByKey(key)
 function callGeneratePieces()
 {
     generatePieces(5, 'piecesClass', 'piece', divTable2);
-    let parsed = JSON.parse(localStorage.getItem("positions"));
+    /*let parsed = JSON.parse(localStorage.getItem("positions"));
     if(parsed != null) {
         piecesPositions = Object.values(parsed);
         for (let i = 0; i < piecesPositions.length; i++) {
@@ -251,10 +255,11 @@ function callGeneratePieces()
                 divElem.dispatchEvent(new Event('click'));
             }
         }
-    }
+    }*/
+    loadGameEventHandler();
     //localStorage.clear();
 }
-setTimeout(callGeneratePieces, 2000);
+setTimeout(callGeneratePieces, 3000);
 
 function generateNewGame()
 {
@@ -269,6 +274,11 @@ function generateNewGame()
     }
     initializeMatrix2(8, 8);
     appElement.appendChild(newGameButton);
+    $("#newgamebutton").after($('<input/>').attr({ type: 'text', id: 'email', name: 'email', placeholder: 'Email' }));
+    $("#email").after($('<button/>').prop({ type: 'button', innerHTML: 'Register', id: 'registerbutton' }));
+    //$("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Save Game', id: 'savegamebutton' }));
+    //$("#savegamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load Game', id: 'loadgamebutton' }));
+    $("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Log in', id: 'loginbutton' }));
     highlightedPiece = null;
     dragSrcEl = null;
     const divTable1 = generateTable('tableClass', 'cellClass', appElement, 64);
@@ -357,3 +367,80 @@ function handleKeyboard(e)
 }
 document.addEventListener('keydown', handleKeyboard);
 
+$("#newgamebutton").after($('<input/>').attr({ type: 'text', id: 'email', name: 'email', placeholder: 'Email' }));
+$("#email").after($('<button/>').prop({ type: 'button', innerHTML: 'Register', id: 'registerbutton' }));
+function registerEventHandler()
+{
+    $.ajax({
+        method: "POST",
+        url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/user",
+        data: { email: $("#email").val() }
+    }).done(function( msg ) {
+    alert( "Registered: " + msg );
+    });
+}
+$("#registerbutton").click(registerEventHandler);
+
+//$("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Save Game', id: 'savegamebutton' }));
+function saveGameEventHandler()
+{
+    $.ajax({
+        method: "POST",
+        url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/",
+        data: {
+            "email": $("#email").val(),
+            "key": "battleships",
+            "data": {
+                "piecesPositions": piecesPositions
+            },
+            "timestamp": "hei"
+        }
+    }).done(function( msg ) {
+        //alert( "Data Saved: " + msg );
+    });
+}
+//$("#savegamebutton").click(saveGameEventHandler);
+
+//$("#savegamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load Game', id: 'loadgamebutton' }));
+function loadGameEventHandler()
+{
+    if($("#email").val() != "") {
+        let geturl = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/?email=" + $("#email").val() + "&key=battleships&timestamp=hei";
+        $.ajax({
+            method: "GET",
+            url: geturl
+        }).done(function (msg) {
+            //let parsed = JSON.parse(msg)
+            if (msg != null) {
+                piecesPositions = {};
+                let piecesPositionsTemp = Object.values(msg.data[0].value.piecesPositions);
+                console.log(piecesPositionsTemp);
+                for (let i = 0; i < piecesPositionsTemp.length; i++) {
+                    if (piecesPositionsTemp[i] != null) {
+                        console.log(piecesPositionsTemp[i]);
+                        let className = getShipClassByKey(parseInt(piecesPositionsTemp[i].key));
+                        let elem = document.getElementsByClassName(className)[0];
+                        elem.dispatchEvent(new Event('click'));
+                        let rowElem = piecesPositionsTemp[i].row;
+                        let colElem = piecesPositionsTemp[i].column;
+                        let divElem = $(`.cellClass2[data-row="${rowElem}"][data-column="${colElem}"]`)[0];
+                        divElem.dispatchEvent(new Event('click'));
+                    }
+                }
+            }
+        });
+    }
+    //generatePieces(5, 'piecesClass', 'piece', divTable2);
+
+}
+//$("#loadgamebutton").click(loadGameEventHandler);
+
+$("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Log in', id: 'loginbutton' }));
+$("#loginbutton").click(loadGameEventHandler);
+
+
+function moveRandomPiece()
+{
+    
+}
+setInterval(moveRandomPiece, 5000);

@@ -1,0 +1,29 @@
+$primary-color: white;
+$bg: black;
+
+
+:root{
+  --cell:22.5;
+  --cellsize: 62.5;
+}
+body {
+  margin: 0 calc(var(--cell)*2px);
+}
+
+p {
+  margin: 8px;
+  font-size: 16px;
+}
+.w3r_font_color{
+  color: blue;
+}
+.w3r_background {
+  background: orange;
+}
+
+.w3r_bg_orange{
+  background: orange;
+}
+.w3r_bg_red {
+  color: red;
+}
