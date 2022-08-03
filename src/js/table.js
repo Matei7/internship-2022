@@ -65,23 +65,10 @@ function renderGame() {
     rollBtn.addEventListener("click", rollDice);
 
     drawTable();
-    for (let i = 0; i < 24; i++) {
-        divElement = document.createElement('div');
-        divElement.classList.add('div-set');
-        divElement.setAttribute("id", "set-" + i);
-        document.getElementById("column-" + i).appendChild(divElement);
-
-        if (i > 11) {
-            divElement.style.bottom = '0';
-            divElement.style.position = 'absolute';
-            divElement.style.flexDirection = 'column-reverse';
-            divElement.style.height = '400px';
-            divElement.style.width = '100px';
-        }
-    }
 }
 
 function drawTable() {
+    console.log("drawing table");
     let indexColumn;
     tableDiv = document.createElement("div");
     tableDiv.classList.add("tableBoard");
@@ -139,6 +126,21 @@ function drawTable() {
         indexColumn++;
         bottomRightSet.appendChild(triangleDiv);
     }
+
+    for (let i = 0; i < 24; i++) {
+        divElement = document.createElement('div');
+        divElement.classList.add('div-set');
+        divElement.setAttribute("id", "set-" + i);
+        document.getElementById("column-" + i).appendChild(divElement);
+
+        if (i > 11) {
+            divElement.style.bottom = '0';
+            divElement.style.position = 'absolute';
+            divElement.style.flexDirection = 'column-reverse';
+            divElement.style.height = '400px';
+            divElement.style.width = '100px';
+        }
+    }
 }
 
 function drawPiece(numberOfPieces, columnIndex, color) {
@@ -162,6 +164,8 @@ function getRandomInt(min, max) {
 }
 
 function rollDice() {
+    // $('.white-pieces').remove("disable-div");
+    // $('.black-pieces').remove("disable-div");
     whiteTurn = !whiteTurn;
     dice1 = getRandomInt(1, 7);
     dice2 = getRandomInt(1, 7);
@@ -176,6 +180,7 @@ function rollDice() {
     }
     drawDices();
     movePiece();
+
 }
 
 function drawDices() {
@@ -208,6 +213,13 @@ function drawDices() {
     }
 }
 
+// function handleOutPieces(whiteTurn) {
+//     if (whiteTurn === true) {
+//         console.log(whiteTurn);
+//         gameInfoText.innerHTML = "You have pieces out. You have to insert them back in the game..."
+//     }
+// }
+
 // move piece and also get indexes: start and end
 function movePiece() {
     let pieces = document.querySelectorAll('[class$="pieces"]');
@@ -218,50 +230,50 @@ function movePiece() {
     for (let i = 0; i < pieces.length; i++) {
         let piece = pieces[i];
 
-        piece.addEventListener('dragstart', function () {
-            draggedPiece = piece;
-            // get index start
-            let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
-            let selectedColumnId = $(selectedColumn).attr("id");
-            startIndex = Number(selectedColumnId.substr(7));
+        if (whiteTurn === true && whitesOut > 0) {
+            $('.white-pieces').addClass("disable-div");
+        } else if (whiteTurn === false && blacksOut > 0) {
+            $('.black-pieces').addClass("disable-div");
+        } else {
+            piece.addEventListener('dragstart', function () {
 
-            // get color of selected piece
-            selectedPieceColor = $(this).get(0);
-            pieceColor = $(selectedPieceColor).attr("class").substr(0, 5);
-            setTimeout(function () {
-                piece.style.display = 'none';
-            }, 0);
-            console.log("Start index = " + startIndex);
-            console.log("Whites before =" + whites);
-            console.log(pieceColor);
-        });
+                draggedPiece = piece;
+
+                let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
+                let selectedColumnId = $(selectedColumn).attr("id");
+                startIndex = Number(selectedColumnId.substr(7));
+
+                selectedPieceColor = $(this).get(0);
+                pieceColor = $(selectedPieceColor).attr("class").substr(0, 5);
+                setTimeout(function () {
+                    piece.style.display = 'none';
+                }, 0);
+                console.log("Start index = " + startIndex);
+                console.log("Whites before =" + whites);
+                console.log(pieceColor);
+            });
+        }
 
         piece.addEventListener('dragend', function () {
-            // get index end
-            let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
-            let selectedColumnId = $(selectedColumn).attr("id");
-            endIndex = Number(selectedColumnId.substr(7));
-
             setTimeout(function () {
                 piece.style.display = 'block';
                 draggedPiece = null;
             }, 0);
             console.log(startIndex + ' ' + endIndex);
-            if (pieceColor === "white") {
+            if (pieceColor === "white" && startIndex < endIndex) {
                 whites[startIndex]--;
                 whites[Number(endIndex)]++;
-            } else {
-                alert("Forbidden move...");
-                return;
             }
             if (pieceColor === "black" && startIndex > endIndex) {
                 blacks[startIndex]--;
                 blacks[Number(endIndex)]++;
-            } else {
-                alert("Forbidden move...");
-                return;
             }
+            clearTable();
+            drawTable();
+            renderPieces();
+            toggleColorToMove();
             console.log("End index = " + endIndex);
+            movePiece();
         });
 
         for (let j = 0; j < columns.length; j++) {
@@ -275,12 +287,31 @@ function movePiece() {
             });
 
             column.addEventListener('drop', function () {
-                // if (pieceColor === "white" && startIndex < endIndex) {
-                    this.append(draggedPiece);
-                // }
-                // if (pieceColor === "black" && startIndex > endIndex) {
-                    this.append(draggedPiece);
-                // }
+                // get index end
+                let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
+                let selectedColumnId = $(selectedColumn).attr("id");
+                endIndex = Number(selectedColumnId.substr(7));
+                if (startIndex < endIndex && pieceColor === "white") {
+                    if (blacks[endIndex] === 0) {
+                        this.append(draggedPiece);
+                    }
+                    if (blacks[endIndex] === 1) {
+                        blacks[endIndex]--;
+                        blacksOut++;
+                        this.append(draggedPiece);
+                    }
+                }
+                if (pieceColor === "black" && startIndex > endIndex) {
+                    if (whites[endIndex] === 0) {
+                        this.append(draggedPiece);
+                    }
+                    if (whites[endIndex] === 1) {
+                        whites[endIndex]--;
+                        whitesOut++;
+                        this.append(draggedPiece);
+                    }
+                }
+
             });
         }
     }
@@ -300,6 +331,7 @@ function toggleColorToMove() {
 }
 
 function clearTable() {
+    console.log("clearing table");
     tableDiv.remove();
 }
 
@@ -312,6 +344,8 @@ function clickStart() {
     renderGame();
     whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
     blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+    whitesOut = 0;
+    blacksOut = 0;
     renderPieces();
     gameInfoText.innerHTML = "ROLL THE DICE TO START!\nFIRST TO MOVE: WHITE";
 }
