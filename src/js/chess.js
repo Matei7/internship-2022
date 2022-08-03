@@ -10,13 +10,15 @@ const INITIAL_STATE = {
     a2: "wp", b2: "wp", c2: "wp", d2: "wp", e2: "wp", f2: "wp", g2: "wp", h2: "wp",
     a1: "wr", b1: "wn", c1: "wb", d1: "wq", e1: "wk", f1: "wb", g1: "wn", h1: "wr"
 }
-
+let MAP_STATE;
+let initial;
 let lastPieceCheck = undefined;
 let allowedMove = [];
 let statusCheked = false;
 let moveTurn = "w";
-let MAP_STATE;
 let draggedItem = null;
+let history = [];
+
 
 const pieceMoves = {
     "p": (element)=>{
@@ -180,28 +182,13 @@ function moveKnight(i, j, a, b, color){
     }
 }
 
-function createChessTable() {
-    MAP_STATE = {...INITIAL_STATE};
-    let chessTableDiv = document.createElement("div");
-    chessTableDiv.classList.add("chess-table");
-    let colorBox = true;
-    for (let row = 8; row >= 1; row--) {
-        for (let colomn of "abcdefgh") {
-            let chessBox = document.createElement("div");
-            chessBox.id = `${colomn}${row}`;
-            chessBox.classList.add("piece-box");
-            colorBox ? chessBox.classList.add("white-box") : chessBox.classList.add("black-box");
-            chessTableDiv.appendChild(chessBox);
-            colorBox = !colorBox;
-        }
-        colorBox = !colorBox;
-    }
-    return chessTableDiv;
-}
-
 function move(toPieceBox){
     if (toPieceBox.childNodes.length){
+        history.push(`${lastPieceCheck.firstChild.classList[0]}:X(${lastPieceCheck.id}, ${toPieceBox.id})`);
         toPieceBox.firstChild.remove()
+    }
+    else {
+        history.push(`${lastPieceCheck.firstChild.classList[0]}:M(${lastPieceCheck.id}, ${toPieceBox.id})`);
     }
 
     MAP_STATE[toPieceBox.id] = lastPieceCheck.firstChild.classList[0];
@@ -213,6 +200,7 @@ function move(toPieceBox){
     lastPieceCheck = undefined;
     statusCheked = false;
     (moveTurn == 'w')? moveTurn = 'b': moveTurn = 'w';
+    console.log(history);
 }
 
 function moveChessPiece(piece){
@@ -300,6 +288,7 @@ function clickPieceBox() {
 
 function DragStart() {
     draggedItem = this;
+    drawAllowedMove(this);
     draggedItem.style.opacity = '0.4';
     draggedItem.classList.remove("grab");
 }
@@ -308,12 +297,70 @@ function DragEnd() {
     draggedItem.style.opacity = '1';
     removeAllowedMove(allowedMove);
 }
+
 function drop(){
     moveChessPiece(this);
 }
 
+function createViewPanel(){
+    let viewPanelDiv = document.createElement("div");
+    viewPanelDiv.classList.add("viewPanel");
+
+    let newGamePanelDiv = document.createElement("div");
+    newGamePanelDiv.classList.add("newGamePanel");
+    let turndiv = document.createElement("div");
+    turndiv.classList.add("turndiv");
+    newGamePanelDiv.appendChild(turndiv)
+    let btn = document.createElement("button");
+    btn.classList.add("restartBtn");
+    btn.innerHTML = "Click Me";
+    btn.textContent = 'New game';
+    btn.addEventListener("click", function () {
+        MAP_STATE = {...INITIAL_STATE};
+        lastPieceCheck = undefined;
+        allowedMove = [];
+        statusCheked = false;
+        moveTurn = "w";
+        draggedItem = null;
+        history = [];
+        reproduceTheChessTable(initial);
+    });
+    newGamePanelDiv.appendChild(btn);
+
+    let tabPanelDiv = document.createElement("div");
+    tabPanelDiv.classList.add("tabPanel");
+    document.createElement("div");
+
+
+    viewPanelDiv.appendChild(newGamePanelDiv);
+    viewPanelDiv.appendChild(tabPanelDiv);
+    return viewPanelDiv;
+}
+
+function createChessTable() {
+    MAP_STATE = {...INITIAL_STATE};
+    let chessTableDiv = document.createElement("div");
+    chessTableDiv.classList.add("chess-table");
+    let colorBox = true;
+    for (let row = 8; row >= 1; row--) {
+        for (let colomn of "abcdefgh") {
+            let chessBox = document.createElement("div");
+            chessBox.id = `${colomn}${row}`;
+            chessBox.classList.add("piece-box");
+            colorBox ? chessBox.classList.add("white-box") : chessBox.classList.add("black-box");
+            chessTableDiv.appendChild(chessBox);
+            colorBox = !colorBox;
+        }
+        colorBox = !colorBox;
+    }
+    return chessTableDiv;
+}
+
 function reproduceTheChessTable(state1) {
     for (let cell in state1) {
+        if (document.getElementById(cell).childNodes.length){
+            document.getElementById(cell).firstChild.remove();
+        }
         if (state1[cell] != "ep") {
             let element = document.getElementById(cell);
             let chessPiece = document.createElement("div");
@@ -344,7 +391,12 @@ function startEvent(){
 
 function main() {
     document.body.appendChild(createChessTable());// Create chess table
-    reproduceTheChessTable(INITIAL_STATE); //New game
+    document.body.appendChild(createViewPanel());
+    if (~(localStorage.getItem("initial"))) {
+        localStorage.setItem("initial", JSON.stringify(INITIAL_STATE));
+    }
+    initial = JSON.parse(localStorage.getItem("initial"));
+    reproduceTheChessTable(initial); //New game
     startEvent()
 }
 

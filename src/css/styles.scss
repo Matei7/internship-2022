@@ -24,9 +24,59 @@ $chess-pieces: 'k', 'q', 'r', 'b', 'n', 'p';
 $chess-pieces-color: 'w', 'b';
 
 body {
-  background-color: black;
+  background-color: #312e2b;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.viewPanel{
+  display: flex;
+  width: 35vh;
+  height: 80vh;
+  flex-wrap: wrap;
+  margin: 40px auto;
+};
+
+.newGamePanel{
+  display: flex;
+  flex-direction: column;
+  padding-top: 10vh;
+  justify-content: center;
+  background-color: #360e9b;
+  width: 100%;
+}
+.restartBtn{
+  width: 30vh;
+  height: 10vh;
+  font-size: 4vh;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 2vh;
+  box-shadow: 0 1vh #999;
+}
+.restartBtn:hover {background-color: #3e8e41}
+
+.restartBtn:active {
+  background-color: #3e8e41;
+  box-shadow: 0 0.5vh #666;
+  transform: translateY(1vh);
+}
+.tabPanel{
+  display: flex;
+  flex-direction: column;
+  padding-top: 10vh;
+  justify-content: center;
+  background-color: #360e9b;
+  width: 100%;
 
 }
+
 
 .chess-table {
   display: flex;
