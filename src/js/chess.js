@@ -6,6 +6,8 @@ let columns = 8;
 let matrixTable2 = [];
 initializeMatrix2(8, 8);
 let piecesPositions = {};
+let moveRandomPieceInterval;
+let moveRandomPieceIntervalTimeout = 5000;
 
 const newPElement = document.createElement('p');
 const appElement = document.getElementById('app');
@@ -75,6 +77,7 @@ function movePiece()
     //localStorage.setItem("positions", JSON.stringify(piecesPositions));
     saveGameEventHandler();
     highlightedPiece = null;
+    restartTimerForMoveRandomPiece();
     return true;
 }
 
@@ -195,6 +198,7 @@ function handleDrop(e)
         piecesPositions[pieceIndex] = {key: pieceIndex, row : this.dataset.row, column : this.dataset.column};
         //localStorage.setItem("positions", JSON.stringify(piecesPositions));
         saveGameEventHandler();
+        restartTimerForMoveRandomPiece();
     }
     return false;
 }
@@ -220,6 +224,7 @@ function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
         pieceElements[i].dataset.rotation = "horizontal";
         pieceElements[i].appendChild(image);
     }
+    moveRandomPieceInterval = setInterval(moveRandomPiece, moveRandomPieceIntervalTimeout);
     return pieceElements;
 }
 
@@ -327,6 +332,7 @@ function movePieceByKeyboardHelper(row, col)
     colVal += col;
     let divElem = $(`.cellClass2[data-row="${rowVal}"][data-column="${colVal}"]`);
     divElem.click();
+    restartTimerForMoveRandomPiece();
 }
 
 function movePieceByKeyboard(direction)
@@ -481,4 +487,9 @@ function moveRandomPiece()
     }
     //console.log(x);
 }
-setInterval(moveRandomPiece, 2000);
+
+function restartTimerForMoveRandomPiece()
+{
+    clearInterval(moveRandomPieceInterval);
+    moveRandomPieceInterval = setInterval(moveRandomPiece, moveRandomPieceIntervalTimeout);
+}
