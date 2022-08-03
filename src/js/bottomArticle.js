@@ -213,7 +213,7 @@ function recursiveSpins(currentSpin, maximum) {
     });
 
     promise.then(() => {
-        setTimeout(() => { recursiveSpins(parseFloat(currentSpin) + 1, maximum); }, 2000);
+        setTimeout(() => { recursiveSpins(parseFloat(currentSpin) + 1, maximum); }, 1000);
     });
 }
 
@@ -276,6 +276,9 @@ function droppable() {
     slot.addEventListener('dragover', handleDragOver);
     slot.addEventListener('drop', function (event) {
         event.preventDefault();
+
+        let spinButtonAudio = new Audio("..\\public\\sounds\\coinInsert.mp3");
+        spinButtonAudio.play();
 
         if (event.target.classList.contains('over')) {
             let balance = localStorage.getItem('balance');

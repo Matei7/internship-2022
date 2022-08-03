@@ -1,7 +1,7 @@
 body {
   margin: 0;
   align-items: center;
-  background-image: url("C:\\Projects\\new\\internship-2022\\public\\images\\coins-removebg-preview.png");
+  background-image: url("..\\public\\images\\coins-removebg-preview.png");
   background-color: rgb(212, 0, 11);
   background-repeat: no-repeat;
   background-size: cover;
@@ -70,14 +70,48 @@ h1 {
   
 }
 
-
-
-.divImg {
+.divImg, .blankdivImg {
   width: 33.333%;
   height: 150px;
   border-right: 7px dashed #00d655;
   text-align: center;
   box-sizing: border-box;
+}
+
+.blankdivImg{
+  transform-style: preserve-3d;
+  transform: translateZ(-100px);
+  transition: transform 0.1s;
+}
+
+.blankdivImg.slotImages-1{
+  transform: translateZ(-100px) rotateX(0deg);
+}
+.blankdivImg.slotImages-2{
+  transform: translateZ(-100px) rotateX(90deg);
+}
+.blankdivImg.slotImages-3{
+  transform: translateZ(-100px) rotateX(180deg);
+}
+.blankdivImg.slotImages-4{
+  transform: translateZ(-100px) rotateX(270deg);
+}
+
+.slotImages-1{
+  position: absolute;
+  transform: translateZ(100px) rotateX(0deg);
+}
+.slotImages-2{
+  position: absolute;
+  transform: translateZ(100px) rotateX(-90deg);
+}
+.slotImages-3{
+  position: absolute;
+  transform: translateZ(100px) rotateX(-180deg);
+}
+.slotImages-4{
+  position: absolute;
+  transform: translateZ(100px) rotateX(-270deg);
 }
 
 .slotImages {
