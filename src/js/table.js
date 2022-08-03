@@ -227,14 +227,35 @@ function movePiece() {
 
     let draggedPiece = null;
 
-    for (let i = 0; i < pieces.length; i++) {
-        let piece = pieces[i];
-
-        if (whiteTurn === true && whitesOut > 0) {
+    if (whiteTurn === true && whitesOut > 0) {
+        $('.white-pieces').addClass("disable-div");
+        $('[class$="triangles"]').click(function () {
+            let selectedColumn = $(this).children().get(0);
+            let selectedColumnId = $(selectedColumn).attr("id");
+            startIndex = selectedColumnId.substr(4);
+            whites[startIndex]++;
+            clearTable();
+            drawTable();
+            renderPieces();
             $('.white-pieces').addClass("disable-div");
-        } else if (whiteTurn === false && blacksOut > 0) {
             $('.black-pieces').addClass("disable-div");
-        } else {
+        });
+    } else if (whiteTurn === false && blacksOut > 0) {
+        $('.black-pieces').addClass("disable-div");
+        $('[class$="triangles"]').click(function () {
+            let selectedColumn = $(this).children().get(0);
+            let selectedColumnId = $(selectedColumn).attr("id");
+            startIndex = selectedColumnId.substr(4);
+            blacks[startIndex]++;
+            clearTable();
+            drawTable();
+            renderPieces();
+            $('.white-pieces').addClass("disable-div");
+            $('.black-pieces').addClass("disable-div");
+        });
+    } else {
+        for (let i = 0; i < pieces.length; i++) {
+            let piece = pieces[i];
             piece.addEventListener('dragstart', function () {
 
                 draggedPiece = piece;
@@ -252,67 +273,67 @@ function movePiece() {
                 console.log("Whites before =" + whites);
                 console.log(pieceColor);
             });
-        }
 
-        piece.addEventListener('dragend', function () {
-            setTimeout(function () {
-                piece.style.display = 'block';
-                draggedPiece = null;
-            }, 0);
-            console.log(startIndex + ' ' + endIndex);
-            if (pieceColor === "white" && startIndex < endIndex) {
-                whites[startIndex]--;
-                whites[Number(endIndex)]++;
-            }
-            if (pieceColor === "black" && startIndex > endIndex) {
-                blacks[startIndex]--;
-                blacks[Number(endIndex)]++;
-            }
-            clearTable();
-            drawTable();
-            renderPieces();
-            toggleColorToMove();
-            console.log("End index = " + endIndex);
-            movePiece();
-        });
-
-        for (let j = 0; j < columns.length; j++) {
-            const column = columns[j];
-            column.addEventListener('dragover', function (e) {
-                e.preventDefault();
-            });
-
-            column.addEventListener('dragenter', function (e) {
-                e.preventDefault();
-            });
-
-            column.addEventListener('drop', function () {
-                // get index end
-                let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
-                let selectedColumnId = $(selectedColumn).attr("id");
-                endIndex = Number(selectedColumnId.substr(7));
-                if (startIndex < endIndex && pieceColor === "white") {
-                    if (blacks[endIndex] === 0) {
-                        this.append(draggedPiece);
-                    }
-                    if (blacks[endIndex] === 1) {
-                        blacks[endIndex]--;
-                        blacksOut++;
-                        this.append(draggedPiece);
-                    }
+            piece.addEventListener('dragend', function () {
+                setTimeout(function () {
+                    piece.style.display = 'block';
+                    draggedPiece = null;
+                }, 0);
+                console.log(startIndex + ' ' + endIndex);
+                if (pieceColor === "white" && startIndex < endIndex) {
+                    whites[startIndex]--;
+                    whites[Number(endIndex)]++;
                 }
                 if (pieceColor === "black" && startIndex > endIndex) {
-                    if (whites[endIndex] === 0) {
-                        this.append(draggedPiece);
-                    }
-                    if (whites[endIndex] === 1) {
-                        whites[endIndex]--;
-                        whitesOut++;
-                        this.append(draggedPiece);
-                    }
+                    blacks[startIndex]--;
+                    blacks[Number(endIndex)]++;
                 }
-
+                clearTable();
+                drawTable();
+                renderPieces();
+                toggleColorToMove();
+                console.log("End index = " + endIndex);
+                movePiece();
             });
+
+            for (let j = 0; j < columns.length; j++) {
+                const column = columns[j];
+                column.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
+
+                column.addEventListener('dragenter', function (e) {
+                    e.preventDefault();
+                });
+
+                column.addEventListener('drop', function () {
+                    // get index end
+                    let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
+                    let selectedColumnId = $(selectedColumn).attr("id");
+                    endIndex = Number(selectedColumnId.substr(7));
+                    if (startIndex < endIndex && pieceColor === "white") {
+                        if (blacks[endIndex] === 0) {
+                            this.append(draggedPiece);
+                        }
+                        if (blacks[endIndex] === 1) {
+                            blacks[endIndex]--;
+                            blacksOut++;
+                            this.append(draggedPiece);
+                        }
+                    }
+                    if (pieceColor === "black" && startIndex > endIndex) {
+                        if (whites[endIndex] === 0) {
+                            this.append(draggedPiece);
+                        }
+                        if (whites[endIndex] === 1) {
+                            whites[endIndex]--;
+                            whitesOut++;
+                            this.append(draggedPiece);
+                        }
+                    }
+
+                });
+            }
         }
     }
 }
