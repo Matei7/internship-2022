@@ -175,17 +175,21 @@ body {
 
 .div-set {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  margin-left: 13px;
   flex-wrap: wrap;
   position: relative;
   z-index: 2;
+  height: 400px;
 }
 
 .white-pieces {
   border-radius: 100%;
-  margin: 5px;
+  margin: 2px;
   border: 30px solid white;
   box-shadow: 2px 3px 0 #000000;
+  transition: all 0.2s linear;
+  width: 8px;
 }
 
 .disable-div {
@@ -208,9 +212,11 @@ body {
 
 .black-pieces {
   border-radius: 100%;
-  margin: 5px;
+  margin: 2px;
   border: 30px solid black;
   box-shadow: 2px 3px 0 #ffffff;
+  transition: all 0.2s linear;
+  width: 8px;
 }
 
 .black-pieces:hover {
@@ -276,30 +282,43 @@ body {
   width: 50%;
 }
 
-.dice-one, .dice-two {
+.dice-1, .dice-2, .dice-3, .dice-4 {
   top:0;
   position: relative;
   width: 60px;
   height: 60px;
   transform-style: preserve-3d;
   transform: translateZ(100px);
-  transition: transform .5s;
+  transition: transform 1s;
 }
 
-.dice-one.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
-.dice-one.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
-.dice-one.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
-.dice-one.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
-.dice-one.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
-.dice-one.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
+.dice-1.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-1.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-1.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-1.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-1.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-1.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
 
-.dice-two.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
-.dice-two.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
-.dice-two.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
-.dice-two.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
-.dice-two.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
-.dice-two.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
+.dice-2.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-2.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-2.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-2.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-2.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-2.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
 
+.dice-3.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-3.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-3.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-3.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-3.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-3.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
+
+.dice-4.show-1  { transform: translateZ(-30px) rotateY(   0deg); }
+.dice-4.show-2  { transform: translateZ(-30px) rotateY(-180deg); }
+.dice-4.show-3  { transform: translateZ(-30px) rotateY( -90deg); }
+.dice-4.show-4   { transform: translateZ(-30px) rotateY(  90deg); }
+.dice-4.show-5   { transform: translateZ(-30px) rotateX( -90deg); }
+.dice-4.show-6 { transform: translateZ(-30px) rotateX(  90deg); }
 
 .dice-face {
   position: absolute;
@@ -310,7 +329,7 @@ body {
   line-height: 60px;
   font-size: 40px;
   font-weight: bold;
-  color: red;
+  color: black;
   text-align: center;
 }
 
