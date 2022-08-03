@@ -75,6 +75,7 @@ function movePiece()
     //localStorage.setItem("positions", JSON.stringify(piecesPositions));
     saveGameEventHandler();
     highlightedPiece = null;
+    return true;
 }
 
 function createDivElementsInElement(numberOfDivElements, className, parentElement)
@@ -439,8 +440,45 @@ $("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Log
 $("#loginbutton").click(loadGameEventHandler);
 
 
+function canPieceMoveToCell(pieceToCheck, rowToCheck, colToCheck)
+{
+    let sizeOfPiece = getSizeOfPiece(pieceToCheck);
+    let pieceIndex = getPieceIndex(pieceToCheck);
+    if(sizeOfPiece + parseInt(colToCheck) - 1 >= columns)
+    {
+        return false;
+    }
+    for(let i = 0; i < sizeOfPiece; i++)
+    {
+        if(matrixTable2[rowToCheck][parseInt(colToCheck)+i] != 0 && matrixTable2[rowToCheck][parseInt(colToCheck)+i] != pieceIndex)
+        {
+            return false;
+        }
+    }
+    return true;
+}
 function moveRandomPiece()
 {
-    
+    let piecesClassChildren = $(".piecesClass > *");
+    if(piecesClassChildren.length == 0)
+    {
+        clearInterval();
+    }
+    else {
+        let ok = 0;
+        let randomPieceIndex = Math.floor(Math.random() * piecesClassChildren.length);
+        let randomPiece = piecesClassChildren[randomPieceIndex];
+        while (!ok) {
+            let randomRow = Math.floor(Math.random() * 8);
+            let randomCol = Math.floor(Math.random() * 8);
+            ok = canPieceMoveToCell(randomPiece, randomRow, randomCol);
+            if (ok) {
+                randomPiece.dispatchEvent(new Event('click'));
+                let divElem = $(`.cellClass2[data-row="${randomRow}"][data-column="${randomCol}"]`);
+                divElem.click();
+            }
+        }
+    }
+    //console.log(x);
 }
-setInterval(moveRandomPiece, 5000);
+setInterval(moveRandomPiece, 2000);
