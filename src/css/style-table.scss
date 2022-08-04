@@ -1,7 +1,10 @@
 body {
   margin-top: 15px;
   margin-left: 30px;
+  //margin-left: 25%;
   padding: 0;
+  //width: 55%;
+  //height: 55%;
 }
 
 .main {
@@ -20,12 +23,47 @@ body {
   position: relative;
 }
 
-.top {
+.top, .top-buttons {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: left;
   position: relative;
+
+  &.top-buttons {
+    margin-top: 15px;
+  }
+}
+
+.email-input {
+  margin-top: 10px;
+  border: 3px solid #CDD9ED;
+  border-radius: 6px;
+  transition: border .3s ease;
+  width: 250px;
+  height: 40px;
+  font-size: 18px;
+
+  &::placeholder {
+    color: #CBD1DC;
+  }
+  &:focus {
+    outline: none;
+    border-color: #275EFE;
+  }
+}
+
+.log-button , .load-button, .save-state-button {
+  margin-top: 10px;
+  margin-left: 5px;
+  width: 100px;
+  height: 50px;
+  font-size: 20px;
+  background-color: #D59A68;
+  border: 3px solid #D59A68;
+  border-radius: 10px;
+  color: black;
+  font-family: ui-sans-serif;
 }
 
 .game-info {
@@ -278,7 +316,7 @@ body {
   flex-direction: row;
   justify-content: space-evenly;
   position: relative;
-  margin-left: 100px;
+  //margin-left: 100px;
   width: 50%;
 }
 

@@ -1,20 +1,21 @@
 import "../css/style-table.scss";
 import $ from "jquery";
 
-let mainDiv, top, tableDiv, gameInfoDIV, piecesOutDiv, whitePiecesTakenOut, blackPiecesTakenOut, gameInfoText;
+let mainDiv, top, tableDiv, gameInfoDIV, piecesOutDiv, whitePiecesTakenOut, blackPiecesTakenOut, gameInfoText, topButtons;
 let startBtn, rollBtn;
 let blacksOut = 0, whitesOut = 0;
 let whiteTurn = false;
 let whites, blacks;
 const WHITE = "white";
 const BLACK = "black";
-
+let emailInput, signInBtn, loadGameBtn, saveStateBtn;
+let userLoggedIn = false;
 let diceDiv, divElement;
 let dice1, dice2;
 let dices = [];
 
 let selectedPieceColor, pieceColor;
-let startIndex, endIndex;
+let selectedCOlumnToReEnter, endIndex;
 
 function renderGame() {
     mainDiv = document.createElement("div");
@@ -24,6 +25,10 @@ function renderGame() {
     top = document.createElement('div');
     top.classList.add("top");
     mainDiv.appendChild(top);
+
+    topButtons = document.createElement('div');
+    topButtons.classList.add("top-buttons");
+    mainDiv.appendChild(topButtons);
 
     gameInfoDIV = document.createElement('div');
     gameInfoDIV.classList.add("game-info");
@@ -64,7 +69,85 @@ function renderGame() {
 
     rollBtn.addEventListener("click", rollDice);
 
+    emailInput = document.createElement('input');
+    emailInput.classList.add("email-input");
+    emailInput.setAttribute("id", "email");
+    emailInput.placeholder = "Email";
+    emailInput.setAttribute("type", "text");
+    topButtons.appendChild(emailInput);
+
+    signInBtn = document.createElement("button");
+    signInBtn.classList.add("log-button");
+    signInBtn.innerHTML = "Sign in";
+    topButtons.appendChild(signInBtn);
+    signInBtn.addEventListener("click", signInUser);
+
+    loadGameBtn = document.createElement("button");
+    loadGameBtn.classList.add("load-button");
+    loadGameBtn.innerHTML = "Load game";
+    topButtons.appendChild(loadGameBtn);
+    loadGameBtn.addEventListener("click", loadGame);
+
+    saveStateBtn = document.createElement("button");
+    saveStateBtn.classList.add("save-state-button");
+    saveStateBtn.innerHTML = "Save state";
+    topButtons.appendChild(saveStateBtn);
+    saveStateBtn.addEventListener("click", saveStateOfGame);
+
     drawTable();
+}
+
+function signInUser() {
+    let url = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/user";
+    let emailObject = {email: $('.email-input').val()}
+    $.ajax({
+        method: "POST",
+        url: url,
+        data: emailObject,
+        success: !userLoggedIn
+    }).done(function () {
+        alert("Data saved: " + emailObject.email);
+    });
+    userLoggedIn = true;
+    localStorage.setItem('myCat', 'Tom');
+}
+
+function saveStateOfGame() {
+    let url = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data";
+    $.ajax({
+        method: "POST",
+        url: url,
+        data: {
+            "email": $('.email-input').val(),
+            "key": "table",
+            timestamp: "table-game",
+            data: {
+                "whites": whites,
+                "blacks": blacks,
+                "whiteTurn": whiteTurn,
+                "blacksOut": blacksOut,
+                "whitesOut": whitesOut,
+            }
+        }
+    }).done(function () {
+        alert("Data saved...");
+    });
+}
+
+function loadGame() {
+    let url = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data";
+    $.ajax({
+        method: "GET",
+        url: url,
+        data: {
+            "email": $('.email-input').val(),
+            "key": "table",
+            timestamp: "table-game"
+        }
+    }).done(function (response) {
+        console.log(response.data);
+        renderPiecesFromServer(response);
+    });
 }
 
 function drawTable() {
@@ -157,6 +240,21 @@ function renderPieces() {
     blacks.forEach((nr, index) => drawPiece(nr, index, BLACK));
 }
 
+function renderPiecesFromServer(response) {
+    whites = response.data[0].value.whites;
+    blacks = response.data[0].value.blacks;
+    whiteTurn = response.data[0].value.whiteTurn;
+    blacksOut = response.data[0].value.blacksOut;
+    whitesOut = response.data[0].value.whitesOut;
+    whitePiecesTakenOut.textContent = "Whites out: " + whitesOut;
+    blackPiecesTakenOut.textContent = "Blacks out: " + blacksOut;
+
+    clearTable();
+    drawTable();
+    renderPieces();
+    toggleColorToMove();
+}
+
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -164,8 +262,6 @@ function getRandomInt(min, max) {
 }
 
 function rollDice() {
-    // $('.white-pieces').remove("disable-div");
-    // $('.black-pieces').remove("disable-div");
     whiteTurn = !whiteTurn;
     dice1 = getRandomInt(1, 7);
     dice2 = getRandomInt(1, 7);
@@ -213,11 +309,10 @@ function drawDices() {
 }
 
 function handleSimpleDice(arr, value) {
-    return arr.filter(function(ele){
+    return arr.filter(function (ele) {
         return ele !== value;
     });
 }
-
 
 function allAreEqual(array) {
     const result = array.every(element => {
@@ -229,33 +324,33 @@ function allAreEqual(array) {
 }
 
 // move piece and also get indexes: start and end
+// todo: dupa load cand intru in casa pot sa pun si in locuri unde n ar trebui
 function movePiece() {
     let pieces = document.querySelectorAll('[class$="pieces"]');
     let columns = document.querySelectorAll('[class="div-set"]');
 
     let draggedPiece = null;
 
-    if(dices.length !== 0) {
+    if (dices.length !== 0) {
         if (whiteTurn === true && whitesOut > 0) {
             $('.white-pieces').addClass("disable-div");
             $('[class$="triangles"]').click(function () {
                 let selectedColumn = $(this).children().get(0);
                 let selectedColumnId = $(selectedColumn).attr("id");
-                startIndex = selectedColumnId.substr(4);
-                console.log(dices + " " + startIndex);
-                if (startIndex < 6) {
-                    whites[startIndex]++;
+                selectedCOlumnToReEnter = selectedColumnId.substr(4);
+                console.log(dices + " " + selectedCOlumnToReEnter);
+                if (selectedCOlumnToReEnter < 6 && blacks[selectedCOlumnToReEnter] <= 1) {
+                    whites[selectedCOlumnToReEnter]++;
                     whitesOut--;
-                    if (blacks[startIndex] === 1) {
-                        blacks[startIndex]--;
+                    if (blacks[selectedCOlumnToReEnter] === 1) {
+                        blacks[selectedCOlumnToReEnter]--;
                         blacksOut++;
                     }
-                    if(allAreEqual(dices) === true) {
+                    if (allAreEqual(dices) === true) {
                         dices.pop();
                     } else {
-                       dices = handleSimpleDice(dices, (endIndex-startIndex));
+                        dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
                     }
-                    console.log(dices);
                     clearTable();
                     drawTable();
                     renderPieces();
@@ -270,19 +365,19 @@ function movePiece() {
             $('[class$="triangles"]').click(function () {
                 let selectedColumn = $(this).children().get(0);
                 let selectedColumnId = $(selectedColumn).attr("id");
-                startIndex = selectedColumnId.substr(4);
-                console.log(startIndex);
-                if (startIndex < 24 && startIndex > 17) {
-                    blacks[startIndex]++;
+                selectedCOlumnToReEnter = selectedColumnId.substr(4);
+                console.log(selectedCOlumnToReEnter);
+                if (selectedCOlumnToReEnter < 24 && selectedCOlumnToReEnter > 17  && whites[selectedCOlumnToReEnter] <= 1) {
+                    blacks[selectedCOlumnToReEnter]++;
                     blacksOut--;
-                    if (whites[startIndex] === 1) {
-                        whites[startIndex]--;
+                    if (whites[selectedCOlumnToReEnter] === 1) {
+                        whites[selectedCOlumnToReEnter]--;
                         whitesOut++;
                     }
-                    if(allAreEqual(dices) === true) {
+                    if (allAreEqual(dices) === true) {
                         dices.pop();
                     } else {
-                        dices = handleSimpleDice(dices, (startIndex-endIndex));
+                        dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
                     }
                     console.log(dices);
                     clearTable();
@@ -303,7 +398,7 @@ function movePiece() {
 
                     let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                     let selectedColumnId = $(selectedColumn).attr("id");
-                    startIndex = Number(selectedColumnId.substr(7));
+                    selectedCOlumnToReEnter = Number(selectedColumnId.substr(7));
 
                     selectedPieceColor = $(this).get(0);
                     pieceColor = $(selectedPieceColor).attr("class").substr(0, 5);
@@ -317,25 +412,25 @@ function movePiece() {
                         piece.style.display = 'block';
                         draggedPiece = null;
                     }, 0);
-                    console.log(startIndex + ' ' + endIndex);
-                    if (pieceColor === "white" && startIndex < endIndex && dices.includes(endIndex - startIndex) === true) {
-                        whites[startIndex]--;
+                    console.log(selectedCOlumnToReEnter + ' ' + endIndex);
+                    if (pieceColor === "white" && selectedCOlumnToReEnter < endIndex && dices.includes(endIndex - selectedCOlumnToReEnter) === true) {
+                        whites[selectedCOlumnToReEnter]--;
                         whites[endIndex]++;
-                        if(allAreEqual(dices) === true) {
+                        if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (endIndex-startIndex));
+                            dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
                         }
                         console.log(dices);
 
                     }
-                    if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
-                        blacks[startIndex]--;
+                    if (pieceColor === "black" && selectedCOlumnToReEnter > endIndex && dices.includes(selectedCOlumnToReEnter - endIndex) === true) {
+                        blacks[selectedCOlumnToReEnter]--;
                         blacks[endIndex]++;
-                        if(allAreEqual(dices) === true) {
+                        if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (startIndex-endIndex));
+                            dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
                         }
                         console.log(dices);
 
@@ -358,14 +453,13 @@ function movePiece() {
                         e.preventDefault();
                     });
 
-
                     column.addEventListener('drop', function () {
                         // get index end
                         let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                         let selectedColumnId = $(selectedColumn).attr("id");
                         endIndex = Number(selectedColumnId.substr(7));
-                        console.log(dices.includes(endIndex - startIndex));
-                        if (startIndex < endIndex && pieceColor === "white" && dices.includes(endIndex - startIndex) === true) {
+                        console.log(dices.includes(endIndex - selectedCOlumnToReEnter));
+                        if (selectedCOlumnToReEnter < endIndex && pieceColor === "white" && dices.includes(endIndex - selectedCOlumnToReEnter) === true) {
                             if (blacks[endIndex] === 0) {
                                 this.append(draggedPiece);
                             }
@@ -375,7 +469,7 @@ function movePiece() {
                                 this.append(draggedPiece);
                             }
                         }
-                        if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
+                        if (pieceColor === "black" && selectedCOlumnToReEnter > endIndex && dices.includes(selectedCOlumnToReEnter - endIndex) === true) {
                             if (whites[endIndex] === 0) {
                                 this.append(draggedPiece);
                             }
