@@ -27,6 +27,7 @@ body {
   background-color: #312e2b;
   display: flex;
   flex-wrap: wrap;
+  color: #c5c5ce;
 }
 
 
@@ -38,12 +39,36 @@ body {
   margin: 40px auto;
 };
 
+.form-inline{
+  max-height: 125px;
+}
+.form-inline .form-group>* {
+  grid-area: group;
+}
+.form-group input {
+  min-height: 35px;
+}
+.form-inline .form-group label {
+  align-self: start;
+  font-size: .9rem;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  position: relative;
+  transform: translate(0.5rem,-50%);
+}
+.form-group input, .form-group textarea {
+  background-color: #1e1c22;
+  border: 2px solid;
+  border-radius: 4px;
+  color: #c5c5ce;
+  font: inherit;
+  padding: 0 0.5em;
+  width: 100%;
+}
+
 .newGamePanel{
   display: flex;
   flex-direction: column;
-  padding-top: 10vh;
-  justify-content: center;
-  background-color: #360e9b;
   width: 100%;
 }
 .restartBtn{
@@ -59,10 +84,34 @@ body {
   border: none;
   border-radius: 2vh;
   box-shadow: 0 1vh #999;
+  margin: 3vh auto;
 }
 .restartBtn:hover {background-color: #3e8e41}
 
 .restartBtn:active {
+  background-color: #3e8e41;
+  box-shadow: 0 0.5vh #666;
+  transform: translateY(1vh);
+}
+.btn{
+  margin-left: 30px;
+  width: 10vh;
+  height: 5vh;
+  font-size: 2vh;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 1vh;
+  box-shadow: 0 0.5vh #999;
+  margin: 1.5vh;
+}
+.btn:hover {background-color: #3e8e41}
+
+.btn:active {
   background-color: #3e8e41;
   box-shadow: 0 0.5vh #666;
   transform: translateY(1vh);

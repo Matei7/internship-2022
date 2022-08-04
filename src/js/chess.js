@@ -1,4 +1,5 @@
 import "../css/styles.scss";
+import $ from 'jquery'
 
 const INITIAL_STATE = {
     a8: "br", b8: "bn", c8: "bb", d8: "bq", e8: "bk", f8: "bb", g8: "bn", h8: "br",
@@ -10,17 +11,25 @@ const INITIAL_STATE = {
     a2: "wp", b2: "wp", c2: "wp", d2: "wp", e2: "wp", f2: "wp", g2: "wp", h2: "wp",
     a1: "wr", b1: "wn", c1: "wb", d1: "wq", e1: "wk", f1: "wb", g1: "wn", h1: "wr"
 }
+let idGameList = {
+    "email": "cristian.popescu@bitstone.eu",
+    "key": idGameList,
+    "data": []
+}
+
 let MAP_STATE;
 let initial;
-let lastPieceCheck = undefined;
+let lastPieceCheck = undefined; // piecebox
 let allowedMove = [];
 let statusCheked = false;
 let moveTurn = "w";
 let draggedItem = null;
 let history = [];
+let gameid = Date.now();
 
 
 const pieceMoves = {
+    // MAP_STATE
     "p": (element)=>{
         let alowMove = [];
         let x = element.id[0];
@@ -183,6 +192,7 @@ function moveKnight(i, j, a, b, color){
 }
 
 function move(toPieceBox){
+    // update history
     if (toPieceBox.childNodes.length){
         history.push(`${lastPieceCheck.firstChild.classList[0]}:X(${lastPieceCheck.id}, ${toPieceBox.id})`);
         toPieceBox.firstChild.remove()
@@ -200,7 +210,7 @@ function move(toPieceBox){
     lastPieceCheck = undefined;
     statusCheked = false;
     (moveTurn == 'w')? moveTurn = 'b': moveTurn = 'w';
-    console.log(history);
+    // console.log(history);
 }
 
 function moveChessPiece(piece){
@@ -233,54 +243,60 @@ function drawAllowedMove(){
 }
 
 function clickPieceBox() {
-    // if has a piece
+    // if current PieceBox has a ChessPiece
     if (this.childNodes.length){
         if (this.firstChild.classList[0][0] == moveTurn) {
-            if (!lastPieceCheck) {
-                lastPieceCheck = this;
-            }
-            console.log('curent piece:', this.firstChild.classList[0]);
+            if (!lastPieceCheck) {lastPieceCheck = this;}
+            // console.log('currently selected piece:', this.firstChild.classList[0]);
+            // if piece is selected return true else return false
             statusCheked = this.firstChild.classList.toggle("grab");
+
             if (statusCheked) {
-                // posible pice move
+                // change current piece
                 if (lastPieceCheck.id != this.id) {
-                    console.log(lastPieceCheck.id, "change piece:", this.id);
-                    lastPieceCheck.firstChild.classList.remove("grab");
-                    this.firstChild.classList.add("grab");
-                    lastPieceCheck = this;
+                    // console.log(lastPieceCheck.id, "change piece:", this.id);
+                    lastPieceCheck.firstChild.classList.remove("grab"); // remove bg for lastPiece
+                    this.firstChild.classList.add("grab"); // add bg to current piece
+                    lastPieceCheck = this; // update last piece
+
+                    // draw AllowedMove for current piece
                     removeAllowedMove(allowedMove);
                     allowedMove = pieceMoves[this.firstChild.classList[0][1]](this);
                     drawAllowedMove(allowedMove);
-
-                } else {
-                    console.log('select', this.id);
+                }
+                // select current piece
+                else {
+                    // console.log('select', this.id);
                     allowedMove = pieceMoves[this.firstChild.classList[0][1]](this);
                     drawAllowedMove(allowedMove);
 
                 }
-            } else {
-                console.log('unselect', this.id);
+            }
+            else {
+                // console.log('unselect', this.id);
                 removeAllowedMove(allowedMove);
                 lastPieceCheck = undefined;
             }
         }
         else {
+            // attack another piece color
             if (statusCheked) {
-                console.log(lastPieceCheck.firstChild.classList[0],'move',lastPieceCheck.id ,'->', this.id);
+                // console.log(lastPieceCheck.firstChild.classList[0],'move',lastPieceCheck.id ,'->', this.id);
                 moveChessPiece(this);
             }
             else{
-                console.log('unmove');
+                // console.log('unmove');
             }
         }
     }
     else {
+        //move piece to empty zone
         if (statusCheked) {
-            console.log(lastPieceCheck.firstChild.classList[0],'move',lastPieceCheck.id ,'->', this.id);
+            // console.log(lastPieceCheck.firstChild.classList[0],'move',lastPieceCheck.id ,'->', this.id);
             moveChessPiece(this);
         }
         else{
-            console.log('unmove');
+            // console.log('not select piece');
         }
 
     }
@@ -288,13 +304,15 @@ function clickPieceBox() {
 
 function DragStart() {
     draggedItem = this;
-    drawAllowedMove(this);
+    lastPieceCheck = draggedItem.parentNode;
+    drawAllowedMove(draggedItem);
     draggedItem.style.opacity = '0.4';
     draggedItem.classList.remove("grab");
 }
 
 function DragEnd() {
     draggedItem.style.opacity = '1';
+    allowedMove = [];
     removeAllowedMove(allowedMove);
 }
 
@@ -303,19 +321,86 @@ function drop(){
 }
 
 function createViewPanel(){
-    let viewPanelDiv = document.createElement("div");
-    viewPanelDiv.classList.add("viewPanel");
+    $("body").append("<div class='viewPanel'></div>");
 
-    let newGamePanelDiv = document.createElement("div");
-    newGamePanelDiv.classList.add("newGamePanel");
-    let turndiv = document.createElement("div");
-    turndiv.classList.add("turndiv");
-    newGamePanelDiv.appendChild(turndiv)
-    let btn = document.createElement("button");
-    btn.classList.add("restartBtn");
-    btn.innerHTML = "Click Me";
-    btn.textContent = 'New game';
-    btn.addEventListener("click", function () {
+    // Register grup
+    $(".viewPanel").append("<div id=fl1 class='form-inline'></div>");
+    $("#fl1").append("<div id=fg1 class='form-group'></div>");
+    $("#fg1").append('' +
+        '<label for="email">Email:</label>\n' +
+        '<input type="email" id="email" name="email" class="form-field" value="cristian.popescu@bitstone.eu">');
+    $("#fl1").append("<button id='register' class='btn'>Register</button>");
+
+    $(document).on("click", "#register", function (){
+        let url ='https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/user'
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: {email: $("#email").val()},
+        }).done(function( msg ) {
+            alert( "Data Saved: " + msg );
+        })
+    })
+    $(".viewPanel").append(`<h2 id=idgame>Current id:${gameid}</h2>`);
+    $(".viewPanel").append("<div class='save'></div>");
+    $(".save").append("<button id='save' class='btn'>Save</button>");
+    $(document).on("click","#save", function(){
+        let url ='https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data'
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: {
+                email: $("#email").val(),
+                key: 'chess',
+                timestamp: "zina",
+                data: {
+                    "move": history,
+                    "map": MAP_STATE,
+                    "moveturn": moveTurn,
+                    "gameid": gameid
+                }
+            },
+        }).done(function( msg ) {
+            alert( "Data petrea: " + msg );
+        })
+    })
+
+    $(".viewPanel").append("<div class='load'></div>");
+    $(".load").append("<div id=fl2 class='form-inline'></div>");
+    $("#fl2").append("<div id=fg2 class='form-group'></div>");
+    $("#fg2").append('' +
+        '<label for="gameid">Enter id for your game:</label>\n' +
+        '<input type="text" id="gameid" name="gameid" class="form-field">');
+
+
+    $("#fl2").append("<button id='load' class='btn'>load</button>");
+    $(document).on("click","#load", function(){
+        let url ='https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data'
+        $.ajax({
+            method: "GET",
+            url: url,
+            data: {
+                email: $("#email").val(),
+                key: 'chess',
+                timestamp: "zina",
+            },
+        }).done(function( response ) {
+            alert( "Data sfeta:");
+            console.log(response.data);
+            MAP_STATE = {...response.data[0].value.map};
+            lastPieceCheck = undefined;
+            allowedMove = [];
+            statusCheked = false;
+            moveTurn = response.data[0].value.moveturn;
+            draggedItem = null;
+            history = response.data[0].value.move;
+            reproduceTheChessTable(MAP_STATE);
+        })
+    })
+    // new game panel
+    $(".viewPanel").append("<div class='newGamePanel'></div>");
+    $(".newGamePanel").append("<button class='restartBtn'>New game</button>");
+    $(document).on("click",".restartBtn", function(){
         MAP_STATE = {...INITIAL_STATE};
         lastPieceCheck = undefined;
         allowedMove = [];
@@ -323,18 +408,10 @@ function createViewPanel(){
         moveTurn = "w";
         draggedItem = null;
         history = [];
+        gameid = Date.now();
+        $('#idgame').text(`Current id:${gameid}`);
         reproduceTheChessTable(initial);
-    });
-    newGamePanelDiv.appendChild(btn);
-
-    let tabPanelDiv = document.createElement("div");
-    tabPanelDiv.classList.add("tabPanel");
-    document.createElement("div");
-
-
-    viewPanelDiv.appendChild(newGamePanelDiv);
-    viewPanelDiv.appendChild(tabPanelDiv);
-    return viewPanelDiv;
+    })
 }
 
 function createChessTable() {
@@ -391,7 +468,7 @@ function startEvent(){
 
 function main() {
     document.body.appendChild(createChessTable());// Create chess table
-    document.body.appendChild(createViewPanel());
+    createViewPanel();
     if (~(localStorage.getItem("initial"))) {
         localStorage.setItem("initial", JSON.stringify(INITIAL_STATE));
     }
