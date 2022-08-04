@@ -289,82 +289,80 @@ function rollDice() {
         }
     }
     whiteFlag = false;
-    // checkIfAllInHome(WHITE);
-    // if (whiteFlag === true) {
-    //     console.log("all home");
-    //     drawDices();
-    //     takeOutPieces();
-    // } else {
-    //     drawDices();
-    //     movePiece();
-    // }
+    checkIfAllInHome(WHITE);
+    if (whiteFlag === true) {
+        console.log("all home");
+        drawDices();
+        takeOutPieces();
+    } else {
         drawDices();
         movePiece();
+    }
 }
 
-// function takeOutPieces() {
-//     if (dices.length !== 0) {
-//         if (whiteTurn === true) {
-//             $('[class$="triangles"]').click(function () {
-//                 let selectedColumn = $(this).children().get(0);
-//                 let selectedColumnId = $(selectedColumn).attr("id");
-//                 let selectColumnToTakeOut = selectedColumnId.substr(4);
-//                 console.log(dices + " " + selectColumnToTakeOut);
-//                 if (dices.includes(24 - selectColumnToTakeOut) === true) {
-//                     console.log("wtf")
-//                     whites[selectColumnToTakeOut]--;
-//                     if (allAreEqual(dices) === true) {
-//                         dices.pop();
-//                     } else {
-//                         dices = handleSimpleDice(dices, (24 - selectColumnToTakeOut));
-//                     }
-//                     clearTable();
-//                     drawTable();
-//                     renderPieces();
-//                     $('.black-pieces').addClass("disable-div");
-//                     takeOutPieces();
-//                 } else {
-//                     movePiece();
-//                     console.log(selectColumnToTakeOut);
-//                     // let takeOutFlag=false;
-//                     // for(let d=0; d<dices.length;d++) {
-//                     //     if((23 - selectColumnToTakeOut) <= dices[d]) {
-//                     //         takeOutFlag = true;
-//                     //     } else {
-//                     //         takeOutFlag = false;
-//                     //     }
-//                     // }
-//                     // for(let i = 18; i < 24; i++) {
-//                     //     if(whites[i] >= 1 && takeOutFlag === true) {
-//                     //         whites[i]--;
-//                     //         break;
-//                     //     }
-//                     // }
-//                     // if(takeOutFlag===true) {
-//                     //     clearTable();
-//                     //     drawTable();
-//                     //     renderPieces();
-//                     //     $('.black-pieces').addClass("disable-div");
-//                     // }
-//                     console.log(dices);
-//                     // takeOutPieces();
-//                 }
-//             });
-//             let allWhitesOut = false;
-//             for(let i = 0; i < 24; i++) {
-//                 if(whites[i] === 0) {
-//                     allWhitesOut = true;
-//                 } else {
-//                     allWhitesOut = false;
-//                 }
-//             }
-//             if(allWhitesOut) {
-//                 clearTable();
-//                 alert("WHITE WON!");
-//             }
-//         }
-//     }
-// }
+function takeOutPieces() {
+    if (dices.length !== 0) {
+        if (whiteTurn === true) {
+            $('[class$="triangles"]').click(function () {
+                let selectedColumn = $(this).children().get(0);
+                let selectedColumnId = $(selectedColumn).attr("id");
+                let selectColumnToTakeOut = selectedColumnId.substr(4);
+                console.log(dices + " " + selectColumnToTakeOut);
+                if (dices.includes(24 - selectColumnToTakeOut) === true) {
+                    console.log("wtf")
+                    whites[selectColumnToTakeOut]--;
+                    if (allAreEqual(dices) === true) {
+                        dices.pop();
+                    } else {
+                        dices = handleSimpleDice(dices, (24 - selectColumnToTakeOut));
+                    }
+                    clearTable();
+                    drawTable();
+                    renderPieces();
+                    $('.black-pieces').addClass("disable-div");
+                    takeOutPieces();
+                } else {
+                    movePiece();
+                    console.log(selectColumnToTakeOut);
+                    // let takeOutFlag=false;
+                    // for(let d=0; d<dices.length;d++) {
+                    //     if((23 - selectColumnToTakeOut) <= dices[d]) {
+                    //         takeOutFlag = true;
+                    //     } else {
+                    //         takeOutFlag = false;
+                    //     }
+                    // }
+                    // for(let i = 18; i < 24; i++) {
+                    //     if(whites[i] >= 1 && takeOutFlag === true) {
+                    //         whites[i]--;
+                    //         break;
+                    //     }
+                    // }
+                    // if(takeOutFlag===true) {
+                    //     clearTable();
+                    //     drawTable();
+                    //     renderPieces();
+                    //     $('.black-pieces').addClass("disable-div");
+                    // }
+                    console.log(dices);
+                    // takeOutPieces();
+                }
+            });
+            let allWhitesOut = false;
+            for(let i = 0; i < 24; i++) {
+                if(whites[i] === 0) {
+                    allWhitesOut = true;
+                } else {
+                    allWhitesOut = false;
+                }
+            }
+            if(allWhitesOut) {
+                clearTable();
+                alert("WHITE WON!");
+            }
+        }
+    }
+}
 
 function drawDices() {
     clearMain();
@@ -543,7 +541,7 @@ function movePiece() {
                         let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                         let selectedColumnId = $(selectedColumn).attr("id");
                         endIndex = Number(selectedColumnId.substr(7));
-                        console.log(dices.includes(endIndex - startIndex));
+                        
                         if (startIndex < endIndex && pieceColor === "white" && dices.includes(endIndex - startIndex) === true) {
                             if (blacks[endIndex] === 0) {
                                 this.append(draggedPiece);
@@ -553,10 +551,6 @@ function movePiece() {
                                 blacksOut++;
                                 this.append(draggedPiece);
                             }
-                            // if (whites[endIndex]>=0) {
-                            //     whites[endIndex]++;
-                            //     this.append(draggedPiece);
-                            // }
                         }
                         if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
                             if (whites[endIndex] === 0) {
@@ -600,10 +594,10 @@ function clearMain() {
 function clickStart() {
     clearMain();
     renderGame();
-    whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
-    blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
-    // whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 3, 2];
-    // blacks = [5, 0, 2, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+    // blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+    whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 3, 2];
+    blacks = [5, 0, 2, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     whitesOut = 0;
     blacksOut = 0;
     renderPieces();
