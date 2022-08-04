@@ -1,7 +1,8 @@
 import "../css/style-table.scss";
 import $ from "jquery";
 
-let mainDiv, top, tableDiv, gameInfoDIV, piecesOutDiv, whitePiecesTakenOut, blackPiecesTakenOut, gameInfoText, topButtons;
+let mainDiv, top, tableDiv, gameInfoDIV, piecesOutDiv, whitePiecesTakenOut, blackPiecesTakenOut, gameInfoText,
+    topButtons;
 let startBtn, rollBtn;
 let blacksOut = 0, whitesOut = 0;
 let whiteTurn = false;
@@ -13,9 +14,10 @@ let userLoggedIn = false;
 let diceDiv, divElement;
 let dice1, dice2;
 let dices = [];
+let whiteFlag = false;
 
 let selectedPieceColor, pieceColor;
-let selectedCOlumnToReEnter, endIndex;
+let selectedColumnToReEnter, endIndex, startIndex;
 
 function renderGame() {
     mainDiv = document.createElement("div");
@@ -261,6 +263,19 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+function checkIfAllInHome(color) {
+    if (color === "white") {
+        for (let i = 0; i < 18; i++) {
+            if (whites[i] === 0) {
+                whiteFlag = true;
+            } else {
+                whiteFlag = false;
+                return;
+            }
+        }
+    }
+}
+
 function rollDice() {
     whiteTurn = !whiteTurn;
     dice1 = getRandomInt(1, 7);
@@ -274,8 +289,126 @@ function rollDice() {
             dices.push(dice1);
         }
     }
-    drawDices();
-    movePiece();
+    checkIfAllInHome(WHITE);
+    if (whiteFlag === true) {
+        console.log("all home");
+        drawDices();
+        takeOutPieces();
+    } else {
+        drawDices();
+        movePiece();
+    }
+}
+
+function takeOutPieces() {
+    if (dices.length !== 0) {
+        if (whiteTurn === true) {
+            console.log(whiteTurn)
+            $('[class$="triangles"]').click(function () {
+                let selectedColumn = $(this).children().get(0);
+                let selectedColumnId = $(selectedColumn).attr("id");
+                let selectColumnToTakeOut = selectedColumnId.substr(4);
+                console.log(dices + " " + selectColumnToTakeOut);
+                if (dices.includes(24 - selectColumnToTakeOut) === true) {
+                    console.log("wtf")
+                    whites[selectColumnToTakeOut]--;
+                    if (allAreEqual(dices) === true) {
+                        dices.pop();
+                    } else {
+                        dices = handleSimpleDice(dices, (24 - selectColumnToTakeOut));
+                    }
+                    clearTable();
+                    drawTable();
+                    renderPieces();
+                    $('.black-pieces').addClass("disable-div");
+                    takeOutPieces();
+                } else {
+                    movePiece();
+                    console.log(selectColumnToTakeOut);
+                    let takeOutFlag=false;
+                    // for(let d=0; d<dices.length;d++) {
+                    //     takeOutFlag = (23 - selectColumnToTakeOut) < dices[d];
+                    // }
+                    // for(let i = 18; i < 24; i++) {
+                    //     if(whites[i] >= 1 && takeOutFlag === true) {
+                    //         whites[i]--;
+                    //         break;
+                    //     }
+                    // }
+                    if(takeOutFlag===true) {
+                        clearTable();
+                        drawTable();
+                        renderPieces();
+                        $('.black-pieces').addClass("disable-div");
+                    }
+                    console.log(dices);
+                    takeOutPieces();
+                }
+            });
+            let allWhitesOut = false;
+            for(let i = 0; i < 24; i++) {
+                if(whites[i] === 0) {
+                    allWhitesOut = true;
+                } else {
+                    allWhitesOut = false;
+                }
+            }
+            if(allWhitesOut) {
+                clearTable();
+                alert("WHITE WON!");
+            }
+        }
+        // else {
+        //     console.log(whiteTurn)
+        //     $('[class$="triangles"]').click(function () {
+        //         let selectedColumn = $(this).children().get(0);
+        //         let selectedColumnId = $(selectedColumn).attr("id");
+        //         let selectColumnToTakeOut = selectedColumnId.substr(4);
+        //         console.log(dices + " " + selectColumnToTakeOut);
+        //         if (dices.includes(+selectColumnToTakeOut+1) === true) {
+        //             blacks[selectColumnToTakeOut]--;
+        //             if (allAreEqual(dices) === true) {
+        //                 dices.pop();
+        //             } else {
+        //                 dices = handleSimpleDice(dices, (+selectColumnToTakeOut+1));
+        //             }
+        //             clearTable();
+        //             drawTable();
+        //             renderPieces();
+        //             $('.white-pieces').addClass("disable-div");
+        //             takeOutPieces();
+        //         } else {
+        //             movePiece();
+        //             console.log(selectColumnToTakeOut);
+        //             let takeOutFlag=false;
+        //             for(let d=0; d<dices.length;d++) {
+        //                 takeOutFlag = (+selectColumnToTakeOut+1) < dices[d];
+        //             }
+        //             for(let i = 0; i <7; i++) {
+        //                 if(whites[i] >= 1 && takeOutFlag === true) {
+        //                     whites[i]--;
+        //                     break;
+        //                 }
+        //             }
+        //             if(takeOutFlag) {
+        //                 clearTable();
+        //                 drawTable();
+        //                 renderPieces();
+        //                 $('.black-pieces').addClass("disable-div");
+        //             }
+        //             takeOutPieces();
+        //         }
+        //     });
+        //     let allWhitesOut = false;
+        //     for(let i = 0; i < 24; i++) {
+        //         allWhitesOut = whites[i] === 0;
+        //     }
+        //     if(allWhitesOut) {
+        //         clearTable();
+        //         alert("WHITE WON!");
+        //     }
+        // }
+    }
 }
 
 function drawDices() {
@@ -335,21 +468,21 @@ function movePiece() {
             $('[class$="triangles"]').click(function () {
                 let selectedColumn = $(this).children().get(0);
                 let selectedColumnId = $(selectedColumn).attr("id");
-                selectedCOlumnToReEnter = selectedColumnId.substr(4);
-                console.log(dices + " " + selectedCOlumnToReEnter);
-                let selectedColumnToReEnterTemp = +selectedCOlumnToReEnter+1;
-                if (selectedCOlumnToReEnter < 6 && blacks[selectedCOlumnToReEnter] <= 1) {
+                selectedColumnToReEnter = selectedColumnId.substr(4);
+
+                let selectedColumnToReEnterTemp = +selectedColumnToReEnter + 1;
+                if (selectedColumnToReEnter < 6 && blacks[selectedColumnToReEnter] <= 1) {
                     if (dices.includes(selectedColumnToReEnterTemp) === true) {
-                        whites[selectedCOlumnToReEnter]++;
+                        whites[selectedColumnToReEnter]++;
                         whitesOut--;
-                        if (blacks[selectedCOlumnToReEnter] === 1) {
-                            blacks[selectedCOlumnToReEnter]--;
+                        if (blacks[selectedColumnToReEnter] === 1) {
+                            blacks[selectedColumnToReEnter]--;
                             blacksOut++;
                         }
                         if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
+                            dices = handleSimpleDice(dices, (endIndex - selectedColumnToReEnter));
                         }
                         clearTable();
                         drawTable();
@@ -366,20 +499,20 @@ function movePiece() {
             $('[class$="triangles"]').click(function () {
                 let selectedColumn = $(this).children().get(0);
                 let selectedColumnId = $(selectedColumn).attr("id");
-                selectedCOlumnToReEnter = selectedColumnId.substr(4);
-                console.log(selectedCOlumnToReEnter);
-                if (selectedCOlumnToReEnter < 24 && selectedCOlumnToReEnter > 17 && whites[selectedCOlumnToReEnter] <= 1) {
-                    if (dices.includes(24-selectedCOlumnToReEnter) === true) {
-                        blacks[selectedCOlumnToReEnter]++;
+                selectedColumnToReEnter = selectedColumnId.substr(4);
+                console.log(selectedColumnToReEnter);
+                if (selectedColumnToReEnter < 24 && selectedColumnToReEnter > 17 && whites[selectedColumnToReEnter] <= 1) {
+                    if (dices.includes(24 - selectedColumnToReEnter) === true) {
+                        blacks[selectedColumnToReEnter]++;
                         blacksOut--;
-                        if (whites[selectedCOlumnToReEnter] === 1) {
-                            whites[selectedCOlumnToReEnter]--;
+                        if (whites[selectedColumnToReEnter] === 1) {
+                            whites[selectedColumnToReEnter]--;
                             whitesOut++;
                         }
                         if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
+                            dices = handleSimpleDice(dices, (selectedColumnToReEnter - endIndex));
                         }
                         clearTable();
                         drawTable();
@@ -398,7 +531,7 @@ function movePiece() {
                     draggedPiece = piece;
                     let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                     let selectedColumnId = $(selectedColumn).attr("id");
-                    selectedCOlumnToReEnter = Number(selectedColumnId.substr(7));
+                    startIndex = Number(selectedColumnId.substr(7));
 
                     selectedPieceColor = $(this).get(0);
                     pieceColor = $(selectedPieceColor).attr("class").substr(0, 5);
@@ -412,34 +545,31 @@ function movePiece() {
                         piece.style.display = 'block';
                         draggedPiece = null;
                     }, 0);
-                    console.log(selectedCOlumnToReEnter + ' ' + endIndex);
-                    if (pieceColor === "white" && selectedCOlumnToReEnter < endIndex && dices.includes(endIndex - selectedCOlumnToReEnter) === true) {
-                        whites[selectedCOlumnToReEnter]--;
+                    console.log(startIndex + ' ' + endIndex);
+                    if (pieceColor === "white" && startIndex < endIndex && dices.includes(endIndex - startIndex) === true) {
+                        whites[startIndex]--;
                         whites[endIndex]++;
                         if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
+                            dices = handleSimpleDice(dices, (endIndex - startIndex));
                         }
-                        console.log(dices);
 
                     }
-                    if (pieceColor === "black" && selectedCOlumnToReEnter > endIndex && dices.includes(selectedCOlumnToReEnter - endIndex) === true) {
-                        blacks[selectedCOlumnToReEnter]--;
+                    if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
+                        blacks[startIndex]--;
                         blacks[endIndex]++;
                         if (allAreEqual(dices) === true) {
                             dices.pop();
                         } else {
-                            dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
+                            dices = handleSimpleDice(dices, (startIndex - endIndex));
                         }
-                        console.log(dices);
-
                     }
-                    console.log(dices);
                     clearTable();
                     drawTable();
                     renderPieces();
                     toggleColorToMove();
+                    takeOutPieces();
                     movePiece();
                 });
 
@@ -458,8 +588,8 @@ function movePiece() {
                         let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                         let selectedColumnId = $(selectedColumn).attr("id");
                         endIndex = Number(selectedColumnId.substr(7));
-                        console.log(dices.includes(endIndex - selectedCOlumnToReEnter));
-                        if (selectedCOlumnToReEnter < endIndex && pieceColor === "white" && dices.includes(endIndex - selectedCOlumnToReEnter) === true) {
+                        console.log(dices.includes(endIndex - startIndex));
+                        if (startIndex < endIndex && pieceColor === "white" && dices.includes(endIndex - startIndex) === true) {
                             if (blacks[endIndex] === 0) {
                                 this.append(draggedPiece);
                             }
@@ -469,7 +599,7 @@ function movePiece() {
                                 this.append(draggedPiece);
                             }
                         }
-                        if (pieceColor === "black" && selectedCOlumnToReEnter > endIndex && dices.includes(selectedCOlumnToReEnter - endIndex) === true) {
+                        if (pieceColor === "black" && startIndex > endIndex && dices.includes(startIndex - endIndex) === true) {
                             if (whites[endIndex] === 0) {
                                 this.append(draggedPiece);
                             }
@@ -511,8 +641,10 @@ function clearMain() {
 function clickStart() {
     clearMain();
     renderGame();
-    whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
-    blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+    // whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+    // blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+    whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 3, 2];
+    blacks = [5, 0, 2, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     whitesOut = 0;
     blacksOut = 0;
     renderPieces();
