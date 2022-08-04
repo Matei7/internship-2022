@@ -323,8 +323,6 @@ function allAreEqual(array) {
     return result;
 }
 
-// move piece and also get indexes: start and end
-// todo: dupa load cand intru in casa pot sa pun si in locuri unde n ar trebui
 function movePiece() {
     let pieces = document.querySelectorAll('[class$="pieces"]');
     let columns = document.querySelectorAll('[class="div-set"]');
@@ -339,25 +337,28 @@ function movePiece() {
                 let selectedColumnId = $(selectedColumn).attr("id");
                 selectedCOlumnToReEnter = selectedColumnId.substr(4);
                 console.log(dices + " " + selectedCOlumnToReEnter);
+                let selectedColumnToReEnterTemp = +selectedCOlumnToReEnter+1;
                 if (selectedCOlumnToReEnter < 6 && blacks[selectedCOlumnToReEnter] <= 1) {
-                    whites[selectedCOlumnToReEnter]++;
-                    whitesOut--;
-                    if (blacks[selectedCOlumnToReEnter] === 1) {
-                        blacks[selectedCOlumnToReEnter]--;
-                        blacksOut++;
-                    }
-                    if (allAreEqual(dices) === true) {
-                        dices.pop();
+                    if (dices.includes(selectedColumnToReEnterTemp) === true) {
+                        whites[selectedCOlumnToReEnter]++;
+                        whitesOut--;
+                        if (blacks[selectedCOlumnToReEnter] === 1) {
+                            blacks[selectedCOlumnToReEnter]--;
+                            blacksOut++;
+                        }
+                        if (allAreEqual(dices) === true) {
+                            dices.pop();
+                        } else {
+                            dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
+                        }
+                        clearTable();
+                        drawTable();
+                        renderPieces();
+                        $('.white-pieces').addClass("disable-div");
+                        $('.black-pieces').addClass("disable-div");
                     } else {
-                        dices = handleSimpleDice(dices, (endIndex - selectedCOlumnToReEnter));
+                        alert("Please insert your piece in the opponent house");
                     }
-                    clearTable();
-                    drawTable();
-                    renderPieces();
-                    $('.white-pieces').addClass("disable-div");
-                    $('.black-pieces').addClass("disable-div");
-                } else {
-                    alert("Please insert your piece in the opponent house");
                 }
             });
         } else if (whiteTurn === false && blacksOut > 0) {
@@ -367,35 +368,34 @@ function movePiece() {
                 let selectedColumnId = $(selectedColumn).attr("id");
                 selectedCOlumnToReEnter = selectedColumnId.substr(4);
                 console.log(selectedCOlumnToReEnter);
-                if (selectedCOlumnToReEnter < 24 && selectedCOlumnToReEnter > 17  && whites[selectedCOlumnToReEnter] <= 1) {
-                    blacks[selectedCOlumnToReEnter]++;
-                    blacksOut--;
-                    if (whites[selectedCOlumnToReEnter] === 1) {
-                        whites[selectedCOlumnToReEnter]--;
-                        whitesOut++;
-                    }
-                    if (allAreEqual(dices) === true) {
-                        dices.pop();
+                if (selectedCOlumnToReEnter < 24 && selectedCOlumnToReEnter > 17 && whites[selectedCOlumnToReEnter] <= 1) {
+                    if (dices.includes(24-selectedCOlumnToReEnter) === true) {
+                        blacks[selectedCOlumnToReEnter]++;
+                        blacksOut--;
+                        if (whites[selectedCOlumnToReEnter] === 1) {
+                            whites[selectedCOlumnToReEnter]--;
+                            whitesOut++;
+                        }
+                        if (allAreEqual(dices) === true) {
+                            dices.pop();
+                        } else {
+                            dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
+                        }
+                        clearTable();
+                        drawTable();
+                        renderPieces();
+                        $('.white-pieces').addClass("disable-div");
+                        $('.black-pieces').addClass("disable-div");
                     } else {
-                        dices = handleSimpleDice(dices, (selectedCOlumnToReEnter - endIndex));
+                        alert("Please insert your piece in the opponent house");
                     }
-                    console.log(dices);
-                    clearTable();
-                    drawTable();
-                    renderPieces();
-                    $('.white-pieces').addClass("disable-div");
-                    $('.black-pieces').addClass("disable-div");
-                } else {
-                    alert("Please insert your piece in the opponent house");
                 }
             });
         } else {
             for (let i = 0; i < pieces.length; i++) {
                 let piece = pieces[i];
                 piece.addEventListener('dragstart', function () {
-
                     draggedPiece = piece;
-
                     let selectedColumn = $(this).closest('[class$="triangles"]').get(0);
                     let selectedColumnId = $(selectedColumn).attr("id");
                     selectedCOlumnToReEnter = Number(selectedColumnId.substr(7));
