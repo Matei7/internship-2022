@@ -2,8 +2,8 @@ const betMultiplierVector = [0.5, 1, 2, 4, 8];
 const betVector = [1, 5, 10, 50, 100,];
 const spinsVector = [1, 5, 10, 20, 50];
 
-import { linesLogic } from "./middleArticle";
-import { spinCounts } from "./middleArticle";
+import { linesLogic, spinCounts } from "./middleArticle";
+import { getLastData } from "./ajax";
 
 export function bottomArticle() {
 
@@ -19,11 +19,15 @@ export function bottomArticle() {
     balanceDiv.classList += "balanceDiv";
     bottomArticle.appendChild(balanceDiv);
 
+    getLastData(localStorage.getItem('email').toString(), localStorage.getItem('username').toString());
+
+    setTimeout(() => {
+        balanceWindow.innerText = "Balance: " + localStorage.getItem('balance') + "$";
+        if ((!localStorage.getItem('balance')) || (localStorage.getItem('balance') === null))
+            localStorage.setItem('balance', '500');
+    }, 1500);
     const balanceWindow = document.createElement('p');
     balanceWindow.classList += "balance";
-    balanceWindow.innerText = "Balance: " + localStorage.getItem('balance') + "$";
-    if ((!localStorage.getItem('balance')) || (localStorage.getItem('balance') === null))
-        localStorage.setItem('balance', '500');
     balanceDiv.appendChild(balanceWindow);
 
     //<----------------------------------------------------Bet Window---------------------------------------------------->

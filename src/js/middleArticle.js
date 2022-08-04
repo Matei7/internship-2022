@@ -12,6 +12,13 @@ import { getLastData, saveLastData } from "./ajax";
 //<----------------------------------------------------Main Creation Function---------------------------------------------------->
 
 export function middleArticle() {
+    const bigDiv = document.querySelector("#app h1");
+
+    const logoutButton = document.createElement("button");
+    logoutButton.classList += "logoutButton";
+    logoutButton.innerText = "Logout";
+    bigDiv.appendChild(logoutButton);
+
     const articleLayout = document.createElement("article");
     articleLayout.classList += "middleArticle";
     document.querySelector('#app').appendChild(articleLayout);
@@ -30,6 +37,19 @@ export function middleArticle() {
     document.querySelector('.spinDiv').appendChild(spinButton);
 
     popupReload();
+}
+
+//<----------------------------------------------------Logout Button Logic---------------------------------------------------->
+export function logoutFunction() {
+    let logoutButton = document.querySelector(".logoutButton");
+    logoutButton.addEventListener('click', () => {
+        localStorage.removeItem('email');
+        localStorage.removeItem('username');
+        localStorage.setItem('mailFound', "false");
+        let email = localStorage.getItem('email');
+        if (email === null)
+            window.location.replace("../public/login.html");
+    })
 }
 
 //<----------------------------------------------------Add image in array---------------------------------------------------->
@@ -65,7 +85,7 @@ function specialCreation(url) {
     divImage.classList += "divImg";
 
     //for (let i = 1; i < 5; i++) {
-    appendImage(divImage, url[2], 0);
+    appendImage(divImage, url[3], 0);
     //}
 
     document.querySelector(".flexLayout").appendChild(divImage);
@@ -100,8 +120,8 @@ function spinSlots() {
 export function createImages() {
 
     let promise = new Promise((resolve) => {
-        getLastData("codrescu.razvan@gmail.com", "razvan");
-        setTimeout(() => { resolve(); }, 3000);
+        getLastData(localStorage.getItem('email').toString(), localStorage.getItem('username').toString());
+        setTimeout(() => { resolve(); }, 1500);
     });
 
     promise.then(() => {
@@ -151,7 +171,7 @@ function spinningMoment() {
     setTimeout(() => {
         linesLogic();
         spinCounts();
-    }, 1900);
+    }, 1800);
 }
 
 //<----------------------------------------------------Button events for spin---------------------------------------------------->
@@ -163,6 +183,18 @@ export function buttonEvent() {
         if (parseFloat(localStorage.getItem('balance')) >= parseFloat(bettingSum)) {
             spinningMoment();
         }
+    });
+
+    spinButton.addEventListener('mouseover', () => {
+        const spinButton = document.querySelector(".spinButton");
+        spinButton.style.boxShadow = "10px 10px 5px grey";
+        spinButton.style.color = "red";
+    });
+
+    spinButton.addEventListener('mouseout', () => {
+        const spinButton = document.querySelector(".spinButton");
+        spinButton.style.boxShadow = "none";
+        spinButton.style.color = "black";
     });
 
     document.addEventListener('keyup', (event) => {
@@ -258,7 +290,7 @@ export function linesLogic() {
         spinButtonAudio.play();
     }
 
-    saveLastData("codrescu.razvan@gmail.com", "razvan", lastSetSrc, parseFloat(localStorage.getItem('balance')));
+    saveLastData(localStorage.getItem('email').toString(), localStorage.getItem('username').toString(), lastSetSrc, parseFloat(localStorage.getItem('balance')));
 }
 
 function diagonalLogic(position1, position2, position3) {
@@ -340,7 +372,8 @@ export function spinCounts() {
     }
 
     popupReload();
-    saveLastData("codrescu.razvan@gmail.com", "razvan", lastSetSrc, parseFloat(localStorage.getItem('balance')));
+
+    saveLastData(localStorage.getItem('email').toString(), localStorage.getItem('username').toString(), lastSetSrc, parseFloat(localStorage.getItem('balance')));
 }
 
 //<----------------------------------------------------No money logic---------------------------------------------------->

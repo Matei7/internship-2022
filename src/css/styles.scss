@@ -56,7 +56,7 @@ h1 {
     box-sizing: border-box;
   }
 
-  &.hide::after{
+  &.hide::after {
     padding: 0% 5%;
     visibility: visible;
     animation: fadeOut 1s;
@@ -67,10 +67,11 @@ h1 {
     visibility: visible;
     animation: fadeIn 1s;
   }
-  
+
 }
 
-.divImg, .blankdivImg {
+.divImg,
+.blankdivImg {
   width: 33.333%;
   height: 150px;
   border-right: 7px dashed #00d655;
@@ -78,41 +79,41 @@ h1 {
   box-sizing: border-box;
 }
 
-.blankdivImg{
-  transform-style: preserve-3d;
-  transform: translateZ(-100px);
-  transition: transform 0.1s;
-}
+// .blankdivImg{
+//   transform-style: preserve-3d;
+//   transform: translateZ(-100px);
+//   transition: transform 0.1s;
+// }
 
-.blankdivImg.slotImages-1{
-  transform: translateZ(-100px) rotateX(0deg);
-}
-.blankdivImg.slotImages-2{
-  transform: translateZ(-100px) rotateX(90deg);
-}
-.blankdivImg.slotImages-3{
-  transform: translateZ(-100px) rotateX(180deg);
-}
-.blankdivImg.slotImages-4{
-  transform: translateZ(-100px) rotateX(270deg);
-}
+// .blankdivImg.slotImages-1{
+//   transform: translateZ(-100px) rotateX(0deg);
+// }
+// .blankdivImg.slotImages-2{
+//   transform: translateZ(-100px) rotateX(90deg);
+// }
+// .blankdivImg.slotImages-3{
+//   transform: translateZ(-100px) rotateX(180deg);
+// }
+// .blankdivImg.slotImages-4{
+//   transform: translateZ(-100px) rotateX(270deg);
+// }
 
-.slotImages-1{
-  position: absolute;
-  transform: translateZ(100px) rotateX(0deg);
-}
-.slotImages-2{
-  position: absolute;
-  transform: translateZ(100px) rotateX(-90deg);
-}
-.slotImages-3{
-  position: absolute;
-  transform: translateZ(100px) rotateX(-180deg);
-}
-.slotImages-4{
-  position: absolute;
-  transform: translateZ(100px) rotateX(-270deg);
-}
+// .slotImages-1{
+//   position: absolute;
+//   transform: translateZ(100px) rotateX(0deg);
+// }
+// .slotImages-2{
+//   position: absolute;
+//   transform: translateZ(100px) rotateX(-90deg);
+// }
+// .slotImages-3{
+//   position: absolute;
+//   transform: translateZ(100px) rotateX(-180deg);
+// }
+// .slotImages-4{
+//   position: absolute;
+//   transform: translateZ(100px) rotateX(-270deg);
+// }
 
 .slotImages {
   max-width: 70%;
@@ -162,6 +163,7 @@ h1 {
   display: flex;
   width: 20%;
 }
+
 .coinInsertionDiv,
 .smallCoinDiv,
 .bigCoinDiv {
@@ -316,11 +318,102 @@ $easing: cubic-bezier(0.5, 2, 0.5, 0.75);
   }
 }
 
-.blink{
+.blink {
   animation: blink-text 1000ms linear infinite;
 }
 
 @keyframes blink-text {
-	0% { opacity: 1; }
-	100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.loginForm {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  margin: auto;
+  text-align: center;
+  align-items: center;
+  margin-top: 5%;
+  border-radius: 15px;
+  border: 5px dashed #00d655;
+  padding-bottom: 2%;
+  animation: border-blink 1s infinite;
+}
+
+@keyframes border-blink {
+  50% {
+    border-color: #008000;
+  }
+}
+
+@keyframes text-blink {
+  50% {
+    color: #008000;
+  }
+}
+
+.emailLabel,
+.usernameLabel,
+.emailInput,
+.usernameInput {
+  font-size: 30px;
+  max-width: 100%;
+  font-weight: bolder;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-radius: 15px;
+  color: #00d655;
+}
+
+.emailLabel,
+.usernameLabel {
+  animation: text-blink 1s infinite;
+}
+
+.loginButton,
+.createAccount,
+.logoutButton {
+  width: 30%;
+  height: auto;
+  margin-top: 5%;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bolder;
+  border-radius: 15px;
+  border: 3px solid #00d655;
+  color: #00d655;
+  background-color: #024202;
+
+  &:hover {
+    color: #068037;
+    border: 3px solid #068037;
+  }
+
+  &:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+}
+
+.buttonsDiv{
+  width: 100%;
+}
+
+.loginButton,
+.createAccount{
+  margin-left: 7%;
+  margin-right: 7%;
+}
+
+.logoutButton {
+  max-width: 10%;
+  float: right;
+  margin-right: 5%;
+  margin-top: 2%;
 }

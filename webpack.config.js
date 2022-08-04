@@ -7,7 +7,8 @@ const config = {
 		dom: './src/js/dom.js',
 		middleArticle: './src/js/middleArticle.js',
 		bottomArticle: './src/js/bottomArticle.js',
-		ajax: './src/js/ajax.js'
+		ajax: './src/js/ajax.js',
+		login: './src/js/login.js'
 	},
 	output: {
 		path: path.resolve( __dirname, 'dist' ),
