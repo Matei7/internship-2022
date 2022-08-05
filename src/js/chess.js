@@ -3,11 +3,16 @@ let highlightedPiece = null;
 let dragSrcEl = null;
 let rows = 8;
 let columns = 8;
+let matrixTable1 = [];
 let matrixTable2 = [];
 initializeMatrix2(8, 8);
 let piecesPositions = {};
 let moveRandomPieceInterval;
-let moveRandomPieceIntervalTimeout = 5000;
+let moveRandomPieceIntervalTimeout = 10000;
+let loggedIn = false;
+let email = null;
+let noOfRemainingShipCellsToBeShotAtPlayer1 =  17;
+let noOfRemainingShipCellsToBeShotAtPlayer2 =  17;
 
 const newPElement = document.createElement('p');
 const appElement = document.getElementById('app');
@@ -92,9 +97,11 @@ function createDivElementsInElement(numberOfDivElements, className, parentElemen
         newDivElements[i].dataset.row = parseInt(i / 8);
         newDivElements[i].dataset.column = i % 8;
         newDivElements[i].style.setProperty("position", "relative");
-        newDivElements[i].addEventListener("click", movePiece);
-        newDivElements[i].addEventListener('dragover', handleDragOver);
-        newDivElements[i].addEventListener('drop', handleDrop);
+        if(className == 'cellClass2') {
+            newDivElements[i].addEventListener("click", movePiece);
+            newDivElements[i].addEventListener('dragover', handleDragOver);
+            newDivElements[i].addEventListener('drop', handleDrop);
+        }
     }
     return newDivElements;
 }
@@ -203,7 +210,7 @@ function handleDrop(e)
     return false;
 }
 
-function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
+function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement, loadGame)
 {
     const piecesElement = createDivElementInElement(piecesClassName, parentElement);
     let pieceElements = [];
@@ -225,6 +232,16 @@ function generatePieces(numberOfPieces, piecesClassName, pieceId, parentElement)
         pieceElements[i].appendChild(image);
     }
     moveRandomPieceInterval = setInterval(moveRandomPiece, moveRandomPieceIntervalTimeout);
+    email = localStorage.getItem("email");
+    if(email != null)
+    {
+        $('#email').val(email);
+        loggedIn = true;
+        if(loadGame == true)
+        {
+            loadGameEventHandler();
+        }
+    }
     return pieceElements;
 }
 
@@ -245,7 +262,7 @@ function getShipClassByKey(key)
 //let pieceElements = generatePieces(5, 'piecesClass', 'piece', divTable2);
 function callGeneratePieces()
 {
-    generatePieces(5, 'piecesClass', 'piece', divTable2);
+    generatePieces(5, 'piecesClass', 'piece', divTable2, true);
     /*let parsed = JSON.parse(localStorage.getItem("positions"));
     if(parsed != null) {
         piecesPositions = Object.values(parsed);
@@ -262,14 +279,13 @@ function callGeneratePieces()
             }
         }
     }*/
-    loadGameEventHandler();
+    generateMatrixTable1();
     //localStorage.clear();
 }
 setTimeout(callGeneratePieces, 3000);
 
 function generateNewGame()
 {
-    localStorage.clear();
     for(let i = 0; i < piecesPositions.length; i++)
     {
         piecesPositions[i] = null;
@@ -278,6 +294,7 @@ function generateNewGame()
     {
         appElement.removeChild(appElement.children[1]);
     }
+    piecesPositions = {};
     initializeMatrix2(8, 8);
     appElement.appendChild(newGameButton);
     $("#newgamebutton").after($('<input/>').attr({ type: 'text', id: 'email', name: 'email', placeholder: 'Email' }));
@@ -285,11 +302,22 @@ function generateNewGame()
     //$("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Save Game', id: 'savegamebutton' }));
     //$("#savegamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load Game', id: 'loadgamebutton' }));
     $("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Log in', id: 'loginbutton' }));
+    $("#loginbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load game', id: 'loadgamebutton' }));
+    $("#loadgamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Start game', id: 'startgamebutton' }));
+    $("#startgamebutton").click(startShooting);
     highlightedPiece = null;
     dragSrcEl = null;
     const divTable1 = generateTable('tableClass', 'cellClass', appElement, 64);
     const divTable2 = generateTable('tableClass2', 'cellClass2', appElement, 64);
-    generatePieces(5, 'piecesClass', 'piece', divTable2);
+    generatePieces(5, 'piecesClass', 'piece', divTable2, false);
+    generateMatrixTable1();
+    email = localStorage.getItem("email");
+    if(email != null)
+    {
+        $('#email').val(email);
+        loggedIn = true;
+    }
+    addMovingHandlersRemoveShootingHandlers();
 }
 
 newGameButton.addEventListener("click", generateNewGame);
@@ -302,6 +330,18 @@ function initializeMatrix2(numberOfRows, numberOfCols)
         for(let j = 0; j < numberOfCols; j++)
         {
             matrixTable2[i][j] = 0;
+        }
+    }
+}
+
+function initializeMatrix1(numberOfRows, numberOfCols)
+{
+    for(let i = 0; i < numberOfRows; i++)
+    {
+        matrixTable1[i] = [];
+        for(let j = 0; j < numberOfCols; j++)
+        {
+            matrixTable1[i][j] = 0;
         }
     }
 }
@@ -383,7 +423,8 @@ function registerEventHandler()
         url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/user",
         data: { email: $("#email").val() }
     }).done(function( msg ) {
-    alert( "Registered: " + msg );
+        localStorage.setItem("email", $("#email").val());
+        alert( "Registered: " + msg );
     });
 }
 $("#registerbutton").click(registerEventHandler);
@@ -391,27 +432,49 @@ $("#registerbutton").click(registerEventHandler);
 //$("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Save Game', id: 'savegamebutton' }));
 function saveGameEventHandler()
 {
-    $.ajax({
-        method: "POST",
-        url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/",
-        data: {
-            "email": $("#email").val(),
-            "key": "battleships",
-            "data": {
-                "piecesPositions": piecesPositions
-            },
-            "timestamp": "hei"
-        }
-    }).done(function( msg ) {
-        //alert( "Data Saved: " + msg );
-    });
+    if($("#email").val() != "" && loggedIn) {
+        $.ajax({
+            method: "POST",
+            url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/",
+            data: {
+                "email": $("#email").val(),
+                "key": "battleships",
+                "data": {
+                    "piecesPositions": piecesPositions,
+                    "matrixTable1" : matrixTable1,
+                    "matrixTable2" : matrixTable2,
+                    "noOfRemainingShipCellsToBeShotAtPlayer1" : noOfRemainingShipCellsToBeShotAtPlayer1,
+                    "noOfRemainingShipCellsToBeShotAtPlayer2" : noOfRemainingShipCellsToBeShotAtPlayer2
+                },
+                "timestamp": "hei"
+            }
+        }).fail(function (msg) {
+
+        })
+    }
 }
 //$("#savegamebutton").click(saveGameEventHandler);
 
 //$("#savegamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load Game', id: 'loadgamebutton' }));
+
+function checkIfGameStarted()
+{
+    for(let i = 0; i < rows; i++)
+    {
+        for(let j = 0; j < columns; j++)
+        {
+            if(matrixTable1[i][j] == 100 || matrixTable1[i][j] == 200)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 function loadGameEventHandler()
 {
-    if($("#email").val() != "") {
+    if($("#email").val() != "" && loggedIn) {
         let geturl = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/?email=" + $("#email").val() + "&key=battleships&timestamp=hei";
         $.ajax({
             method: "GET",
@@ -434,16 +497,90 @@ function loadGameEventHandler()
                         divElem.dispatchEvent(new Event('click'));
                     }
                 }
+                matrixTable1 = msg.data[0].value.matrixTable1;
+                matrixTable2 = msg.data[0].value.matrixTable2;
+                noOfRemainingShipCellsToBeShotAtPlayer1 = msg.data[0].value.noOfRemainingShipCellsToBeShotAtPlayer1;
+                noOfRemainingShipCellsToBeShotAtPlayer2 = msg.data[0].value.noOfRemainingShipCellsToBeShotAtPlayer2;
+                if (checkIfGameStarted())
+                {
+                    removeMovingHandlersAddShootingHandlers(64);
+                    for(let i = 0; i < rows; i++)
+                    {
+                        for(let j = 0; j < 8; j++)
+                        {
+                            if(matrixTable1[i][j] == 100)
+                            {
+                                let shotCell = $(`.cellClass[data-row="${i}"][data-column="${j}"]`)[0];
+                                const image = document.createElement('img');
+                                image.id = "fireimg";
+                                image.setAttribute(
+                                    'src',
+                                    '../images/fire.gif'
+                                );
+                                shotCell.appendChild(image);
+                            }
+                            if(matrixTable1[i][j] == 200)
+                            {
+                                let shotCell = $(`.cellClass[data-row="${i}"][data-column="${j}"]`)[0];
+                                const image = document.createElement('img');
+                                image.id = "missimg";
+                                image.setAttribute(
+                                    'src',
+                                    '../images/miss.gif'
+                                );
+                                shotCell.appendChild(image);
+                            }
+                            if(matrixTable2[i][j] == 100)
+                            {
+                                let shotCell = $(`.cellClass2[data-row="${i}"][data-column="${j}"]`)[0];
+                                const image = document.createElement('img');
+                                image.id = "fireimg";
+                                image.setAttribute(
+                                    'src',
+                                    '../images/fire.gif'
+                                );
+                                shotCell.appendChild(image);
+                            }
+                            if(matrixTable2[i][j] == 200)
+                            {
+                                let shotCell = $(`.cellClass2[data-row="${i}"][data-column="${j}"]`)[0];
+                                const image = document.createElement('img');
+                                image.id = "missimg";
+                                image.setAttribute(
+                                    'src',
+                                    '../images/miss.gif'
+                                );
+                                shotCell.appendChild(image);
+                            }
+                        }
+                    }
+                }
             }
         });
     }
-    //generatePieces(5, 'piecesClass', 'piece', divTable2);
-
 }
 //$("#loadgamebutton").click(loadGameEventHandler);
 
+function logInEventHandler()
+{
+    if($("#email").val() != "") {
+        let geturl = "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/?email=" + $("#email").val() + "&key=battleships&timestamp=hei";
+        $.ajax({
+            method: "GET",
+            url: geturl
+        }).done(function (msg) {
+            loggedIn = true;
+            localStorage.setItem("email", $("#email").val());
+        }).fail(function (msg) {
+            alert("Email not registered");
+        });
+    }
+}
+
 $("#registerbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Log in', id: 'loginbutton' }));
-$("#loginbutton").click(loadGameEventHandler);
+$("#loginbutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Load game', id: 'loadgamebutton' }));
+$("#loginbutton").click(logInEventHandler);
+$("#loadgamebutton").click(loadGameEventHandler);
 
 
 function canPieceMoveToCell(pieceToCheck, rowToCheck, colToCheck)
@@ -468,7 +605,7 @@ function moveRandomPiece()
     let piecesClassChildren = $(".piecesClass > *");
     if(piecesClassChildren.length == 0)
     {
-        clearInterval();
+        clearInterval(moveRandomPieceInterval);
     }
     else {
         let ok = 0;
@@ -492,4 +629,232 @@ function restartTimerForMoveRandomPiece()
 {
     clearInterval(moveRandomPieceInterval);
     moveRandomPieceInterval = setInterval(moveRandomPiece, moveRandomPieceIntervalTimeout);
+}
+
+function canPieceMoveToCellPlayer1(sizeOfPiece, rowToCheck, colToCheck)
+{
+    if(sizeOfPiece + parseInt(colToCheck) - 1 >= columns)
+    {
+        return false;
+    }
+    for(let i = 0; i < sizeOfPiece; i++)
+    {
+        if(matrixTable1[rowToCheck][parseInt(colToCheck)+i] != 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+function generateMatrixTable1()
+{
+    initializeMatrix1(8, 8);
+    let piecesSizesPlayer1 = [2, 3, 3, 4, 5];
+    for(let i = 0; i < 5; i++) {
+        let ok = 0;
+        while (!ok) {
+            let randomRow = Math.floor(Math.random() * 8);
+            let randomCol = Math.floor(Math.random() * 8);
+            ok = canPieceMoveToCellPlayer1(piecesSizesPlayer1[i], randomRow, randomCol);
+            if (ok) {
+                for(let j = 0; j < piecesSizesPlayer1[i]; j++)
+                {
+                    matrixTable1[randomRow][randomCol+j] = i+1;
+                }
+            }
+        }
+    }
+}
+console.log(matrixTable1);
+
+$('#email').change( function () {loggedIn = false;} );
+
+$("#loadgamebutton").after($('<button/>').prop({ type: 'button', innerHTML: 'Start game', id: 'startgamebutton' }));
+$("#startgamebutton").click(startShooting);
+
+function shootAtPlayer2()
+{
+    let shotRow = Math.floor(Math.random() * 8);
+    let shotCol = Math.floor(Math.random() * 8);
+    while(matrixTable2[shotRow][shotCol] == 100 || matrixTable2[shotRow][shotCol] == 200)
+    {
+        shotRow = Math.floor(Math.random() * 8);
+        shotCol = Math.floor(Math.random() * 8);
+    }
+    let shotCell = $(`.cellClass2[data-row="${shotRow}"][data-column="${shotCol}"]`)[0];
+    if(matrixTable2[shotRow][shotCol] != 0 && matrixTable2[shotRow][shotCol] != 100 && matrixTable2[shotRow][shotCol] != 200)
+    {
+        matrixTable2[shotRow][shotCol] = 100;
+        const image = document.createElement('img');
+        image.id = "fireimg";
+        image.setAttribute(
+            'src',
+            '../images/fire.gif'
+        );
+        shotCell.appendChild(image);
+        noOfRemainingShipCellsToBeShotAtPlayer2--;
+        saveGameEventHandler();
+        if(noOfRemainingShipCellsToBeShotAtPlayer2 == 0)
+        {
+            let divElementsPlayer1 = $(".cellClass");
+            for (let i = 0; i < 64; i++)
+            {
+                divElementsPlayer1[i].removeEventListener("click", shootAtPlayer1);
+            }
+            alert("YOU LOSE!");
+        }
+    }
+    else
+    {
+        if(matrixTable2[shotRow][shotCol] == 0)
+        {
+            matrixTable2[shotRow][shotCol] = 200;
+            const image = document.createElement('img');
+            image.id = "missimg";
+            image.setAttribute(
+                'src',
+                '../images/miss.gif'
+            );
+            shotCell.appendChild(image);
+            saveGameEventHandler();
+        }
+    }
+}
+
+function shootAtPlayer1()
+{
+    let shotRow = this.dataset.row;
+    let shotCol = this.dataset.column;
+    if(matrixTable1[shotRow][shotCol] != 0 && matrixTable1[shotRow][shotCol] != 100 && matrixTable1[shotRow][shotCol] != 200)
+    {
+        matrixTable1[shotRow][shotCol] = 100;
+        const image = document.createElement('img');
+        image.id = "fireimg";
+        image.setAttribute(
+            'src',
+            '../images/fire.gif'
+        );
+        this.appendChild(image);
+        noOfRemainingShipCellsToBeShotAtPlayer1--;
+        if(noOfRemainingShipCellsToBeShotAtPlayer1 > 0)
+        {
+            shootAtPlayer2();
+        }
+        else
+        {
+            let divElementsPlayer1 = $(".cellClass");
+            for (let i = 0; i < 64; i++)
+            {
+                divElementsPlayer1[i].removeEventListener("click", shootAtPlayer1);
+            }
+            alert("YOU WIN!");
+        }
+    }
+    else
+    {
+        if(matrixTable1[shotRow][shotCol] == 0)
+        {
+            matrixTable1[shotRow][shotCol] = 200;
+            const image = document.createElement('img');
+            image.id = "missimg";
+            image.setAttribute(
+                'src',
+                '../images/miss.gif'
+            );
+            this.appendChild(image);
+            shootAtPlayer2();
+        }
+    }
+}
+
+function removeMovingHandlersAddShootingHandlers(numberOfCells)
+{
+    let divElementsPlayer1 = $(".cellClass");
+    let divElementsPlayer2 = $(".cellClass2");
+    for (let i = 0; i < numberOfCells; i++)
+    {
+        divElementsPlayer2[i].removeEventListener("click", movePiece);
+        divElementsPlayer2[i].removeEventListener('dragover', handleDragOver);
+        divElementsPlayer2[i].removeEventListener('drop', handleDrop);
+        divElementsPlayer1[i].addEventListener("click", shootAtPlayer1);
+    }
+    let pieceElements = [];
+    pieceElements[0] = $('.piece0')[0];
+    pieceElements[1] = $('.piece1')[0];
+    pieceElements[2] = $('.piece2')[0];
+    pieceElements[3] = $('.piece3')[0];
+    pieceElements[4] = $('.piece4')[0];
+    for(let i = 0; i < 5; i++)
+    {
+        pieceElements[i].removeEventListener("click", highlightPiece);
+        pieceElements[i].draggable = "false";
+        pieceElements[i].removeEventListener("dragstart", handleDragStart);
+        pieceElements[i].removeEventListener("dragend", handleDragEnd);
+        //pieceElements[i].dataset.rotation = "horizontal";
+    }
+}
+
+function addMovingHandlersRemoveShootingHandlers(numberOfCells)
+{
+    let divElementsPlayer1 = $(".cellClass");
+    let divElementsPlayer2 = $(".cellClass2");
+    for (let i = 0; i < numberOfCells; i++)
+    {
+        divElementsPlayer2[i].addEventListener("click", movePiece);
+        divElementsPlayer2[i].addEventListener('dragover', handleDragOver);
+        divElementsPlayer2[i].addEventListener('drop', handleDrop);
+        divElementsPlayer1[i].removeEventListener("click", shootAtPlayer1);
+    }
+    let pieceElements = [];
+    pieceElements[0] = $('.piece0')[0];
+    pieceElements[1] = $('.piece1')[0];
+    pieceElements[2] = $('.piece2')[0];
+    pieceElements[3] = $('.piece3')[0];
+    pieceElements[4] = $('.piece4')[0];
+    for(let i = 0; i < 5; i++)
+    {
+        pieceElements[i].addEventListener("click", highlightPiece);
+        pieceElements[i].draggable = "true";
+        pieceElements[i].addEventListener("dragstart", handleDragStart);
+        pieceElements[i].addEventListener("dragend", handleDragEnd);
+        //pieceElements[i].dataset.rotation = "horizontal";
+    }
+}
+
+function startShooting()
+{
+    let piecesNo = getNonZeroMatrix2Elements();
+    if(piecesNo == 17)
+    {
+        alert("Shoot at computer's ships!");
+        removeMovingHandlersAddShootingHandlers(64);
+    }
+    else
+    {
+        if(piecesNo < 17)
+        {
+            alert("Please add all the ships before starting!");
+        }
+        else
+        {
+            alert("Game already started :D");
+        }
+    }
+}
+
+function getNonZeroMatrix2Elements()
+{
+    let piecesNo = 0;
+    for(let i = 0; i < rows; i++)
+    {
+        for(let j = 0; j < columns; j++)
+        {
+            if(matrixTable2[i][j] != 0)
+            {
+                piecesNo++;
+            }
+        }
+    }
+    return piecesNo;
 }

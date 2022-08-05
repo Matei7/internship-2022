@@ -11,8 +11,8 @@ body {
 }
 
 #app {
-  min-width: 100vw;
-  min-height: 100vh;
+  //min-width: 100vw;
+  //min-height: 100vh;
 
   > h1 {
   }
@@ -54,24 +54,44 @@ body {
     width: calc(var(--cellsize)*2px);
     height: calc(var(--cellsize)*1px);
     z-index: 5;
-    position: relative;
+    position: absolute;
   }
   .piece1 > img, .piece2 > img{
     width: calc(var(--cellsize)*3px);
     height: calc(var(--cellsize)*1px);
     z-index: 5;
-    position: relative;
+    position: absolute;
   }
   .piece3 > img{
     width: calc(var(--cellsize)*4px);
     height: calc(var(--cellsize)*1px);
     z-index: 5;
-    position: relative;
+    position: absolute;
   }
   .piece4 > img{
     width: calc(var(--cellsize)*5px);
     height: calc(var(--cellsize)*1px);
     z-index: 5;
-    position: relative;
+    position: absolute;
+  }
+  #fireimg {
+    width: calc(var(--cellsize)*1px);
+    height: calc(var(--cellsize)*1px);
+    z-index: 6;
+    position: absolute;
+  }
+  #missimg {
+    width: calc(var(--cellsize)*1px);
+    height: calc(var(--cellsize)*1px);
+    z-index: 6;
+    position: absolute;
+  }
+}
+
+.piecesClass {
+  [class*="piece"]{
+    img{
+      position: relative !important;
+    }
   }
 }
