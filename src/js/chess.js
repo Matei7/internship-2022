@@ -318,6 +318,8 @@ function generateNewGame()
         loggedIn = true;
     }
     addMovingHandlersRemoveShootingHandlers();
+    noOfRemainingShipCellsToBeShotAtPlayer1 =  17;
+    noOfRemainingShipCellsToBeShotAtPlayer2 =  17;
 }
 
 newGameButton.addEventListener("click", generateNewGame);
