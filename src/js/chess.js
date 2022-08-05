@@ -71,9 +71,7 @@ let piecesPosition = {
     "h1": "rookW"
 }
 
-localStorage.setItem("chess", JSON.stringify(piecesPosition));
-let position = JSON.parse(localStorage.getItem("chess"));
-
+let position = JSON.parse(localStorage.getItem("chess"));  
 let from;
 let colorTurn = "black";
 let fromCell;
@@ -84,6 +82,7 @@ let dragItem = null;
 
 function dragEnd(e) {
     e.preventDefault();
+    highlightMoves();
     setTimeout(function () {
         dragItem.style.display = "block";
         dragItem.style.position = "absolute";
@@ -110,11 +109,9 @@ function dragEnter(e) {
 
 function dragNdrop() {
     $(document).on("dragstart", ".piece", function (event) {
-
         fromCell = this.parentElement.id;
-
         dragItem = event.target;
-        highlightMoves();
+        highlightMoves()
         setTimeout(function () {
             event.target.style.display = "none";
         });
@@ -194,15 +191,17 @@ function moveKeyboardPiece(e) {
     $highlightedPiece.css({
         position: "absolute"
     })
-    if ($highlightedPiece.length)
-        switch (e.which) {
-            case 40:
-                nextKeyB.appendChild(par.firstChild);
-                break;
-            case 38:
-                nextKeyW.appendChild(par.firstChild);
-                break;
-        }
+        if ($highlightedPiece.length)
+            switch (e.which) {
+                case 40:
+                    if (par.firstChild.classList[1].charAt(par.firstChild.classList[1].length - 1) === "B")
+                        nextKeyB.appendChild(par.firstChild);
+                    break;
+                case 38:
+                    if (par.firstChild.classList[1].charAt(par.firstChild.classList[1].length - 1) === "W")
+                        nextKeyW.appendChild(par.firstChild);
+                    break;
+            }
 
     let p = document.getElementsByClassName("piece");
     p[0].dispatchEvent(new Event('click'));
@@ -222,6 +221,7 @@ function movePiece(to, from) {
         }
         position[to] = position[from];
         position[from] = "none";
+        localStorage.setItem("chess", JSON.stringify(position));
         console.log("from " + from);
         console.log("to " + toCell);
         console.log(position);
@@ -232,64 +232,67 @@ function movePiece(to, from) {
 //======================================================== Highlight the moves ===========================================================//
 
 function highlightMoves() {
-    //console.log("highlight");
+    console.log("highlight");
     $("div[class*='cell']").on("mouseover", function () {
         $(this).addClass("selector");
     }).on("mouseout", function (){
         $(this).removeClass("selector");
     }).on("click", function () {
+        console.log("highlight 1 ")
         $(this).removeClass("selector");
         $(".highlight").toggleClass("highlight");
 
-        highlightedPiece = this.firstChild;
-        from = this.id;
-        if (position[from] === "pawnB") {
-            for (let i = from[1] - 1; i > from[1] - 3; i--) {
-                $(`#${from[0]}${i}`).toggleClass("highlight");
-            }
-
-        } else {
-            if (position[from] === "pawnW") {
-                for (let i = +from[1] + 1; i < +from[1] + 3; i++) {
+            highlightedPiece = this.firstChild;
+            from = this.id;
+            console.log(position[from])
+            if (position[from] === "pawnB") {
+                console.log("highlight 2");
+                for (let i = from[1] - 1; i > from[1] - 3; i--) {
                     $(`#${from[0]}${i}`).toggleClass("highlight");
                 }
-            }
-        }
-        if (position[from] === "knightB") {
-            $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 1)}${from[1] - 2}`).toggleClass("highlight");
-            $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 1)}${from[1] - 2}`).toggleClass("highlight");
-            if(position[$(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`)[0].id]==="none")
-                $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`).toggleClass("highlight");
-                $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 2)}${+from[1] + 1}`).toggleClass("highlight");
-        } else {
-            if (position[from] === "knightW") {
-                $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 1)}${+from[1] + 2}`).toggleClass("highlight");
-                $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 1)}${+from[1] + 2}`).toggleClass("highlight");
-                if(position[$(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`)[0].id]==="none")
-                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`).toggleClass("highlight");
-                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 2)}${+from[1] + 1}`).toggleClass("highlight");
-            }
-        }
 
-        if (position[from] === "rookB") {
-            if ($(`#${from[0]}${from[1] - 1}`) === "none") {
-                for (let i = from[1] - 1; i > from[1] - 6; i--) {
-                    $(`#${from[0]}${i}`).toggleClass("highlight");
-                }
             } else {
-                console.log("bad");
+                if (position[from] === "pawnW") {
+                    for (let i = +from[1] + 1; i < +from[1] + 3; i++) {
+                        $(`#${from[0]}${i}`).toggleClass("highlight");
+                    }
+                }
             }
-        } else {
-            if (position[from] === "rookW") {
-                if ($(`#${from[0]}${+from[1] + 1}`) === "none") {
-                    for (let i = +from[1] + 1; i < +from[1] + 7; i++) {
+            if (position[from] === "knightB") {
+                $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 1)}${from[1] - 2}`).toggleClass("highlight");
+                $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 1)}${from[1] - 2}`).toggleClass("highlight");
+                if (position[$(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`)[0].id] === "none")
+                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`).toggleClass("highlight");
+                $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 2)}${+from[1] + 1}`).toggleClass("highlight");
+            } else {
+                if (position[from] === "knightW") {
+                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 1)}${+from[1] + 2}`).toggleClass("highlight");
+                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 1)}${+from[1] + 2}`).toggleClass("highlight");
+                    if (position[$(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`)[0].id] === "none")
+                        $(`#${String.fromCharCode((from[0].charCodeAt(0)) + 2)}${+from[1] + 1}`).toggleClass("highlight");
+                    $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 2)}${+from[1] + 1}`).toggleClass("highlight");
+                }
+            }
+
+            if (position[from] === "rookB") {
+                if ($(`#${from[0]}${from[1] - 1}`) === "none") {
+                    for (let i = from[1] - 1; i > from[1] - 6; i--) {
                         $(`#${from[0]}${i}`).toggleClass("highlight");
                     }
                 } else {
                     console.log("bad");
                 }
+            } else {
+                if (position[from] === "rookW") {
+                    if ($(`#${from[0]}${+from[1] + 1}`) === "none") {
+                        for (let i = +from[1] + 1; i < +from[1] + 7; i++) {
+                            $(`#${from[0]}${i}`).toggleClass("highlight");
+                        }
+                    } else {
+                        console.log("bad");
+                    }
+                }
             }
-        }
     });
 }
 
@@ -297,10 +300,12 @@ function highlightMoves() {
 function startNewGame() {
     console.log("new game");
 
-    localStorage.clear();
+    window.localStorage.clear();
+    localStorage.setItem("chess",JSON.stringify(piecesPosition));
     $(".main").remove();
     board();
     placePieces(piecesPosition);
+    position = piecesPosition;
     highlightMoves();
 
 }
@@ -341,12 +346,13 @@ $('.controls').append("<button id='button3'>Save state</button>");
 
 
 startGame();
-button.addEventListener("click", startNewGame);     
+button.addEventListener("click", startNewGame);
+
 
 //======================================================== Start chess game Function ========================================================//
 
 function startGame() {
-
+    position = JSON.parse(localStorage.getItem("chess"))
     $(".main").remove();
     board();
     placePieces(position);
@@ -354,6 +360,13 @@ function startGame() {
 
 }
 
+function startGameAjax(p) {
+    $(".main").remove();
+    board();
+    placePieces(p);
+    highlightMoves();
+
+}
 
 function postUser(email){
     $.ajax({
@@ -376,7 +389,7 @@ function postData(email){
             email: email,
             key: "chess",
             data: {
-                position
+                position: JSON.parse(localStorage.getItem("chess"))
             },
             timestamp: "mihaela"
         }
@@ -389,14 +402,15 @@ let getPosition;
 function getData(email){
     $.ajax({
         method: "GET",
-        url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/",
+        url: "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data/?email=" + email + "&key=chess" + "&timestamp=mihaela",
         data: {
             email: email,
-            key: "chess",
-            timestamp: "mihaela"
+            key: "chess"
         }
     }).done(function( msg ) {
         getPosition = msg.data[0].value.position;
+        startGameAjax(getPosition);
+        localStorage.setItem("chess",JSON.stringify(getPosition));
         console.log(getPosition);
     });
 
