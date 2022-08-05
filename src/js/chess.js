@@ -214,6 +214,7 @@ function move(toPieceBox){
 }
 
 function moveChessPiece(piece){
+    console.log(piece);
     if (allowedMove.includes(piece.id)) {
         move(piece);
     }
@@ -261,6 +262,7 @@ function clickPieceBox() {
 
                     // draw AllowedMove for current piece
                     removeAllowedMove(allowedMove);
+                    console.log(this.firstChild.classList[0][1], this);
                     allowedMove = pieceMoves[this.firstChild.classList[0][1]](this);
                     drawAllowedMove(allowedMove);
                 }
@@ -320,6 +322,20 @@ function drop(){
     moveChessPiece(this);
 }
 
+function randomMove(){
+    // chessPiece
+    let pieces = $(`div[class^='${moveTurn}']`);
+    // sorted
+    let sotrted = $.grep(pieces, function (e, i){
+        return pieceMoves[pieces[i].classList[0][1]](pieces[i].parentNode).length;
+    })
+    let randomPiece = sotrted[Math.floor(Math.random()*sotrted.length)];
+    let randomPieceAllowMove = pieceMoves[randomPiece.classList[0][1]](randomPiece.parentNode);
+    let randomMove = randomPieceAllowMove[Math.floor(Math.random()*randomPieceAllowMove.length)];
+    lastPieceCheck = randomPiece.parentNode
+    move($(`#${randomMove}`)[0]);
+}
+
 function createViewPanel(){
     $("body").append("<div class='viewPanel'></div>");
 
@@ -352,7 +368,7 @@ function createViewPanel(){
             data: {
                 email: $("#email").val(),
                 key: 'chess',
-                timestamp: "zina",
+                timestamp: gameid,
                 data: {
                     "move": history,
                     "map": MAP_STATE,
@@ -382,18 +398,20 @@ function createViewPanel(){
             data: {
                 email: $("#email").val(),
                 key: 'chess',
-                timestamp: "zina",
+                timestamp: $("#gameid").val(),
             },
         }).done(function( response ) {
             alert( "Data sfeta:");
             console.log(response.data);
             MAP_STATE = {...response.data[0].value.map};
+            gameid = response.data[0].value.gameid;
             lastPieceCheck = undefined;
             allowedMove = [];
             statusCheked = false;
             moveTurn = response.data[0].value.moveturn;
             draggedItem = null;
             history = response.data[0].value.move;
+            $('#idgame').text(`Current id:${gameid}`);
             reproduceTheChessTable(MAP_STATE);
         })
     })
@@ -463,6 +481,7 @@ function startEvent(){
             e.preventDefault()
         })
     }
+    document.addEventListener('keypress', randomMove, false);
 
 }
 
