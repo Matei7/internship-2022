@@ -141,7 +141,6 @@ export function createImages() {
             }
         }
 
-        console.log(slotImages.length);
     });
 }
 

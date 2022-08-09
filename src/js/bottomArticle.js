@@ -190,10 +190,7 @@ function betFunctionality(option) {
             else if (option === 3) {
                 localStorage.setItem('spins', document.querySelector("#betButton3").innerText);
                 let spinsChosen = parseFloat(localStorage.getItem('spins').match(/[+-]?\d+(\.\d+)?/g));
-                // let currentBetValue = parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, ""));
-                // let balance = parseFloat(localStorage.getItem('balance'));
-                // if(currentBetValue * spinsChosen < balance)
-                recursiveSpins(0, spinsChosen);
+                recursiveSpins(0, spinsChosen, true);
             }
 
 
@@ -203,12 +200,23 @@ function betFunctionality(option) {
 
 //<----------------------------------------------------Recursive FUnction---------------------------------------------------->
 
-function recursiveSpins(currentSpin, maximum) {
+function recursiveSpins(currentSpin, maximum, flag) {
 
-    if (currentSpin >= maximum)
+    const spinButton = document.querySelector('.spinButton');
+    spinButton.addEventListener('click', () => {
+        flag = false;
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if ((event.code === 'Space') || (event.code === ' ')) {
+            flag = false;
+        }
+    });
+
+    if ((currentSpin >= maximum) || (flag !== true))
         return;
 
-    let promise = new Promise(function (resolve, reject) {
+    let promise = new Promise(function (resolve) {
         linesLogic();
         spinCounts();
         setTimeout(() => {
@@ -217,7 +225,10 @@ function recursiveSpins(currentSpin, maximum) {
     });
 
     promise.then(() => {
-        setTimeout(() => { recursiveSpins(parseFloat(currentSpin) + 1, maximum); }, 1000);
+        setTimeout(() => {
+            if (parseFloat(localStorage.getItem('balance')) >= parseFloat(document.querySelector("#betButton1").innerText.replace(/\D+$/g, "")))
+                recursiveSpins(parseFloat(currentSpin) + 1, maximum, flag);
+        }, 1000);
     });
 }
 

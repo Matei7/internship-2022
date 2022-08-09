@@ -52,10 +52,9 @@ export function getLastData(mail, username) {
         lastSetSrc = msg.data[0].value.lastArray;
         for(let i = 0; i < 9; i++){
             addImage(lastSetSrc[i][0], lastSetSrc[i][1]);
-            console.log(lastSetSrc[i][1]);
         }
     })
     .fail(function(msg) {
-        console.log("Failure reason: " + msg);
+        alert("Something went wrong while trying to retrieve your data. Please try again.");
     })
 }
