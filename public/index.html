@@ -1,18 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Title</title>
-	<link rel="stylesheet" href="../dist/app.css">
-</head>
-<body>
-<div id="app">
-	<h1>Welcome</h1>
-</div>
-<script>
-	const test1 = document.querySelector( '#test1' );
-	console.log( test1 );
-</script>
-<script defer src="../dist/app.js" class="app-js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<title>ChessGame</title>
+		<link rel="stylesheet" href="../dist/app.css">
+	</head>
+	<body>
+		<h2>
+			Hai ca se poate
+		</h2>
+		<div id="FenInDiv">
+			Fen:<br/>
+			<input type="text" id="fenIn"/>
+			<button type="button" id="SetFen">Set Position</button>
+		</div>
+		<div id="Board">
+		</div>
+		<div id="EngineOutput">Thinking Time: <br/>
+			<select id="ThinkTimeChoice">
+				<option value="1">1s</option>
+				<option value="2">2s</option>
+				<option value="4">4s</option>
+				<option value="6">6s</option>
+				<option value="8">8s</option>
+				<option value="10">10s</option>
+			</select><br/><br/><br/>
+			<span id="BestOut">BestMove:</span><br/>
+			<span id="DepthOut">Depth:</span><br/>
+			<span id="ScoreOut">Score:</span><br/>
+			<span id="NodesOut">Nodes:</span><br/>
+			<span id="OrderingOut">Ordering:</span><br/>
+			<span id="TimeOut">Time:</span><br/><br/>
+			<button type="button" id="SearchButton">Move Now</button><br/>
+			<button type="button" id="NewGameButton">New Game</button><br/>
+			<button type="button" id="FlipButton">Flip Board</button><br/><br/>
+			<button type="button" id="TakeButton">Take Back</button><br/><br/><br/>
+			<span id="GameStatus"></span>
+		</div>
+		<script defer src="../dist/chess.js" class="chess-js"></script>
+		<script defer src="../dist/objects.js" class="objects-js"></script>
+	</body>
 </html>
