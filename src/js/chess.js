@@ -241,10 +241,10 @@ function highlightMoves() {
         console.log("highlight 1 ")
         $(this).removeClass("selector");
         $(".highlight").toggleClass("highlight");
-
+            position = JSON.parse(localStorage.getItem("chess"))
             highlightedPiece = this.firstChild;
             from = this.id;
-            console.log(position[from])
+            console.log("from ----",from);
             if (position[from] === "pawnB") {
                 console.log("highlight 2");
                 for (let i = from[1] - 1; i > from[1] - 3; i--) {
@@ -273,10 +273,10 @@ function highlightMoves() {
                     $(`#${String.fromCharCode((from[0].charCodeAt(0)) - 2)}${+from[1] + 1}`).toggleClass("highlight");
                 }
             }
-
             if (position[from] === "rookB") {
-                if ($(`#${from[0]}${from[1] - 1}`) === "none") {
-                    for (let i = from[1] - 1; i > from[1] - 6; i--) {
+                console.log("-------------->",position);
+                if (position[$(`#${String.fromCharCode((from[0].charCodeAt(0)))}${from[1] - 1}`)[0].id] === "none") {
+                    for (let i = from[1] - 1; i > from[1] - 3; i--) {
                         $(`#${from[0]}${i}`).toggleClass("highlight");
                     }
                 } else {
@@ -284,8 +284,8 @@ function highlightMoves() {
                 }
             } else {
                 if (position[from] === "rookW") {
-                    if ($(`#${from[0]}${+from[1] + 1}`) === "none") {
-                        for (let i = +from[1] + 1; i < +from[1] + 7; i++) {
+                    if (position[$(`#${String.fromCharCode((from[0].charCodeAt(0)))}${+from[1] + 1}`)[0].id] === "none") {
+                        for (let i = +from[1] + 1; i < +from[1] + 3; i++) {
                             $(`#${from[0]}${i}`).toggleClass("highlight");
                         }
                     } else {
@@ -312,41 +312,44 @@ function startNewGame() {
 
 //======================================================== CountDown Function ==========================================================//
 
-// count.innerHTML = "The game will start in";
-// count.style.fontSize = 3.7 + "em";
-// document.body.appendChild(count);
-// let seconds = 5;
-// let countDown = setInterval(function(){
-//     if(seconds > 0){
-//         count.innerHTML = seconds;
-//         count.style.left = 250 + "px";
-//         count.style.fontSize = 7 + "em";
-//         count.style.color = "brown";
-//         seconds--;
-//     }
-//     else{
-//         clearInterval(countDown);
-//         count.innerHTML = " ";
-//         startGame();
-//     }
-// },1000);
+count.innerHTML = "The game will start in";
+count.style.fontSize = 3.7 + "em";
+document.body.appendChild(count);
+let seconds = 5;
+let countDown = setInterval(function(){
+    if(seconds > 0){
+        count.innerHTML = seconds;
+        count.style.left = 250 + "px";
+        count.style.fontSize = 7 + "em";
+        count.style.color = "brown";
+        seconds--;
+    }
+    else{
+        clearInterval(countDown);
+        count.innerHTML = " ";
+        startGame();
+        let divButton = document.createElement("div");
+        divButton.classList.add("divButton");
+        let button = document.createElement("button");
+        button.classList.add("startButton");
+        button.innerHTML = "Start new game";
+        $('.controls').append(divButton);
+        divButton.appendChild(button);
+        $('.controls').append("<p>Login Data</p>");
+        $('.controls').append("<input type=\"text\" class=\"form__input\" id=\"name\" placeholder=\"Email\" required=\"\" />");
+        $('.controls').append("<button id='button1'>Sign In</button>");
+        $('.controls').append("<button id='button2'>Load Game</button>");
+        $('.controls').append("<button id='button3'>Save state</button>");
+        button.addEventListener("click", startNewGame);
+        dragNdrop();
+    }
+},1000);
 
-let divButton = document.createElement("div");
-divButton.classList.add("divButton");
-let button = document.createElement("button");
-button.classList.add("startButton");
-button.innerHTML = "Start new game";
-$('.controls').append(divButton);
-divButton.appendChild(button);
-$('.controls').append("<p>Login Data</p>");  
-$('.controls').append("<input type=\"text\" class=\"form__input\" id=\"name\" placeholder=\"Email\" required=\"\" />");
-$('.controls').append("<button id='button1'>Sign In</button>");
-$('.controls').append("<button id='button2'>Load Game</button>");
-$('.controls').append("<button id='button3'>Save state</button>");
 
 
-startGame();
-button.addEventListener("click", startNewGame);
+
+// startGame();
+
 
 
 //======================================================== Start chess game Function ========================================================//
@@ -437,5 +440,5 @@ $("#button3").on("click",function (){
 
 
 
-dragNdrop();
+
 
