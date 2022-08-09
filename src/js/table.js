@@ -66,12 +66,12 @@ function renderGame() {
     diceDiv.classList.add('dice-container');
     top.appendChild(diceDiv);
 
-    // rollBtn = document.createElement("button");
-    // rollBtn.classList.add("roll-button");
-    // rollBtn.innerHTML = "Roll dice!";
-    // diceDiv.appendChild(rollBtn);
-    //
-    // rollBtn.addEventListener("click", rollDice);
+    rollBtn = document.createElement("button");
+    rollBtn.classList.add("roll-button");
+    rollBtn.innerHTML = "Roll dice!";
+    diceDiv.appendChild(rollBtn);
+
+    rollBtn.addEventListener("click", rollDice);
 
     emailInput = document.createElement('input');
     emailInput.classList.add("email-input");
@@ -606,16 +606,10 @@ function clearMain() {
 function clickStart() {
     clearMain();
     renderGame();
-    rollBtn = document.createElement("button");
-    rollBtn.classList.add("roll-button");
-    rollBtn.innerHTML = "Roll dice!";
-    diceDiv.appendChild(rollBtn);
-
-    rollBtn.addEventListener("click", rollDice);
-    whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
-    blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
-    // whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 3, 2];
-    // blacks = [5, 0, 2, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // whites = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 3, 0, 5, 0, 0, 0, 0, 0];
+    // blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+    whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 5, 0, 3, 2];
+    blacks = [5, 0, 2, 3, 1, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     // whites = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0];
     // blacks = [0, 0, 0, 0, 0, 5, 0, 3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
     whitesOut = 0;
