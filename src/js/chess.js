@@ -1,3 +1,5 @@
+import $ from "jquery"
+
 const SCALE_FACTOR = 10; //the scale at which the canvas will be scaled
 const WIDTH = 8; // board width
 const HEIGHT = 8; //board height
@@ -14,7 +16,7 @@ const INITIAL_BOARD = [
 
 let doc = document;
 let time = 5; // used for a timer
-let interval = setInterval(countDown, 100); // the timer
+let interval = setInterval(countDown, 1000); // the timer
 let email = "";
 let images = {}; // a dictionary in which images will be preloaded
 
@@ -33,10 +35,62 @@ let hovered = [];// coordinates of the hovered piece
 let myTime = 0;// used to redraw only once, this mechanic should be eliminated for good
 let input = doc.createElement("input"); // input field for email
 let button = doc.createElement("button");//button for registering
+let loadFromServerButton = doc.createElement("button");//button for loading from server
 let newGameButton = doc.createElement("button");//button for new game
 let logOutButton = doc.createElement("button");
 let label = doc.createElement("label");//label to display "Email" text
 let originalVal = input.value;//store original value and only load game if things have changed
+let moveList = [];// stores moves for random move generator
+//adds the user to the server
+let createUser = () => {
+    $.ajax(
+        {
+            method : "POST",
+            url : "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/user",
+            data : {
+                "email" : email
+            }
+        }
+    ).done(()=>{
+        console.log("user Created");
+    });
+}
+//uploads data to the server using email and key
+let uploadToServer = () => {
+    $.ajax(
+        {
+            method : "POST",
+            url : "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data",
+            data : {
+                "email" : email,
+                "key" : "livingInAShack",
+                "data" : {
+                    turn, chessBoard
+                }
+            }
+        }
+    ).done(()=>{
+        console.log("dat Uploaded");
+    });
+}
+//retrieves data from the server
+let getFromServer = () => {
+    $.ajax(
+        {
+            method : "GET",
+            url : "https://vlad-matei.thrive-dev.bitstoneint.com/wp-json/chess-api/v1/data",
+            data : {
+                "email": email,
+                "key": "livingInAShack"
+            }
+        }
+    ).done( (response) =>{
+        let data = response.data[response.data.length -1];
+        chessBoard = data.value.chessBoard;
+        turn = data.value.turn;
+        redraw();
+    });
+}
 //retrieves the local storage data
 let retrieveData = () =>{
     try {
@@ -233,33 +287,6 @@ let computeRookMoves = (i, j, color) => {
     //right
     moveOnBoard(i,j,0,-1,color);
 }
-// TODO , king safety
-let safe = (i,j,color)=>{
-    return true;
-}
-//checks if rook and king are in the starting position, this part is hard coded
-let canSwap = (type, color)=>{
-    if(color === 'w'){
-        if(type === 'small' && chessBoard[7][4] === 'wk' && chessBoard[7][7] === "wr" &&
-            chessBoard[7][5] === 'e' && chessBoard[7][6] === 'e'){
-            possibleMoves.push([6,7]);
-        }
-        if(type === 'big' && chessBoard[7][4] === 'wk' && chessBoard[7][0] === "wr" &&
-            chessBoard[7][1] === 'e' && chessBoard[7][2] === 'e' && chessBoard[7][3] === 'e'){
-            possibleMoves.push([2,7]);
-        }
-    }
-    if(color === 'b'){
-        if(type === 'small' && chessBoard[0][4] === 'bk' && chessBoard[0][7] === "br" &&
-            chessBoard[0][5] === 'e' && chessBoard[0][6] === 'e'){
-            possibleMoves.push([6,0]);
-        }
-        if(type === 'big' && chessBoard[0][4] === 'bk' && chessBoard[0][0] === "br" &&
-            chessBoard[0][1] === 'e' && chessBoard[0][2] === 'e' && chessBoard[0][3] === 'e'){
-            possibleMoves.push([2,0]);
-        }
-    }
-}
 //checks all 8 directions and adds possible moves
 let computeKingMoves = (i, j, color) => {
     if(onBoard(i,j+1,WIDTH,HEIGHT) && safe(i,j+1,color) && chessBoard[i][j+1][0] !== color){
@@ -363,7 +390,46 @@ let computePossibleMoves = (i, j)=> {
             break;
     }
 }
+let generateAllPossibleMoves = (color) =>{
+    for(let i = 0; i < 8; i ++){
+        for(let j = 0; j < 8; j ++){
+            if(chessBoard[i][j][0] === color){
+                computePossibleMoves(i,j);
+            }
+            while(possibleMoves.length !== 0){
+                moveList.push([possibleMoves.pop(),i,j]);
+            }
+        }
+    }
+}
 
+// TODO , king safety
+let safe = (i,j,color)=>{
+    return true;
+}
+//checks if rook and king are in the starting position, this part is hard coded
+let canSwap = (type, color)=>{
+    if(color === 'w'){
+        if(type === 'small' && chessBoard[7][4] === 'wk' && chessBoard[7][7] === "wr" &&
+            chessBoard[7][5] === 'e' && chessBoard[7][6] === 'e'){
+            possibleMoves.push([6,7]);
+        }
+        if(type === 'big' && chessBoard[7][4] === 'wk' && chessBoard[7][0] === "wr" &&
+            chessBoard[7][1] === 'e' && chessBoard[7][2] === 'e' && chessBoard[7][3] === 'e'){
+            possibleMoves.push([2,7]);
+        }
+    }
+    if(color === 'b'){
+        if(type === 'small' && chessBoard[0][4] === 'bk' && chessBoard[0][7] === "br" &&
+            chessBoard[0][5] === 'e' && chessBoard[0][6] === 'e'){
+            possibleMoves.push([6,0]);
+        }
+        if(type === 'big' && chessBoard[0][4] === 'bk' && chessBoard[0][0] === "br" &&
+            chessBoard[0][1] === 'e' && chessBoard[0][2] === 'e' && chessBoard[0][3] === 'e'){
+            possibleMoves.push([2,0]);
+        }
+    }
+}
 //draws a little circle on those squares the piece can legally move given the possible moves
 let drawPossibleMoves = (myCanvas,x,y) =>{
     redo(myCanvas);
@@ -492,7 +558,6 @@ let drawPieceUnderMouse = (event) =>{
     //redraw possible moves
     drawPossibleMoves(con,selX,selY);
     //draw the image right under the mouse
-    console.log(chessBoard[selY][selX]);
     con.drawImage(images[chessBoard[selY][selX]], x/10-5, y/10-5, SCALE_FACTOR, SCALE_FACTOR);
     //update prevPos
     prevPos = [x,y];
@@ -557,6 +622,7 @@ let doMouseDown = (event)=>{
     if(movedPiece !== 0){
         redo(myGameArea.context);
         uploadData();
+        uploadToServer();
     }
     // if castle happened
     if(castled) redraw();
@@ -606,6 +672,7 @@ let doMouseUp = (event) =>{
     if(movedPiece !== 0){
         redo(myGameArea.context);
         uploadData();
+        uploadToServer();
     }
     //redraw at the end
     redraw();
@@ -665,12 +732,31 @@ let doOnMouseMove = (event) =>{
     }
 }
 // a counter to give time for images to load, about 5 seconds
-function countDown(){
+let doReleaseKey = (event) =>{
+    let key = event.key;
+    if(key === 'r'){
+        generateAllPossibleMoves(turn === 0 ? 'w' : 'b');
+        let move = moveList[Math.floor(Math.random()*moveList.length)];
+        chessBoard[move[0][1]][move[0][0]] = chessBoard[move[1]][move[2]];
+        chessBoard[move[1]][move[2]] = 'e';
+        turn = turn === 0 ? 1 : 0;
+        redraw();
+    }
+    moveList =[];
+}
+async function countDown(){
     preset();
     let main = doc.getElementById('main');
-       main.innerHTML = "Time left : " + time;
+    let phrase = ['Loading stuff', 'Preparing pieces', 'Waiting for the queen to prepare', 'Checking Logins', 'Waiting For Matei to be ready'];
+       main.innerHTML = phrase[5 - time] +  " : " + time;
        main.style.textAlign = "center";
-       time --;
+       if(time > 0) {
+           time--;
+       }
+       else
+       {
+           time --;
+       }
        if(time < 0) {
            clearInterval(interval);
            main.style.setProperty('display','none');
@@ -685,6 +771,7 @@ function countDown(){
 let login = () => {
     if(input.value !== originalVal){
         email = input.value;
+        createUser();
         startGame();
         doc.body.removeChild(input);
         doc.body.removeChild(label);
@@ -728,6 +815,9 @@ let myGameArea = {
         this.canvas.addEventListener("mousedown", doMouseDown, false);
         this.canvas.addEventListener("mousemove", doOnMouseMove, false);
         this.canvas.addEventListener("mouseup", doMouseUp, false);
+        doc.addEventListener("keyup",doReleaseKey,false);
+
+
         this.canvas.style.float = "left";
         this.canvas.style.marginLeft = "100px";
         //insert onto page canvas and multiple buttons
@@ -744,8 +834,15 @@ let myGameArea = {
         logOutButton.style.float = "left";
         logOutButton.style.marginLeft = "23vw";
         logOutButton.onclick = logOut;
+        loadFromServerButton.innerHTML = "Load Saved Game";
+        loadFromServerButton.style.marginTop = "30px";
+        loadFromServerButton.style.padding = "10px 50px 10px 50px";
+        loadFromServerButton.style.float = "left";
+        loadFromServerButton.style.marginLeft = "23vw";
+        loadFromServerButton.onclick = getFromServer;
         this.canvas.parentElement.appendChild(newGameButton);
         this.canvas.parentElement.appendChild(logOutButton);
+        this.canvas.parentElement.appendChild(loadFromServerButton);
     }
 }
 //start the game
